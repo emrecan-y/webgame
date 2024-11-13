@@ -1,35 +1,56 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import Chat from "./Chat";
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  return <Chat></Chat>;
 }
 
-export default App
+// function App() {
+//   return (
+//     //Initialize Stomp connection, will use SockJS for http(s) and WebSocket for ws(s)
+//     //The Connection can be used by all child components via the hooks or hocs.
+//     <StompSessionProvider
+//       url={"ws://localhost:8080/chat"}
+//       //All options supported by @stomp/stompjs can be used here
+//     >
+//       <SubscribingComponent />
+//       <SendingMessages />
+//     </StompSessionProvider>
+//   );
+// }
+
+// function SubscribingComponent() {
+//   const [lastMessage, setLastMessage] = useState("No message received yet");
+
+//   //Subscribe to /topic/test, and use handler for all received messages
+//   //Note that all subscriptions made through the library are automatically removed when their owning component gets unmounted.
+//   //If the STOMP connection itself is lost they are however restored on reconnect.
+//   //You can also supply an array as the first parameter, which will subscribe to all destinations in the array
+//   useSubscription("/topic/chat-history", (message) =>
+//     setLastMessage(message.body)
+//   );
+
+//   return <div>Last Message: {lastMessage}</div>;
+// }
+
+// export function SendingMessages() {
+//   //Get Instance of StompClient
+//   //This is the StompCLient from @stomp/stompjs
+//   //Note: This will be undefined if the client is currently not connected
+//   const stompClient = useStompClient();
+//   const newMessage = { senderName: "hans", message: "Halloooo" };
+//   const sendMessage = () => {
+//     if (stompClient) {
+//       //Send Message
+//       stompClient.publish({
+//         destination: "/app/new-message",
+//         body: JSON.stringify(newMessage),
+//       });
+//     } else {
+//       //Handle error
+//     }
+//   };
+
+//   return <button onClick={sendMessage}>Send Message</button>;
+// }
+
+export default App;
