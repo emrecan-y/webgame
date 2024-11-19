@@ -1,4 +1,4 @@
-package com.example.webgame.websocket;
+package com.example.webgame.chat;
 
 import java.util.LinkedList;
 import java.util.List;

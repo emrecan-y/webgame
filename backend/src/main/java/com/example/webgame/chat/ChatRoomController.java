@@ -1,17 +1,17 @@
-package com.example.webgame.websocket;
+package com.example.webgame.chat;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@CrossOrigin(origins = "*")
 public class ChatRoomController {
-	private SimpMessagingTemplate template;
 	private ChatHistory globalChat;
 
-	public ChatRoomController(SimpMessagingTemplate template) {
-		this.template = template;
+	public ChatRoomController() {
 		this.globalChat = new ChatHistory();
 	}
 
@@ -21,6 +21,11 @@ public class ChatRoomController {
 		globalChat.addNewMessage(message);
 		return globalChat;
 
+	}
+
+	@GetMapping("/chat-global")
+	public ChatHistory greeting() {
+		return globalChat;
 	}
 
 //  send from a method	

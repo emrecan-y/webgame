@@ -1,4 +1,4 @@
-package com.example.webgame.websocket;
+package com.example.webgame.chat;
 
 public class ChatMessage {
 
