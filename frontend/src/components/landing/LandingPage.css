@@ -1,0 +1,7 @@
+#landing-window {
+  & form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
