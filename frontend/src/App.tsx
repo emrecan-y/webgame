@@ -1,7 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 import "./App.css";
-import Chat from "./components/chat/Chat";
-import { LandingPage } from "./components/landing/Landingpage";
+import LandingPage from "./components/landing/LandingPage";
+import Lobby from "./components/lobby/Lobby";
 
 type UserContextProviderType = {
   userNickName?: string;
@@ -15,7 +15,7 @@ function App() {
     <>
       <UserContext.Provider value={{ userNickName, setUserNickName }}>
         <div id="main-content">
-          {userNickName === "" ? <LandingPage /> : <Chat />}
+          {userNickName === "" ? <LandingPage /> : <Lobby />}
         </div>
       </UserContext.Provider>
     </>

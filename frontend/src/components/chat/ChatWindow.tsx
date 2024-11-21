@@ -1,5 +1,13 @@
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { UserContext } from "../../App";
 import { ChatMessage } from "../../models/chat";
 
 type ChatWindowParams = {
@@ -11,8 +19,8 @@ export function ChatWindow(params: ChatWindowParams) {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const chatHistoryRef = useRef<HTMLDivElement>(null);
 
-  const [senderName, setSenderName] = useState("");
   const [messageInput, setMessageInput] = useState("");
+  const userContext = useContext(UserContext);
 
   const stompClient = useStompClient();
   useSubscription("/topic/chat-history", (message) => {
@@ -32,9 +40,9 @@ export function ChatWindow(params: ChatWindowParams) {
   }, [chatHistory]);
 
   function sendMessage() {
-    if (stompClient && senderName !== "" && messageInput !== "") {
+    if (stompClient && messageInput !== "") {
       const newMessage: ChatMessage = {
-        senderName: senderName,
+        senderName: userContext.userNickName!,
         message: messageInput,
         date: new Date(), // change to Backend soon
       };
@@ -62,13 +70,6 @@ export function ChatWindow(params: ChatWindowParams) {
           )}
         </div>
         <div id="chat-input">
-          <label htmlFor="senderName">Name</label>
-          <input
-            id="senderName"
-            type="text"
-            value={senderName}
-            onChange={(e) => setSenderName(e.currentTarget.value)}
-          />
           <label htmlFor="messageInput">Message</label>
           <input
             id="messageInput"

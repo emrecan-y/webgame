@@ -1,0 +1,15 @@
+#lobby-page {
+  width: 30vw;
+  background-color: grey;
+  display: flex;
+  flex-direction: column;
+
+  & button {
+    width: 100%;
+    height: fit-content;
+  }
+}
+
+#lobby-list {
+  height: 40vh;
+}

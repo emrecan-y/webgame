@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../../App";
 import "./LandingPage.css";
 
-export function LandingPage() {
+function LandingPage() {
   const [nickName, setNickname] = useState("");
   const userContext = useContext(UserContext);
 
@@ -27,3 +27,5 @@ export function LandingPage() {
     </div>
   );
 }
+
+export default LandingPage;
