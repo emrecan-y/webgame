@@ -17,14 +17,14 @@ public class ChatRoomController {
 
 	@MessageMapping("/new-message")
 	@SendTo("/topic/chat-history")
-	public ChatHistory greeting(ChatMessage message) throws Exception {
+	public ChatHistory receiveNewMessage(ChatMessage message) throws Exception {
 		globalChat.addNewMessage(message);
 		return globalChat;
 
 	}
 
 	@GetMapping("/chat-global")
-	public ChatHistory greeting() {
+	public ChatHistory getGlobalChat() {
 		return globalChat;
 	}
 
