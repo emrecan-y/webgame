@@ -13,3 +13,14 @@
 #lobby-list {
   height: 40vh;
 }
+
+.lobby-list-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & form {
+    display: flex;
+    flex-direction: column;
+  }
+}

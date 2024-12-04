@@ -2,11 +2,14 @@ package com.example.webgame.lobby;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webgame.dto.LobbyCreateDto;
@@ -32,7 +35,13 @@ public class LobbyController {
 	@GetMapping("/lobby-list")
 	public List<Lobby> getLobbyList() {
 		return lobbies;
-
 	}
 
+	@PutMapping("/lobby-list")
+	public void joinLobby(@RequestParam Integer lobbyId, @RequestParam String playerName) {
+		Optional<Lobby> lobbyById = this.lobbies.stream().filter(c -> c.id == lobbyId).findFirst();
+		if (lobbyById.isPresent() && lobbyById.get().addUser(playerName)) {
+			// this.client.convertAndSend("/topic/lobby-list", this.lobbies);
+		}
+	}
 }

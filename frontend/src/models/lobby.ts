@@ -1,5 +1,6 @@
 export type Lobby = {
   id?: number;
-  password: string;
+  password?: string;
+  isPrivate?: boolean;
   users: string[];
 };
