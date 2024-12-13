@@ -31,13 +31,6 @@ public class Lobby {
 		return id;
 	}
 
-	public boolean isPrivate() {
-		if (password.equals("")) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 
 	public String getPassword() {
 		return password;

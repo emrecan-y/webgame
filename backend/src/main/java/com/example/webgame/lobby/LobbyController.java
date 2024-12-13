@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,15 +19,16 @@ import com.example.webgame.dto.LobbyCreateDto;
 @CrossOrigin(origins = "*")
 public class LobbyController {
 	private List<Lobby> lobbies;
+	private SimpMessagingTemplate template;
 
-	public LobbyController() {
+	public LobbyController(SimpMessagingTemplate template) {
 		this.lobbies = new ArrayList<>();
+		this.template = template;
 	}
 
 	@MessageMapping("/create-lobby")
 	@SendTo("/topic/lobby-list")
 	public List<Lobby> createLobby(LobbyCreateDto newLobby) throws Exception {
-		System.out.println(newLobby.size);
 		lobbies.add(new Lobby(newLobby.password, newLobby.size));
 		return lobbies;
 
@@ -40,8 +42,10 @@ public class LobbyController {
 	@PutMapping("/lobby-list")
 	public void joinLobby(@RequestParam Integer lobbyId, @RequestParam String playerName) {
 		Optional<Lobby> lobbyById = this.lobbies.stream().filter(c -> c.id == lobbyId).findFirst();
-		if (lobbyById.isPresent() && lobbyById.get().addUser(playerName)) {
-			// this.client.convertAndSend("/topic/lobby-list", this.lobbies);
+		if (lobbyById.isPresent()) {
+			Lobby lobby = lobbyById.get();
+			if (!lobby.isPrivate && lobby.addUser(playerName))
+				this.template.convertAndSend("/topic/lobby-list", this.lobbies);
 		}
 	}
 }
