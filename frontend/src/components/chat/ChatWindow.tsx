@@ -1,14 +1,8 @@
-import {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../../App";
 import { ChatMessage } from "../../models/chat";
+import { getGlobalChatHistory } from "../../api";
 
 type ChatWindowParams = {
   showChatWindow: boolean;
@@ -23,14 +17,13 @@ export function ChatWindow(params: ChatWindowParams) {
   const userContext = useContext(UserContext);
 
   const stompClient = useStompClient();
+
   useSubscription("/topic/chat-history", (message) => {
     setChatHistory(JSON.parse(message.body).history);
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/chat-global").then((response) => {
-      response.json().then((e) => setChatHistory(e.history));
-    });
+    getGlobalChatHistory().then((chatHistory) => setChatHistory(chatHistory));
   }, []);
 
   useEffect(() => {
@@ -58,16 +51,9 @@ export function ChatWindow(params: ChatWindowParams) {
   if (params.showChatWindow) {
     return (
       <div id="chat-window">
-        <button
-          id="chat-minimize-btn"
-          onClick={() => params.setShowChatWindow(false)}
-        ></button>
+        <button id="chat-minimize-btn" onClick={() => params.setShowChatWindow(false)}></button>
         <div id="chat-history" ref={chatHistoryRef}>
-          {chatHistory !== undefined ? (
-            chatHistory.map((e) => <p> {e.senderName + ": " + e.message} </p>)
-          ) : (
-            <></>
-          )}
+          {Array.isArray(chatHistory) ? chatHistory.map((e) => <p> {e.senderName + ": " + e.message} </p>) : <></>}
         </div>
         <div id="chat-input">
           <label htmlFor="messageInput">Message</label>

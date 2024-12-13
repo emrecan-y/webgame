@@ -14,9 +14,7 @@ function App() {
   return (
     <>
       <UserContext.Provider value={{ userNickName, setUserNickName }}>
-        <div id="main-content">
-          {userNickName === "" ? <LandingPage /> : <Lobby />}
-        </div>
+        <div id="main-content">{userNickName === "" ? <LandingPage /> : <Lobby />}</div>
       </UserContext.Provider>
     </>
   );

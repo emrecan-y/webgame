@@ -1,26 +1,11 @@
 import { useContext } from "react";
 import { UserContext } from "../../App";
 import { Lobby } from "../../models/lobby";
+import { addPlayerToLobby } from "../../api";
 
 type LobbyListEntryProps = {
   lobby: Lobby;
 };
-
-function joinLooby(lobbyId: number, playerName: string) {
-  fetch(
-    "http://localhost:8080/lobby-list" +
-      "?lobbyId=" +
-      lobbyId +
-      "&playerName=" +
-      playerName,
-    {
-      method: "PUT",
-      headers: { "Content-type": "application/json" },
-    }
-  ).then((response) => {
-    console.log(response);
-  });
-}
 
 function LobbyListEntry(props: LobbyListEntryProps) {
   const userContext = useContext(UserContext);
@@ -33,7 +18,7 @@ function LobbyListEntry(props: LobbyListEntryProps) {
           <li> {userName}</li>
         ))}
       </ol>
-      <form>
+      <div>
         {props.lobby.isPrivate ? (
           <>
             <label htmlFor="lobby-password">Password</label>
@@ -42,12 +27,8 @@ function LobbyListEntry(props: LobbyListEntryProps) {
         ) : (
           ""
         )}
-        <button
-          onClick={() => joinLooby(props.lobby.id!, userContext.userNickName!)}
-        >
-          Join
-        </button>
-      </form>
+        <button onClick={() => addPlayerToLobby(props.lobby.id!, userContext.userNickName!)}>Join</button>
+      </div>
     </div>
   );
 }
