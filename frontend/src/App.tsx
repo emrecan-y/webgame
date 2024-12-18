@@ -1,7 +1,9 @@
 import { createContext, Dispatch, SetStateAction, useState } from "react";
 import "./App.css";
 import LandingPage from "./components/landing/LandingPage";
-import Lobby from "./components/lobby/Lobby";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LobbyPage from "./components/lobby/LobbyPage";
+import { Layout } from "./Layout";
 
 type UserContextProviderType = {
   userNickName?: string;
@@ -11,12 +13,18 @@ export const UserContext = createContext<UserContextProviderType>({});
 
 function App() {
   const [userNickName, setUserNickName] = useState("");
+
   return (
-    <>
+    <BrowserRouter>
       <UserContext.Provider value={{ userNickName, setUserNickName }}>
-        <div id="main-content">{userNickName === "" ? <LandingPage /> : <Lobby />}</div>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<LandingPage />} />
+            <Route path="/lobbies" element={<LobbyPage />} />
+          </Route>
+        </Routes>
       </UserContext.Provider>
-    </>
+    </BrowserRouter>
   );
 }
 

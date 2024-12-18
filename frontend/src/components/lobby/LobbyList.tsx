@@ -25,11 +25,12 @@ function LobbyList() {
 
   return (
     <div id="lobby-list">
-      {lobbyList !== undefined && lobbyList.map((e) => <LobbyListEntry lobby={e} />)}
+      {lobbyList?.map((e) => (
+        <LobbyListEntry key={`listEntry${e.id}`} lobby={e} />
+      ))}
+
       {showCreationWindow ? (
-        <>
-          <LobbyCreation setShowCreationWindow={setShowCreationWindow} />
-        </>
+        <LobbyCreation setShowCreationWindow={setShowCreationWindow} />
       ) : (
         <button onClick={buttonHandler}>+</button>
       )}

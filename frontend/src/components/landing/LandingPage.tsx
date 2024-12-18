@@ -1,14 +1,16 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../../App";
-import "./LandingPage.css";
+import { useNavigate } from "react-router-dom";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");
   const userContext = useContext(UserContext);
+  const navigate = useNavigate();
 
   function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     userContext.setUserNickName!(nickName);
+    navigate("/lobbies");
   }
 
   return (

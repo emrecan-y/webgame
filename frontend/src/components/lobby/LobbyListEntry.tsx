@@ -7,27 +7,25 @@ type LobbyListEntryProps = {
   lobby: Lobby;
 };
 
-function LobbyListEntry(props: LobbyListEntryProps) {
-  const userContext = useContext(UserContext);
+function LobbyListEntry({ lobby }: LobbyListEntryProps) {
+  const { userNickName } = useContext(UserContext);
 
   return (
     <div className="lobby-list-entry">
-      <p>ID: {props.lobby.id}</p>
+      <p>ID: {lobby.id}</p>
       <ol>
-        {props.lobby.users.map((userName) => (
-          <li> {userName}</li>
+        {lobby.users.map((lobbyUser) => (
+          <li key={`lobbyListEntry${lobby.id}-${userNickName}`}> {lobbyUser}</li>
         ))}
       </ol>
       <div>
-        {props.lobby.isPrivate ? (
+        {lobby.isPrivate && (
           <>
             <label htmlFor="lobby-password">Password</label>
             <input type="password" name="lobby-password" id="lobby-password" />
           </>
-        ) : (
-          ""
         )}
-        <button onClick={() => addPlayerToLobby(props.lobby.id!, userContext.userNickName!)}>Join</button>
+        <button onClick={() => addPlayerToLobby(lobby.id!, userNickName!)}>Join</button>
       </div>
     </div>
   );
