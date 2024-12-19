@@ -14,8 +14,8 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
     <div className="lobby-list-entry">
       <p>ID: {lobby.id}</p>
       <ol>
-        {lobby.users.map((lobbyUser) => (
-          <li key={`lobbyListEntry${lobby.id}-${userNickName}`}> {lobbyUser}</li>
+        {lobby.users.map((lobbyUser, index) => (
+          <li key={`listEntry${lobby.id}-${index}`}> {lobbyUser}</li>
         ))}
       </ol>
       <div>

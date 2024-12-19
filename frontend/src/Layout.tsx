@@ -10,8 +10,11 @@ export function Layout() {
   useEffect(() => {
     if (userContext.userNickName === "") {
       navigate("/");
+    } else {
+      navigate("/lobbies");
     }
   }, [userContext.userNickName]);
+
   return (
     <>
       <Outlet />

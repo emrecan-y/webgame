@@ -13,6 +13,7 @@ public class ChatRoomController {
 
 	public ChatRoomController() {
 		this.globalChat = new ChatHistory();
+
 	}
 
 	@MessageMapping("/new-message")
@@ -28,10 +29,4 @@ public class ChatRoomController {
 		return globalChat;
 	}
 
-//  send from a method	
-//	
-//	public void sendMessage(int i) throws Exception {
-//		Thread.sleep(100);
-//		this.template.convertAndSend("/topic/chat-history", new ChatHistory(i + "This is Send From Server"));
-//	}
 }

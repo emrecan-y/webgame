@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -40,12 +42,18 @@ public class LobbyController {
 	}
 
 	@PutMapping("/lobby-list")
-	public void joinLobby(@RequestParam Integer lobbyId, @RequestParam String playerName) {
+	public ResponseEntity<?> joinLobby(@RequestParam Integer lobbyId, @RequestParam String playerName) {
 		Optional<Lobby> lobbyById = this.lobbies.stream().filter(c -> c.id == lobbyId).findFirst();
 		if (lobbyById.isPresent()) {
 			Lobby lobby = lobbyById.get();
-			if (!lobby.isPrivate && lobby.addUser(playerName))
+			if (!lobby.isPrivate && lobby.addUser(playerName)) {
 				this.template.convertAndSend("/topic/lobby-list", this.lobbies);
+				return new ResponseEntity<>(HttpStatusCode.valueOf(200));
+			} else {
+				return new ResponseEntity<>(HttpStatusCode.valueOf(403));
+			}
+		} else {
+			return new ResponseEntity<>(HttpStatusCode.valueOf(400));
 		}
 	}
 }

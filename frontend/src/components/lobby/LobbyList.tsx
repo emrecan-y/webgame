@@ -10,13 +10,11 @@ function LobbyList() {
   const [showCreationWindow, setShowCreationWindow] = useState(false);
 
   useSubscription("/topic/lobby-list", (message) => {
-    console.log(message.body);
     setLobbyList(JSON.parse(message.body));
   });
 
   useEffect(() => {
     getLobbyList().then((lobbyList) => setLobbyList(lobbyList));
-    console.log(lobbyList);
   }, []);
 
   function buttonHandler() {
@@ -24,7 +22,7 @@ function LobbyList() {
   }
 
   return (
-    <div id="lobby-list">
+    <div className="">
       {lobbyList?.map((e) => (
         <LobbyListEntry key={`listEntry${e.id}`} lobby={e} />
       ))}
