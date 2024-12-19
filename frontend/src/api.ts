@@ -14,6 +14,16 @@ export async function getLobbyList(): Promise<Lobby[]> {
   return lobbyList;
 }
 
+export async function getRandomName(): Promise<string> {
+  const response = await fetch(`http://${urlDomain}:${urlBackendPort}/name/random`);
+  if (!response.ok) {
+    console.error(`Error fetching random name: ${response.statusText}`);
+    return "";
+  }
+  const randomName: string = await response.text();
+  return randomName;
+}
+
 export async function getGlobalChatHistory(): Promise<ChatMessage[]> {
   const response = await fetch(`http://${urlDomain}:${urlBackendPort}/chat-global`);
   if (!response.ok) {
