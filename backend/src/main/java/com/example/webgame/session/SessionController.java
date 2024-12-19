@@ -19,9 +19,7 @@ public class SessionController {
 	@MessageMapping("/login")
 	@SendToUser("/queue/login/user-name")
 	public String login(@Header("simpSessionId") String sessionId, String userName) throws Exception {
-
 		if (this.sessionService.addUser(userName, sessionId)) {
-			System.out.println(this.sessionService.getUserNameToSessionId());
 			return userName;
 		} else {
 			return "";

@@ -22,7 +22,7 @@ function LobbyList() {
   }
 
   return (
-    <div className="">
+    <div className="flex flex-col w-96">
       {lobbyList?.map((e) => (
         <LobbyListEntry key={`listEntry${e.id}`} lobby={e} />
       ))}
@@ -30,7 +30,9 @@ function LobbyList() {
       {showCreationWindow ? (
         <LobbyCreation setShowCreationWindow={setShowCreationWindow} />
       ) : (
-        <button onClick={buttonHandler}>+</button>
+        <button className="bg-violet-800 px-2 py-1 mt-2 rounded" onClick={buttonHandler}>
+          Create New
+        </button>
       )}
     </div>
   );

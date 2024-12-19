@@ -9,9 +9,9 @@ function Chat() {
 
   return (
     userNickName !== "" && (
-      <div className="fixed bottom-0 right-0 bg-light-blue-500">
+      <div className="flex flex-col items-end fixed bottom-0 right-0 bg-light-blue-500">
         <ChatWindow showChatWindow={showChatWindow} setShowChatWindow={setShowChatWindow} />
-        <button id="chat-btn" onClick={() => setShowChatWindow(!showChatWindow)}>
+        <button className="bg-violet-800 p-3 rounded-tl-xl" onClick={() => setShowChatWindow(!showChatWindow)}>
           Global Chat
         </button>
       </div>

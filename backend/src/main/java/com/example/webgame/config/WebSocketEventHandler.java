@@ -22,7 +22,6 @@ public class WebSocketEventHandler implements ApplicationListener<SessionConnect
 	public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
 		String sessionId = event.getSessionId();
 		this.sessionService.deleteUserBySessionId(sessionId);
-		System.out.println(this.sessionService.getUserNameToSessionId());
 	}
 
 	@Override

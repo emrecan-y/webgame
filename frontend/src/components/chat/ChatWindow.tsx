@@ -50,7 +50,7 @@ export function ChatWindow(params: ChatWindowParams) {
 
   if (params.showChatWindow) {
     return (
-      <div id="chat-window">
+      <div className="bg-violet-800">
         <button id="chat-minimize-btn" onClick={() => params.setShowChatWindow(false)}></button>
         <div id="chat-history" ref={chatHistoryRef}>
           {Array.isArray(chatHistory) ? chatHistory.map((e) => <p> {e.senderName + ": " + e.message} </p>) : <></>}
