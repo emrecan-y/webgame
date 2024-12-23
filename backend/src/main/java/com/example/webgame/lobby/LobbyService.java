@@ -28,6 +28,9 @@ public class LobbyService {
 
 	public void removeByLobbyId(Integer lobbyId) {
 		this.lobbyMap.remove(lobbyId);
+		if (this.lobbyMap.isEmpty()) {
+			Lobby.resetIdCount();
+		}
 	}
 
 	public Optional<Lobby> findLobbyById(Integer lobbyId) {
@@ -38,16 +41,16 @@ public class LobbyService {
 		return this.lobbyMap.containsKey(lobbyId);
 	}
 
-	public boolean createLobby(String sessionId, LobbyCreateDto lobbyDto) {
+	public Optional<Lobby> createLobby(String sessionId, LobbyCreateDto lobbyDto) {
 		Optional<UserSession> userSession = this.sessionService.getBySessionId(sessionId);
 		if (userSession.isPresent()) {
 			Lobby newLobby = new Lobby(lobbyDto.password, lobbyDto.size);
 			newLobby.addUser(userSession.get().getNickName());
 			lobbyMap.put(newLobby.getId(), newLobby);
 			changePlayerLobby(userSession.get().getNickName(), newLobby.getId());
-			return true;
+			return Optional.of(newLobby);
 		} else {
-			return false;
+			return Optional.empty();
 		}
 	}
 
@@ -72,6 +75,7 @@ public class LobbyService {
 				}
 			}
 			userSession.setCurrentLobbyId(newLobbyId);
+
 		}
 	}
 }

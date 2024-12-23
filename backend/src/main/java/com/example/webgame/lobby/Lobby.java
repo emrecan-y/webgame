@@ -3,21 +3,28 @@ package com.example.webgame.lobby;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
+import com.example.webgame.chat.ChatHistory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Lobby {
-	private static int idCount = 0;
+	private static int idCount = 1;
 	private int id;
 	private boolean privateLobby;
 	@JsonIgnore
 	private String password;
 	private String[] users;
+	private ChatHistory chatHistory;
 
 	public Lobby(String password, int size) {
 		this.id = idCount++;
 		this.password = password;
 		this.privateLobby = password.equals("") ? false : true;
 		this.users = new String[size];
+		this.chatHistory = new ChatHistory();
+	}
+
+	public static void resetIdCount() {
+		idCount = 1;
 	}
 
 	@Override
@@ -35,6 +42,10 @@ public class Lobby {
 
 	public String[] getUsers() {
 		return users;
+	}
+
+	public ChatHistory getChatHistory() {
+		return this.chatHistory;
 	}
 
 	public boolean isPrivate() {
@@ -64,7 +75,7 @@ public class Lobby {
 
 	public boolean removeUser(String nickName) {
 		for (int i = 0; i < users.length; i++) {
-			if (users[i].equals(nickName)) {
+			if (users[i] != null && users[i].equals(nickName)) {
 				users[i] = null;
 				return true;
 			}

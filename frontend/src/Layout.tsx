@@ -4,23 +4,23 @@ import { UserContext } from "./App";
 import Chat from "./components/chat/Chat";
 
 export function Layout() {
-  const userContext = useContext(UserContext);
+  const { userNickName } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userContext.userNickName === "") {
+    if (userNickName === "") {
       navigate("/");
     } else {
       navigate("/lobbies");
     }
-  }, [userContext.userNickName]);
+  }, [userNickName]);
 
   return (
     <>
       <div className="flex justify-center min-h-screen items-center">
         <Outlet />
       </div>
-      <Chat />
+      {userNickName !== "" && <Chat />}
     </>
   );
 }

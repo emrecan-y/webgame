@@ -34,7 +34,6 @@ function LandingPage() {
 
   // listen to backend for confirmation on login
   useSubscription("/user/queue/login/user-name", (message) => {
-    console.log(message.body);
     if (message.body !== "") {
       userContext.setUserNickName!(message.body);
     } else {

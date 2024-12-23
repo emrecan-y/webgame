@@ -1,29 +1,40 @@
-import { Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../../App";
 import { ChatMessage } from "../../models/chat";
-import { getGlobalChatHistory } from "../../api";
 
-type ChatWindowParams = {
-  showChatWindow: boolean;
-  setShowChatWindow: Dispatch<SetStateAction<boolean>>;
+export type ChatWindowProps = {
+  buttonText: string;
+  receiveDestinationTopic: string;
+  receiveDestinationUser: string;
+  sendDestination: string;
+  connectDestination: string;
 };
 
-export function ChatWindow(params: ChatWindowParams) {
+export function ChatWindow(props: ChatWindowProps) {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const chatHistoryRef = useRef<HTMLDivElement>(null);
 
   const [messageInput, setMessageInput] = useState("");
   const userContext = useContext(UserContext);
+  const [showChatWindow, setShowChatWindow] = useState(false);
 
   const stompClient = useStompClient();
 
-  useSubscription("/topic/chat-history", (message) => {
+  useSubscription(props.receiveDestinationTopic, (message) => {
+    setChatHistory(JSON.parse(message.body).history);
+  });
+
+  useSubscription(props.receiveDestinationUser, (message) => {
     setChatHistory(JSON.parse(message.body).history);
   });
 
   useEffect(() => {
-    getGlobalChatHistory().then((chatHistory) => setChatHistory(chatHistory));
+    if (stompClient) {
+      stompClient.publish({
+        destination: props.connectDestination,
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -40,7 +51,7 @@ export function ChatWindow(params: ChatWindowParams) {
         date: new Date(), // change to Backend soon
       };
       stompClient.publish({
-        destination: "/app/new-message",
+        destination: props.sendDestination,
         body: JSON.stringify(newMessage),
       });
     } else {
@@ -48,26 +59,28 @@ export function ChatWindow(params: ChatWindowParams) {
     }
   }
 
-  if (params.showChatWindow) {
-    return (
-      <div className="bg-violet-800">
-        <button id="chat-minimize-btn" onClick={() => params.setShowChatWindow(false)}></button>
-        <div id="chat-history" ref={chatHistoryRef}>
-          {Array.isArray(chatHistory) ? chatHistory.map((e) => <p> {e.senderName + ": " + e.message} </p>) : <></>}
+  return (
+    <>
+      {showChatWindow && (
+        <div className="bg-violet-800 ">
+          <button onClick={() => setShowChatWindow(false)}></button>
+          <div ref={chatHistoryRef}>
+            {Array.isArray(chatHistory) ? chatHistory.map((e) => <p> {e.senderName + ": " + e.message} </p>) : <></>}
+          </div>
+          <div>
+            <label htmlFor="messageInput">Message</label>
+            <input type="text" value={messageInput} onChange={(e) => setMessageInput(e.currentTarget.value)} />
+            <button onClick={sendMessage}>Send</button>
+          </div>
         </div>
-        <div id="chat-input">
-          <label htmlFor="messageInput">Message</label>
-          <input
-            id="messageInput"
-            type="text"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.currentTarget.value)}
-          />
-          <button onClick={sendMessage}>Send</button>
-        </div>
-      </div>
-    );
-  } else {
-    return <></>;
-  }
+      )}
+      <button
+        id={props.buttonText}
+        className="bg-violet-800 p-3 rounded-tl-xl "
+        onClick={() => setShowChatWindow(!showChatWindow)}
+      >
+        {props.buttonText}
+      </button>
+    </>
+  );
 }

@@ -2,27 +2,25 @@ package com.example.webgame.lobby;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webgame.dto.LobbyCreateDto;
+import com.example.webgame.dto.PlayerAddRequest;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class LobbyController {
 
-	private SimpMessagingTemplate template;
 	private LobbyService lobbyService;
+	private SimpMessagingTemplate template;
 
 	public LobbyController(LobbyService lobbyService, SimpMessagingTemplate template) {
 		this.lobbyService = lobbyService;
@@ -30,11 +28,12 @@ public class LobbyController {
 	}
 
 	@MessageMapping("/create-lobby")
-	@SendTo("/topic/lobby-list")
-	public List<Lobby> createLobby(@Header("simpSessionId") String sessionId, LobbyCreateDto lobbyDto)
-			throws Exception {
-		if (this.lobbyService.createLobby(sessionId, lobbyDto)) {
-			return this.lobbyService.getLobbyList();
+	@SendToUser("/queue/lobby/lobby-id")
+	public Integer createLobby(@Header("simpSessionId") String sessionId, LobbyCreateDto lobbyDto) throws Exception {
+		Optional<Lobby> lobby = this.lobbyService.createLobby(sessionId, lobbyDto);
+		if (lobby.isPresent()) {
+			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
+			return lobby.get().getId();
 		} else {
 			throw new NoSuchElementException("SessionId doesn't exist.");
 		}
@@ -45,18 +44,14 @@ public class LobbyController {
 		return this.lobbyService.getLobbyList();
 	}
 
-	@PutMapping("/lobby-list")
-	public ResponseEntity<?> joinLobby(@RequestParam Integer lobbyId, @RequestParam String playerName,
-			@RequestParam String password) {
-		if (this.lobbyService.containsLobbyId(lobbyId)) {
-			if (this.lobbyService.addPlayerToLobby(lobbyId, playerName, password)) {
-				this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
-				return new ResponseEntity<>("Player succesfully added to lobby.", HttpStatusCode.valueOf(200));
-			} else {
-				return new ResponseEntity<>("Player already in lobby or lobby full.", HttpStatusCode.valueOf(403));
-			}
-		} else {
-			return new ResponseEntity<>("Lobby with the id doesnt exist.", HttpStatusCode.valueOf(400));
+	@MessageMapping("/add-player-to-lobby")
+	@SendToUser("/queue/lobby/lobby-id")
+	public Integer addPlayerToLobby(PlayerAddRequest request) {
+		if (this.lobbyService.addPlayerToLobby(request.lobbyId, request.nickName, request.password)) {
+			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
+			return request.lobbyId;
 		}
+		return -1;
+
 	}
 }

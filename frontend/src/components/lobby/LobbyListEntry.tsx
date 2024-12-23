@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../../App";
 import { Lobby } from "../../models/lobby";
-import { addPlayerToLobby } from "../../api";
+import { useStompClient } from "react-stomp-hooks";
 
 type LobbyListEntryProps = {
   lobby: Lobby;
@@ -10,6 +10,17 @@ type LobbyListEntryProps = {
 function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   const { userNickName } = useContext(UserContext);
   const [password, setPassword] = useState<string>("");
+
+  const stompClient = useStompClient();
+
+  function addPlayerToLobby(lobbyId: number, nickName: string, password: string) {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/add-player-to-lobby",
+        body: JSON.stringify({ lobbyId: lobbyId, nickName: nickName, password: password }),
+      });
+    }
+  }
 
   return (
     <div className="bg-violet-400 mb-4 p-1 rounded">

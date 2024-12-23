@@ -1,13 +1,24 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSubscription } from "react-stomp-hooks";
 import { Lobby } from "../../models/lobby";
 import LobbyCreation from "./LobbyCreation";
 import LobbyListEntry from "./LobbyListEntry";
 import { getLobbyList } from "../../api";
+import { UserContext } from "../../App";
 
 function LobbyList() {
   const [lobbyList, setLobbyList] = useState<Lobby[]>([]);
   const [showCreationWindow, setShowCreationWindow] = useState(false);
+
+  const userContext = useContext(UserContext);
+
+  // listen to backend for current lobbyId
+  useSubscription("/user/queue/lobby/lobby-id", (message) => {
+    console.log(message.body);
+    if (message.body !== "") {
+      userContext.setUserLobbyId!(parseInt(message.body));
+    }
+  });
 
   useSubscription("/topic/lobby-list", (message) => {
     setLobbyList(JSON.parse(message.body));
