@@ -22,7 +22,7 @@ function LobbyList() {
   }
 
   return (
-    <div className="flex flex-col w-96">
+    <div className="flex flex-col w-96 my-12">
       {lobbyList?.map((e) => (
         <LobbyListEntry key={`listEntry${e.id}`} lobby={e} />
       ))}

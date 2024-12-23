@@ -34,9 +34,9 @@ export async function getGlobalChatHistory(): Promise<ChatMessage[]> {
   return chatHistory;
 }
 
-export async function addPlayerToLobby(lobbyId: number, playerName: string) {
+export async function addPlayerToLobby(lobbyId: number, playerName: string, password: string) {
   const response = await fetch(
-    `http://${urlDomain}:${urlBackendPort}/lobby-list?lobbyId=${lobbyId}&playerName=${playerName}`,
+    `http://${urlDomain}:${urlBackendPort}/lobby-list?lobbyId=${lobbyId}&playerName=${playerName}&password=${password}`,
     {
       method: "PUT",
       headers: { "Content-type": "application/json" },

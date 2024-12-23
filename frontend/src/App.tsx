@@ -3,6 +3,7 @@ import LandingPage from "./components/landing/LandingPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LobbyPage from "./components/lobby/LobbyPage";
 import { Layout } from "./Layout";
+import LobbyList from "./components/lobby/LobbyList";
 
 type UserContextProviderType = {
   userNickName?: string;
@@ -19,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<LandingPage />} />
-            <Route path="/lobbies" element={<LobbyPage />} />
+            <Route path="/lobbies" element={<LobbyList />} />
           </Route>
         </Routes>
       </BrowserRouter>

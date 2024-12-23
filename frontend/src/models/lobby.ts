@@ -1,6 +1,7 @@
 export type Lobby = {
-  id?: number;
-  password?: string;
-  isPrivate?: boolean;
+  id: number;
+  password: string;
+  private: boolean;
+  lobbySize: number;
   users: string[];
 };

@@ -17,7 +17,7 @@ export function Layout() {
 
   return (
     <>
-      <div className="flex justify-center min-h-full items-center">
+      <div className="flex justify-center min-h-screen items-center">
         <Outlet />
       </div>
       <Chat />
