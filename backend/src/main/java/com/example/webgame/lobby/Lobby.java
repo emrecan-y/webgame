@@ -4,21 +4,19 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Lobby {
 	private static int idCount = 0;
-	int id;
+	private int id;
+	private boolean privateLobby;
 	@JsonIgnore
-	String password;
-	@JsonProperty(value = "isPrivate")
-	boolean isPrivate;
-	String[] users;
+	private String password;
+	private String[] users;
 
 	public Lobby(String password, int size) {
 		this.id = idCount++;
 		this.password = password;
-		this.isPrivate = password.equals("") ? false : true;
+		this.privateLobby = password.equals("") ? false : true;
 		this.users = new String[size];
 	}
 
@@ -31,13 +29,20 @@ public class Lobby {
 		return id;
 	}
 
-
 	public String getPassword() {
 		return password;
 	}
 
 	public String[] getUsers() {
 		return users;
+	}
+
+	public boolean isPrivate() {
+		return privateLobby;
+	}
+
+	public void setPrivate(boolean privateLobby) {
+		this.privateLobby = privateLobby;
 	}
 
 	public boolean containsUser(String userName) {
@@ -57,14 +62,23 @@ public class Lobby {
 		return false;
 	}
 
-	public boolean removeUser(String userNameToRemove) {
+	public boolean removeUser(String nickName) {
 		for (int i = 0; i < users.length; i++) {
-			if (users[i].equals(userNameToRemove)) {
+			if (users[i].equals(nickName)) {
 				users[i] = null;
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public boolean isEmpty() {
+		for (int i = 0; i < users.length; i++) {
+			if (users[i] != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
