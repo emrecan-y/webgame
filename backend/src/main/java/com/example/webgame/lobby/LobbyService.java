@@ -57,8 +57,10 @@ public class LobbyService {
 	public boolean addPlayerToLobby(Integer lobbyId, String nickName, String password) {
 		Lobby lobby = this.lobbyMap.get(lobbyId);
 		if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
-			changePlayerLobby(nickName, lobbyId);
-			return lobby.addUser(nickName);
+			if (lobby.addUser(nickName)) {
+				changePlayerLobby(nickName, lobbyId);
+				return true;
+			}
 		}
 		return false;
 	}
