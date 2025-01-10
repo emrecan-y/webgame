@@ -9,7 +9,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webgame.dto.LobbyCreateDto;
@@ -39,7 +38,8 @@ public class LobbyController {
 		}
 	}
 
-	@GetMapping("/lobby-list")
+	@MessageMapping("/lobby-list")
+	@SendToUser("/queue/lobby-list")
 	public List<Lobby> getLobbyList() {
 		return this.lobbyService.getLobbyList();
 	}
@@ -52,6 +52,5 @@ public class LobbyController {
 			return request.lobbyId;
 		}
 		return -1;
-
 	}
 }

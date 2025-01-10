@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../App";
-import { getRandomName } from "../../api";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 
 function LandingPage() {
@@ -11,14 +10,26 @@ function LandingPage() {
   const stompClient = useStompClient();
 
   useEffect(() => {
-    getRandomName().then((randomName) => setNickname(randomName));
-  }, []);
+    requestRandomName();
+  }, [stompClient]);
 
   useEffect(() => {
     if (nickName !== "") {
       setInfoText("");
     }
   }, [nickName]);
+
+  useSubscription("/user/queue/random-name", (message) => {
+    setNickname(message.body);
+  });
+
+  function requestRandomName() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/random-name",
+      });
+    }
+  }
 
   function tryLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,10 +52,6 @@ function LandingPage() {
     }
   });
 
-  function updateRandomName() {
-    getRandomName().then((randomName) => setNickname(randomName));
-  }
-
   return (
     <div className="flex flex-col items-center">
       <p className="min-h-6 animate-bounce">{infoText}</p>
@@ -66,7 +73,7 @@ function LandingPage() {
           <input
             className="py-1 px-4 mt-3 bg-violet-800 rounded"
             type="button"
-            onClick={updateRandomName}
+            onClick={requestRandomName}
             value="Generate"
           />
           <input className="py-1 px-4 mt-3 bg-violet-800 rounded" type="submit" value="Continue" />

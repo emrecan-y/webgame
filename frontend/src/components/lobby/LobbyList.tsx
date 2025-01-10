@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { useSubscription } from "react-stomp-hooks";
+import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { Lobby } from "../../models/lobby";
 import LobbyCreation from "./LobbyCreation";
 import LobbyListEntry from "./LobbyListEntry";
-import { getLobbyList } from "../../api";
 import { UserContext } from "../../App";
 
 function LobbyList() {
@@ -11,6 +10,7 @@ function LobbyList() {
   const [showCreationWindow, setShowCreationWindow] = useState(false);
 
   const userContext = useContext(UserContext);
+  const stompClient = useStompClient();
 
   // listen to backend for current lobbyId
   useSubscription("/user/queue/lobby/lobby-id", (message) => {
@@ -22,12 +22,23 @@ function LobbyList() {
     }
   });
 
+  // listen to backend for current lobbyList from request
+  useSubscription("/user/queue/lobby-list", (message) => {
+    setLobbyList(JSON.parse(message.body));
+  });
+
+  // listen to backend for current lobbyList
   useSubscription("/topic/lobby-list", (message) => {
     setLobbyList(JSON.parse(message.body));
   });
 
+  // request current lobbylist from backend
   useEffect(() => {
-    getLobbyList().then((lobbyList) => setLobbyList(lobbyList));
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/lobby-list",
+      });
+    }
   }, []);
 
   function buttonHandler() {
