@@ -1,4 +1,3 @@
-import { ChatMessage } from "./models/chat";
 import { Lobby } from "./models/lobby";
 
 export const urlDomain = "localhost";
