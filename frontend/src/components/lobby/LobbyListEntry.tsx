@@ -23,7 +23,7 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   }
 
   return (
-    <div className="bg-violet-400 mb-4 p-1 rounded">
+    <div className="bg-violet-400 mb-4 p-1 rounded w-full">
       <div className="flex justify-between items-center my-1">
         <p className="pl-1 text-gray-950 ">Lobby {lobby.id}</p>
         <div>

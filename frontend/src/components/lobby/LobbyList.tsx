@@ -46,18 +46,16 @@ function LobbyList() {
   }
 
   return (
-    <div className="flex flex-col w-96 my-12">
+    <div className="flex flex-col w-96 my-12 items-center">
       {lobbyList?.map((e) => (
         <LobbyListEntry key={`listEntry${e.id}`} lobby={e} />
       ))}
 
-      {showCreationWindow ? (
-        <LobbyCreation setShowCreationWindow={setShowCreationWindow} />
-      ) : (
-        <button className="bg-violet-800 px-2 py-1 mt-2 rounded" onClick={buttonHandler}>
-          Create New
-        </button>
-      )}
+      <button className="bg-violet-800 px-2 py-1 mt-2 rounded w-full" onClick={buttonHandler}>
+        New Lobby
+      </button>
+
+      {showCreationWindow && <LobbyCreation setShowCreationWindow={setShowCreationWindow} />}
     </div>
   );
 }
