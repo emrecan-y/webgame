@@ -25,53 +25,59 @@ function LobbyCreation(props: LobbyCreationProps) {
   }
 
   return (
-    <div className="mt-2 flex flex-col items-center z-20">
+    <div className="fixed mt-2 flex  flex-col items-center z-20">
       <div
-        className="w-0 h-0 
-          border-l-[10px] border-l-transparent
-          border-b-[10px] border-violet-400
-          border-r-[10px] border-r-transparent"
-      ></div>
-      <div className="bg-violet-400 rounded p-1 w-max">
-        <form className="flex flex-col" onSubmit={(e) => createLobby(e)}>
-          <div className="flex flex-row justify-between">
-            <div className="flex flex-col w-max p-1 rounded bg-violet-800">
-              <label className="text-white" htmlFor="lobby-size">
-                Lobby Size
-              </label>
-              <input
-                type="number"
-                className="bg-black"
-                id="lobby-size"
-                name="lobby-size"
-                min={1}
-                max={4}
-                value={lobbySize}
-                onChange={(e) => setLobbySize(e.currentTarget.valueAsNumber)}
-              />
-            </div>
-
-            <div className="flex flex-col w-max p-1 ml-2 rounded bg-violet-800">
-              <label className="text-white" htmlFor="lobby-password">
-                Password
-              </label>
-              <input
-                className="bg-black"
-                type="password"
-                id="lobby-password"
-                name="lobby-password"
-                value={lobbyPassword}
-                onChange={(e) => setLobbyPassword(e.currentTarget.value)}
-              />
-            </div>
-          </div>
-          <input className="bg-violet-800 px-2 py-1 mt-2  rounded cursor-pointer" type="submit" value="Create" />
-        </form>
-      </div>
-      <div
-        className="fixed top-0 backdrop-blur-[4px] left-0 w-screen h-screen cursor-pointer -z-10"
+        className="fixed top-0 backdrop-blur-[4px] left-0 bg-black bg-opacity-40 w-screen h-screen cursor-pointer -z-10"
         onClick={() => props.setShowCreationWindow(false)}
       ></div>
+
+      <form
+        className="fixed shadow-inner  bg-violet-400 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded p-2 w-max flex flex-col"
+        onSubmit={(e) => createLobby(e)}
+      >
+        <p className="text-black">Create New Lobby</p>
+
+        <div className="flex flex-row justify-between">
+          <div className="flex flex-col w-max p-1 rounded bg-violet-800">
+            <label className="text-white" htmlFor="lobby-size">
+              Lobby Size
+            </label>
+            <input
+              type="number"
+              className="bg-black"
+              id="lobby-size"
+              name="lobby-size"
+              min={1}
+              max={4}
+              value={lobbySize}
+              onChange={(e) => setLobbySize(e.currentTarget.valueAsNumber)}
+            />
+          </div>
+
+          <div className="flex flex-col w-max p-1 ml-2 rounded bg-violet-800">
+            <label className="text-white" htmlFor="lobby-password">
+              Password
+            </label>
+            <input
+              className="bg-black"
+              type="password"
+              id="lobby-password"
+              name="lobby-password"
+              value={lobbyPassword}
+              onChange={(e) => setLobbyPassword(e.currentTarget.value)}
+            />
+          </div>
+        </div>
+        <div className="flex flex-row justify-end">
+          <input
+            className="bg-violet-800 px-2 py-1 mt-2 rounded cursor-pointer mr-2"
+            type="button"
+            onClick={() => props.setShowCreationWindow(false)}
+            value="Cancel"
+          />
+          <input className="bg-violet-800 px-2 py-1 mt-2 rounded cursor-pointer " type="submit" value="Create" />
+        </div>
+      </form>
     </div>
   );
 }
