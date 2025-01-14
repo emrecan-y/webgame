@@ -43,12 +43,15 @@ public class ChatRoomController {
 	}
 
 	@MessageMapping("/connect/lobby/{lobbyId}")
-	public void connectToChatRoom(@Header("simpSessionId") String sessionId, @DestinationVariable Integer lobbyId) {
+	@SendToUser("/queue/chat/lobby/{lobbyId}")
+	public ChatHistory connectToChatRoom(@Header("simpSessionId") String sessionId,
+			@DestinationVariable Integer lobbyId) {
 		Optional<Lobby> lobbyOpt = this.lobbySevice.findLobbyById(lobbyId);
 		if (lobbyOpt.isPresent()) {
 			Lobby lobby = lobbyOpt.get();
-			template.convertAndSendToUser(sessionId, "/topic/chat/lobby/" + lobbyId, lobby.getChatHistory());
+			return lobby.getChatHistory();
 		}
+		return new ChatHistory();
 	}
 
 	@MessageMapping("/chat/lobby/{lobbyId}")
