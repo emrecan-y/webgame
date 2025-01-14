@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../App";
 import { ChatWindow, ChatWindowProps } from "./ChatWindow";
 
@@ -14,7 +14,7 @@ function Chat() {
   };
 
   return (
-    <div className="flex flex-row items-end fixed bottom-0 right-0 bg-light-blue-500">
+    <div className="flex flex-row gap-x-1 items-end fixed bottom-0 right-0.5 bg-light-blue-500">
       {userContext.userLobbyId !== -1 && (
         <div className="flex flex-col items-end ">
           <ChatWindow
@@ -29,13 +29,7 @@ function Chat() {
       )}
 
       <div className="flex flex-col items-end ">
-        <ChatWindow
-          buttonText={"Global Chat"}
-          receiveDestinationTopic={"/topic/chat/global-chat"}
-          receiveDestinationUser={"/user/queue/chat/global-chat"}
-          sendDestination={"/app/chat/global-chat"}
-          connectDestination={"/app/connect/global-chat"}
-        />
+        <ChatWindow {...globaChat} />
       </div>
     </div>
   );

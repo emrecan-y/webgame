@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../../App";
 import { ChatMessage } from "../../models/chat";
@@ -41,9 +41,10 @@ export function ChatWindow(props: ChatWindowProps) {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
-  }, [chatHistory]);
+  }, [chatHistory, showChatWindow]);
 
-  function sendMessage() {
+  function sendMessage(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (stompClient && messageInput !== "") {
       const newMessage: ChatMessage = {
         senderName: userContext.userNickName!,
@@ -54,6 +55,7 @@ export function ChatWindow(props: ChatWindowProps) {
         destination: props.sendDestination,
         body: JSON.stringify(newMessage),
       });
+      setMessageInput("");
     } else {
       //Handle error
     }
@@ -62,21 +64,39 @@ export function ChatWindow(props: ChatWindowProps) {
   return (
     <>
       {showChatWindow && (
-        <div className="bg-violet-800 ">
-          <button onClick={() => setShowChatWindow(false)}></button>
-          <div ref={chatHistoryRef}>
-            {Array.isArray(chatHistory) ? chatHistory.map((e) => <p> {e.senderName + ": " + e.message} </p>) : <></>}
+        <div className="bg-violet-400 fixed flex flex-col items-end -translate-y-full rounded rounded-br-none">
+          <button className="mr-1 text-black" onClick={() => setShowChatWindow(false)}>
+            X
+          </button>
+          <div ref={chatHistoryRef} className="overflow-y-scroll text-black h-96 px-1 bg-violet-400 w-full">
+            {Array.isArray(chatHistory) ? (
+              chatHistory.map((e) => (
+                <p>
+                  <span className="text-violet-950 font-semibold">{e.senderName + ": "}</span>
+                  {e.message}
+                </p>
+              ))
+            ) : (
+              <></>
+            )}
           </div>
-          <div>
-            <label htmlFor="messageInput">Message</label>
-            <input type="text" value={messageInput} onChange={(e) => setMessageInput(e.currentTarget.value)} />
-            <button onClick={sendMessage}>Send</button>
-          </div>
+          <form className="flex flex-row" onSubmit={(e) => sendMessage(e)}>
+            <input
+              autoFocus
+              className="m-1 w-64 bg-black text-white"
+              type="text"
+              value={messageInput}
+              onChange={(e) => setMessageInput(e.currentTarget.value)}
+            />
+            <input className="m-1 ml-0 cursor-pointer bg-violet-800 rounded p-1" type="submit" value={"↵"} />
+          </form>
         </div>
       )}
       <button
         id={props.buttonText}
-        className="bg-violet-800 p-3 rounded-tl-xl "
+        className={
+          showChatWindow ? " bg-violet-400 p-3 pt-4 rounded-b text-black  " : " bg-violet-800 p-3 rounded text-white"
+        }
         onClick={() => setShowChatWindow(!showChatWindow)}
       >
         {props.buttonText}
