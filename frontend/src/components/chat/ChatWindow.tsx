@@ -16,6 +16,8 @@ export function ChatWindow(props: ChatWindowProps) {
   const chatHistoryRef = useRef<HTMLDivElement>(null);
 
   const [messageInput, setMessageInput] = useState("");
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+
   const userContext = useContext(UserContext);
   const [showChatWindow, setShowChatWindow] = useState(false);
 
@@ -23,6 +25,9 @@ export function ChatWindow(props: ChatWindowProps) {
 
   useSubscription(props.receiveDestinationTopic, (message) => {
     setChatHistory(JSON.parse(message.body).history);
+    if (!showChatWindow) {
+      setHasUnreadMessages(true);
+    }
   });
 
   useSubscription(props.receiveDestinationUser, (message) => {
@@ -42,6 +47,11 @@ export function ChatWindow(props: ChatWindowProps) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
   }, [chatHistory, showChatWindow]);
+
+  function chatButtonHandler() {
+    setShowChatWindow(!showChatWindow);
+    setHasUnreadMessages(false);
+  }
 
   function sendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,25 +75,22 @@ export function ChatWindow(props: ChatWindowProps) {
     <>
       {showChatWindow && (
         <div className="bg-violet-400 fixed flex flex-col items-end -translate-y-full rounded rounded-br-none">
-          <button className="mr-1 text-black" onClick={() => setShowChatWindow(false)}>
+          <button className="mr-1 text-black" onClick={chatButtonHandler}>
             X
           </button>
-          <div ref={chatHistoryRef} className="overflow-y-scroll text-black h-96 px-1 bg-violet-400 w-full">
-            {Array.isArray(chatHistory) ? (
+          <div ref={chatHistoryRef} className=" overflow-y-scroll text-black h-96 px-1 bg-violet-400 w-full">
+            {Array.isArray(chatHistory) &&
               chatHistory.map((e) => (
                 <p>
                   <span className="text-violet-950 font-semibold">{e.senderName + ": "}</span>
                   {e.message}
                 </p>
-              ))
-            ) : (
-              <></>
-            )}
+              ))}
           </div>
           <form className="flex flex-row" onSubmit={(e) => sendMessage(e)}>
             <input
               autoFocus
-              className="m-1 w-64 bg-black text-white"
+              className="m-1 w-64 bg-black text-white focus:outline-none focus:ring-0 px-1"
               type="text"
               value={messageInput}
               onChange={(e) => setMessageInput(e.currentTarget.value)}
@@ -92,14 +99,23 @@ export function ChatWindow(props: ChatWindowProps) {
           </form>
         </div>
       )}
+
       <button
         id={props.buttonText}
         className={
-          showChatWindow ? " bg-violet-400 p-3 pt-4 rounded-b text-black  " : " bg-violet-800 p-3 rounded text-white"
+          showChatWindow
+            ? "bg-violet-400 p-3 pt-4 rounded-b text-black"
+            : "bg-violet-800 p-3 rounded text-white relative"
         }
-        onClick={() => setShowChatWindow(!showChatWindow)}
+        onClick={chatButtonHandler}
       >
         {props.buttonText}
+        {!showChatWindow && hasUnreadMessages && (
+          <>
+            <div className="absolute top-0 right-0.5 p-0 m-0 text-red-400 text-xs">●</div>
+            <div className="absolute top-0 right-0.5 p-0 m-0 text-red-400 text-xs animate-ping">●</div>
+          </>
+        )}
       </button>
     </>
   );
