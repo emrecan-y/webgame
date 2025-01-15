@@ -83,7 +83,7 @@ export function ChatWindow(props: ChatWindowProps) {
       {getShowState(props.buttonText) && (
         <div className="bg-violet-400 fixed flex flex-col items-end -translate-y-full rounded rounded-br-none">
           <button className="mr-1 text-black" onClick={chatButtonHandler}>
-            X
+            ✖
           </button>
           <div ref={chatHistoryRef} className=" overflow-y-scroll text-black h-96 px-1 bg-violet-400 w-full">
             {Array.isArray(chatHistory) &&
