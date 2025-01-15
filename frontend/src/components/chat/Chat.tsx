@@ -1,9 +1,9 @@
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import { UserContext } from "../../App";
 import { ChatWindow } from "./ChatWindow";
 
 function Chat() {
-  const userContext = useContext(UserContext);
+  const { userLobbyId } = useContext(UserContext);
 
   const globaChat = (
     <ChatWindow
@@ -17,18 +17,18 @@ function Chat() {
 
   const lobbyChat = (
     <ChatWindow
-      key={userContext.userLobbyId}
-      buttonText={`Lobby${userContext.userLobbyId}`}
-      receiveDestinationTopic={`/topic/chat/lobby/${userContext.userLobbyId}`}
-      receiveDestinationUser={`/user/queue/chat/lobby/${userContext.userLobbyId}`}
-      sendDestination={`/app/chat/lobby/${userContext.userLobbyId}`}
-      connectDestination={`/app/connect/lobby/${userContext.userLobbyId}`}
+      key={userLobbyId}
+      buttonText={`Lobby${userLobbyId}`}
+      receiveDestinationTopic={`/topic/chat/lobby/${userLobbyId}`}
+      receiveDestinationUser={`/user/queue/chat/lobby/${userLobbyId}`}
+      sendDestination={`/app/chat/lobby/${userLobbyId}`}
+      connectDestination={`/app/connect/lobby/${userLobbyId}`}
     />
   );
 
   return (
     <div className="flex flex-row gap-x-1 items-end fixed bottom-0 right-0.5">
-      {userContext.userLobbyId !== -1 && <div className="flex flex-col items-end drop-shadow-2xl">{lobbyChat}</div>}
+      {userLobbyId !== -1 && <div className="flex flex-col items-end drop-shadow-2xl">{lobbyChat}</div>}
       <div className="flex flex-col items-end drop-shadow-2xl">{globaChat}</div>
     </div>
   );

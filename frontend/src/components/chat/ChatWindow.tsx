@@ -4,7 +4,7 @@ import { UserContext } from "../../App";
 import { ChatMessage } from "../../models/chat";
 import { useChatStore } from "./ChatStore";
 
-export type ChatWindowProps = {
+type ChatWindowProps = {
   buttonText: string;
   receiveDestinationTopic: string;
   receiveDestinationUser: string;
@@ -23,7 +23,7 @@ export function ChatWindow(props: ChatWindowProps) {
 
   const stompClient = useStompClient();
 
-  const { setShowChat, getShowState } = useChatStore();
+  const { setShowChat, getShowState, removeChat } = useChatStore();
 
   useSubscription(props.receiveDestinationTopic, (message) => {
     setChatHistory(JSON.parse(message.body).history);
@@ -43,6 +43,10 @@ export function ChatWindow(props: ChatWindowProps) {
       });
     }
     setShowChat(props.buttonText, false);
+
+    return () => {
+      removeChat(props.buttonText);
+    };
   }, []);
 
   useEffect(() => {
