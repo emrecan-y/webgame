@@ -27,7 +27,7 @@ function LobbyCreation(props: LobbyCreationProps) {
   return (
     <div className="fixed mt-2 flex  flex-col items-center z-20">
       <div
-        className="fixed top-0 backdrop-blur-[4px] left-0 bg-black bg-opacity-40 w-screen h-screen cursor-pointer -z-10"
+        className="fixed top-0 backdrop-blur-[4px] left-0 bg-gray-950 bg-opacity-40 w-screen h-screen cursor-pointer -z-10"
         onClick={() => props.setShowCreationWindow(false)}
       ></div>
 
@@ -35,7 +35,7 @@ function LobbyCreation(props: LobbyCreationProps) {
         className="fixed shadow-inner  bg-violet-400 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded p-2 w-max flex flex-col"
         onSubmit={(e) => createLobby(e)}
       >
-        <p className="text-black">Create New Lobby</p>
+        <p className="text-black mb-1">Create New Lobby</p>
 
         <div className="flex flex-row justify-between">
           <div className="flex flex-col w-max p-1 rounded bg-violet-800">
@@ -44,10 +44,10 @@ function LobbyCreation(props: LobbyCreationProps) {
             </label>
             <input
               type="number"
-              className="bg-black"
+              className="bg-black px-1"
               id="lobby-size"
               name="lobby-size"
-              min={1}
+              min={2}
               max={4}
               value={lobbySize}
               onChange={(e) => setLobbySize(e.currentTarget.valueAsNumber)}
@@ -59,11 +59,12 @@ function LobbyCreation(props: LobbyCreationProps) {
               Password
             </label>
             <input
-              className="bg-black"
+              className="bg-black px-1"
               type="password"
               id="lobby-password"
               name="lobby-password"
               value={lobbyPassword}
+              placeholder="no password"
               onChange={(e) => setLobbyPassword(e.currentTarget.value)}
             />
           </div>
