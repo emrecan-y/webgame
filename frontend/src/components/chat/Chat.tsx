@@ -14,9 +14,9 @@ function Chat() {
   };
 
   return (
-    <div className="flex flex-row gap-x-1 items-end fixed bottom-0 right-0.5 bg-light-blue-500">
+    <div className="flex flex-row gap-x-1 items-end fixed bottom-0 right-0.5">
       {userContext.userLobbyId !== -1 && (
-        <div className="flex flex-col items-end ">
+        <div className="flex flex-col items-end drop-shadow-2xl">
           <ChatWindow
             key={`lobby-${userContext.userLobbyId}-chat`}
             buttonText={`Lobby${userContext.userLobbyId} Chat`}
@@ -28,7 +28,7 @@ function Chat() {
         </div>
       )}
 
-      <div className="flex flex-col items-end ">
+      <div className="flex flex-col items-end drop-shadow-2xl">
         <ChatWindow {...globaChat} />
       </div>
     </div>

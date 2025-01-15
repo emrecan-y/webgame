@@ -2,6 +2,7 @@ import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../../App";
 import { ChatMessage } from "../../models/chat";
+import { useChatStore } from "./ChatStore";
 
 export type ChatWindowProps = {
   buttonText: string;
@@ -12,20 +13,21 @@ export type ChatWindowProps = {
 };
 
 export function ChatWindow(props: ChatWindowProps) {
+  const userContext = useContext(UserContext);
+
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const chatHistoryRef = useRef<HTMLDivElement>(null);
 
   const [messageInput, setMessageInput] = useState("");
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
-  const userContext = useContext(UserContext);
-  const [showChatWindow, setShowChatWindow] = useState(false);
-
   const stompClient = useStompClient();
+
+  const { setShowChat, getShowState } = useChatStore();
 
   useSubscription(props.receiveDestinationTopic, (message) => {
     setChatHistory(JSON.parse(message.body).history);
-    if (!showChatWindow) {
+    if (!getShowState(props.buttonText)) {
       setHasUnreadMessages(true);
     }
   });
@@ -40,16 +42,17 @@ export function ChatWindow(props: ChatWindowProps) {
         destination: props.connectDestination,
       });
     }
+    setShowChat(props.buttonText, false);
   }, []);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
-  }, [chatHistory, showChatWindow]);
+  }, [chatHistory, getShowState(props.buttonText)]);
 
   function chatButtonHandler() {
-    setShowChatWindow(!showChatWindow);
+    setShowChat(props.buttonText, !getShowState(props.buttonText));
     setHasUnreadMessages(false);
   }
 
@@ -73,7 +76,7 @@ export function ChatWindow(props: ChatWindowProps) {
 
   return (
     <>
-      {showChatWindow && (
+      {getShowState(props.buttonText) && (
         <div className="bg-violet-400 fixed flex flex-col items-end -translate-y-full rounded rounded-br-none">
           <button className="mr-1 text-black" onClick={chatButtonHandler}>
             X
@@ -103,14 +106,14 @@ export function ChatWindow(props: ChatWindowProps) {
       <button
         id={props.buttonText}
         className={
-          showChatWindow
+          getShowState(props.buttonText)
             ? "bg-violet-400 p-3 pt-4 rounded-b text-black"
             : "bg-violet-800 p-3 rounded text-white relative"
         }
         onClick={chatButtonHandler}
       >
         {props.buttonText}
-        {!showChatWindow && hasUnreadMessages && (
+        {!getShowState(props.buttonText) && hasUnreadMessages && (
           <>
             <div className="absolute top-0 right-0.5 p-0 m-0 text-red-400 text-xs">●</div>
             <div className="absolute top-0 right-0.5 p-0 m-0 text-red-400 text-xs animate-ping">●</div>
