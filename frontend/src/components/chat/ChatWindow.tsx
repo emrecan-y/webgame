@@ -81,11 +81,14 @@ export function ChatWindow(props: ChatWindowProps) {
   return (
     <>
       {getShowState(props.buttonText) && (
-        <div className="bg-violet-400 fixed flex flex-col items-end -translate-y-full rounded rounded-br-none">
-          <button className="mr-1 text-black" onClick={chatButtonHandler}>
+        <div className="bg-game-accent-light fixed flex flex-col items-end -translate-y-full rounded rounded-br-none">
+          <button className="mr-1 text-game-main-dark" onClick={chatButtonHandler}>
             ✖
           </button>
-          <div ref={chatHistoryRef} className=" overflow-y-scroll text-black h-96 px-1 bg-violet-400 w-full">
+          <div
+            ref={chatHistoryRef}
+            className=" overflow-y-scroll text-game-main-dark h-96 px-1 bg-game-accent-light w-full"
+          >
             {Array.isArray(chatHistory) &&
               chatHistory.map((e, index) => (
                 <p key={props.buttonText + index}>
@@ -97,12 +100,12 @@ export function ChatWindow(props: ChatWindowProps) {
           <form className="flex flex-row" onSubmit={(e) => sendMessage(e)}>
             <input
               autoFocus
-              className="m-1 w-64 bg-black text-white focus:outline-none focus:ring-0 px-1"
+              className="m-1 w-64 bg-black text-game-main-light focus:outline-none focus:ring-0 px-1"
               type="text"
               value={messageInput}
               onChange={(e) => setMessageInput(e.currentTarget.value)}
             />
-            <input className="m-1 ml-0 cursor-pointer bg-violet-800 rounded p-1" type="submit" value={"↵"} />
+            <input className="m-1 ml-0 cursor-pointer bg-game-accent-medium rounded p-1" type="submit" value={"↵"} />
           </form>
         </div>
       )}
@@ -111,8 +114,8 @@ export function ChatWindow(props: ChatWindowProps) {
         id={props.buttonText}
         className={
           getShowState(props.buttonText)
-            ? "bg-violet-400 p-3 pt-4 rounded-b text-black"
-            : "bg-violet-800 p-3 rounded text-white relative"
+            ? "bg-game-accent-light p-3 pt-4 rounded-b text-game-main-dark"
+            : "bg-game-accent-medium p-3 rounded text-game-main-light relative"
         }
         onClick={chatButtonHandler}
       >

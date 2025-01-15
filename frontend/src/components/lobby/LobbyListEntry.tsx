@@ -23,14 +23,14 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   }
 
   return (
-    <div className="bg-violet-400 mb-4 p-1 rounded w-full">
+    <div className="bg-game-accent-light mb-4 p-1 rounded w-full">
       <div className="flex justify-between items-center my-1">
         <p className="pl-1 text-gray-950 ">Lobby {lobby.id}</p>
         <div>
           {lobby.private && (
             <>
               <input
-                className="w-32 h-8 rounded p-2 mr-2 text-black placeholder:text-gray-700"
+                className="w-32 h-8 rounded p-2 mr-2 text-game-main-dark placeholder:text-gray-700"
                 type="password"
                 name="lobby-password"
                 id="lobby-password"
@@ -40,7 +40,7 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
             </>
           )}
           <button
-            className="bg-violet-800 px-2 py-1  rounded"
+            className="bg-game-accent-medium px-2 py-1  rounded"
             onClick={() => addPlayerToLobby(lobby.id!, userNickName!, password)}
           >
             Join
@@ -48,11 +48,11 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
         </div>
       </div>
 
-      <div className="bg-violet-800  p-1 rounded">
+      <div className="bg-game-accent-medium  p-1 rounded">
         <p className="pl-1">Players</p>
         <ol>
           {lobby.users.map((lobbyUser, index) => (
-            <li className="bg-gray-950 pl-1" key={`listEntry${lobby.id}-${index}`}>
+            <li className="bg-game-main-dark pl-1" key={`listEntry${lobby.id}-${index}`}>
               {" "}
               {lobbyUser || "Free"}
             </li>

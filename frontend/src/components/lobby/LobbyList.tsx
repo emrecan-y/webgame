@@ -51,7 +51,7 @@ function LobbyList() {
         <LobbyListEntry key={`listEntry${e.id}`} lobby={e} />
       ))}
 
-      <button className="bg-violet-800 px-2 py-1 mt-2 rounded w-full" onClick={buttonHandler}>
+      <button className="bg-game-accent-medium px-2 py-1 mt-2 rounded w-full" onClick={buttonHandler}>
         New Lobby
       </button>
 
