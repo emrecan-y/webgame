@@ -6,7 +6,7 @@ function Chat() {
   const userContext = useContext(UserContext);
 
   const globaChat: ChatWindowProps = {
-    buttonText: "Global Chat",
+    buttonText: "Global",
     receiveDestinationTopic: "/topic/chat/global-chat",
     receiveDestinationUser: "/user/queue/chat/global-chat",
     sendDestination: "/app/chat/global-chat",
@@ -18,8 +18,7 @@ function Chat() {
       {userContext.userLobbyId !== -1 && (
         <div className="flex flex-col items-end drop-shadow-2xl">
           <ChatWindow
-            key={`lobby-${userContext.userLobbyId}-chat`}
-            buttonText={`Lobby${userContext.userLobbyId} Chat`}
+            buttonText={`Lobby${userContext.userLobbyId}`}
             receiveDestinationTopic={`/topic/chat/lobby/${userContext.userLobbyId}`}
             receiveDestinationUser={`/user/queue/chat/lobby/${userContext.userLobbyId}`}
             sendDestination={`/app/chat/lobby/${userContext.userLobbyId}`}

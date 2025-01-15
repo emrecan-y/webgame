@@ -83,8 +83,8 @@ export function ChatWindow(props: ChatWindowProps) {
           </button>
           <div ref={chatHistoryRef} className=" overflow-y-scroll text-black h-96 px-1 bg-violet-400 w-full">
             {Array.isArray(chatHistory) &&
-              chatHistory.map((e) => (
-                <p>
+              chatHistory.map((e, index) => (
+                <p key={props.buttonText + index}>
                   <span className="text-violet-950 font-semibold">{e.senderName + ": "}</span>
                   {e.message}
                 </p>
@@ -112,7 +112,7 @@ export function ChatWindow(props: ChatWindowProps) {
         }
         onClick={chatButtonHandler}
       >
-        {props.buttonText}
+        {props.buttonText} Chat
         {!getShowState(props.buttonText) && hasUnreadMessages && (
           <>
             <div className="absolute top-0 right-0.5 p-0 m-0 text-red-400 text-xs">●</div>
