@@ -59,9 +59,9 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
           {lobby.users.map((lobbyUser, index) => (
             <li className="bg-game-main-dark pl-1 " key={`listEntry${lobby.id}-${index}`}>
               {lobbyUser ? (
-                <p className="text-game-accent-light">{lobbyUser}</p>
+                <p className="text-game-main-light">{lobbyUser}</p>
               ) : (
-                <p className="text-game-main-light">Free</p>
+                <p className="text-game-main-medium">Free</p>
               )}
             </li>
           ))}

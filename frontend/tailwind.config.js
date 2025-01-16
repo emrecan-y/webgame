@@ -8,6 +8,7 @@ export default {
         "game-accent-medium": "#5b21b6",
         "game-accent-light": "#a78bfa",
         "game-main-dark": "#030712",
+        "game-main-medium": "#787e8f",
         "game-main-light": "#e5e7eb",
       },
     },
