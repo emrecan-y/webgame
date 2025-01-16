@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { UserContext } from "../../App";
+import { UserContext } from "../App";
 import { Lobby } from "../../models/lobby";
 import { useStompClient } from "react-stomp-hooks";
 

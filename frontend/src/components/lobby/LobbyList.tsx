@@ -3,7 +3,7 @@ import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { Lobby } from "../../models/lobby";
 import LobbyCreation from "./LobbyCreation";
 import LobbyListEntry from "./LobbyListEntry";
-import { UserContext } from "../../App";
+import { UserContext } from "../App";
 
 function LobbyList() {
   const [lobbyList, setLobbyList] = useState<Lobby[]>([]);

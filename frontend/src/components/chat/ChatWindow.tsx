@@ -1,6 +1,6 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { UserContext } from "../../App";
+import { UserContext } from "../App";
 import { ChatMessage } from "../../models/chat";
 import { useChatStore } from "./ChatStore";
 

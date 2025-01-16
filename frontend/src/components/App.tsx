@@ -1,8 +1,9 @@
 import { createContext, Dispatch, SetStateAction, useState } from "react";
-import LandingPage from "./components/landing/LandingPage";
+import LandingPage from "./landing/LandingPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./Layout";
-import LobbyList from "./components/lobby/LobbyList";
+import LobbyList from "./lobby/LobbyList";
+import ConnectionError from "./error/ConnectionError";
 
 type UserContextProviderType = {
   userNickName?: string;
@@ -10,6 +11,7 @@ type UserContextProviderType = {
   userLobbyId?: number;
   setUserLobbyId?: Dispatch<SetStateAction<number>>;
 };
+
 export const UserContext = createContext<UserContextProviderType>({});
 
 function App() {
@@ -23,6 +25,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<LandingPage />} />
             <Route path="/lobbies" element={<LobbyList />} />
+            <Route path="/connection-error" element={<ConnectionError />} />
           </Route>
         </Routes>
       </BrowserRouter>

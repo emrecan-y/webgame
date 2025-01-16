@@ -1,14 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import App from "./App.tsx";
 import "./index.css";
-import { StompSessionProvider } from "react-stomp-hooks";
-import { urlBackendPort, urlDomain } from "./api.ts";
+import { WebSocketErrorProvider } from "./components/context/WebSocketErrorContext";
+import StompSession from "./components/StompSession";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <StompSessionProvider url={`ws://${urlDomain}:${urlBackendPort}/session`} onDisconnect={(e) => console.log(e)}>
-      <App />
-    </StompSessionProvider>
+    <WebSocketErrorProvider>
+      <StompSession />
+    </WebSocketErrorProvider>
   </StrictMode>
 );
