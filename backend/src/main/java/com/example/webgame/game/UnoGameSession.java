@@ -7,18 +7,20 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
-import com.example.webgame.game.UnoCard.UnoCardColor;
-import com.example.webgame.game.UnoCard.UnoCardType;
+import com.example.webgame.enums.Direction;
+import com.example.webgame.enums.UnoCardColor;
+import com.example.webgame.enums.UnoCardType;
 
 public class UnoGameSession {
-	private static final List<UnoCard> initialCardDeck = readUnoCardCsv();
+	private static final List<UnoCard> INITIAL_CARD_DECK = readUnoCardCsv();
 
-	private List<UnoCard> cardDeck;
+	private Stack<UnoCard> cardDeck;
 
 	private String[] users;
 	private int currentUserIndex;
-	private HashMap<String, Object> userCards;
+	private HashMap<String, List<UnoCard>> userCards;
 
 	private Direction gameDirection = Direction.CLOCKWISE;
 
@@ -44,7 +46,4 @@ public class UnoGameSession {
 		return cardDeck;
 	}
 
-	public enum Direction {
-		CLOCKWISE, ANTI_CLOCKWISE
-	}
 }
