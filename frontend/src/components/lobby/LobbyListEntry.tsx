@@ -8,10 +8,13 @@ type LobbyListEntryProps = {
 };
 
 function LobbyListEntry({ lobby }: LobbyListEntryProps) {
-  const { userNickName } = useContext(UserContext);
+  const { userNickName, userLobbyId } = useContext(UserContext);
   const [password, setPassword] = useState<string>("");
 
   const stompClient = useStompClient();
+
+  const isPrivate = lobby.private;
+  const isUserInLobby = userLobbyId === lobby.id;
 
   function addPlayerToLobby(lobbyId: number, nickName: string, password: string) {
     if (stompClient) {
@@ -24,10 +27,10 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
 
   return (
     <div className="bg-game-accent-light mb-4 p-1 rounded w-full">
-      <div className="flex justify-between items-center my-1">
+      <div className="flex h-8 justify-between items-center my-1">
         <p className="pl-1 text-gray-950 ">Lobby {lobby.id}</p>
         <div>
-          {lobby.private && (
+          {isPrivate && !isUserInLobby && (
             <>
               <input
                 className="w-32 h-8 rounded p-2 mr-2 text-game-main-dark placeholder:text-gray-700"
@@ -39,12 +42,14 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
               />
             </>
           )}
-          <button
-            className="bg-game-accent-medium px-2 py-1  rounded"
-            onClick={() => addPlayerToLobby(lobby.id!, userNickName!, password)}
-          >
-            Join
-          </button>
+          {!isUserInLobby && (
+            <button
+              className="bg-game-accent-medium px-2 py-1 rounded"
+              onClick={() => addPlayerToLobby(lobby.id!, userNickName!, password)}
+            >
+              Join
+            </button>
+          )}
         </div>
       </div>
 
@@ -52,9 +57,12 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
         <p className="pl-1">Players</p>
         <ol>
           {lobby.users.map((lobbyUser, index) => (
-            <li className="bg-game-main-dark pl-1" key={`listEntry${lobby.id}-${index}`}>
-              {" "}
-              {lobbyUser || "Free"}
+            <li className="bg-game-main-dark pl-1 " key={`listEntry${lobby.id}-${index}`}>
+              {lobbyUser ? (
+                <p className="text-game-accent-light">{lobbyUser}</p>
+              ) : (
+                <p className="text-game-main-light">Free</p>
+              )}
             </li>
           ))}
         </ol>
