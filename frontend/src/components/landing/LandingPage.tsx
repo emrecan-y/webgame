@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../App";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { UserContext } from "../context/UserContext";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");

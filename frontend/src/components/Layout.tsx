@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { UserContext } from "./App";
 import Chat from "./chat/Chat";
 import { WebSocketErrorContext } from "./context/WebSocketErrorContext";
+import { UserContext } from "./context/UserContext";
 
 export function Layout() {
   const { userNickName } = useContext(UserContext);

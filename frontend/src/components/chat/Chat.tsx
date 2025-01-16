@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { UserContext } from "../App";
 import { ChatWindow } from "./ChatWindow";
+import { UserContext } from "../context/UserContext";
 
 function Chat() {
   const { userLobbyId } = useContext(UserContext);

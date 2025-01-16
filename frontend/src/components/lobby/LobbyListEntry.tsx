@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
-import { UserContext } from "../App";
 import { Lobby } from "../../models/lobby";
 import { useStompClient } from "react-stomp-hooks";
+import { UserContext } from "../context/UserContext";
 
 type LobbyListEntryProps = {
   lobby: Lobby;
