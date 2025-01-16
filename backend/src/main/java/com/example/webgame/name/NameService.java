@@ -25,7 +25,7 @@ public class NameService {
 			IntStream.range(1, names.length).forEach((i) -> this.names.add(names[i]));
 
 		} catch (IOException ioe) {
-			System.err.println("names.csv couldnt be read");
+			System.err.println("Error reading file: " + ioe.getMessage());
 			adjectives.addAll(List.of(new String[] { "Grumpy", "Chubby" }));
 			names.addAll(List.of(new String[] { "Banana", "Apple" }));
 		}

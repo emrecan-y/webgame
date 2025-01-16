@@ -1,4 +1,17 @@
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { WebSocketErrorContext } from "../context/WebSocketErrorContext";
+
 function ConnectionError() {
+  const { webSocketError } = useContext(WebSocketErrorContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!webSocketError) {
+      navigate("/");
+    }
+  }, [webSocketError]);
+
   return (
     <div className="flex w-screen h-screen justify-center items-center">
       <div className="text-center rounded bg-game-accent-medium text-game-main-light p-3 animate-bounce">

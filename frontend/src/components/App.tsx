@@ -25,8 +25,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<LandingPage />} />
             <Route path="/lobbies" element={<LobbyList />} />
-            <Route path="/connection-error" element={<ConnectionError />} />
           </Route>
+          <Route path="/connection-error" element={<ConnectionError />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import com.example.webgame.chat.ChatHistory;
+import com.example.webgame.game.UnoGameSession;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Lobby {
@@ -14,6 +15,7 @@ public class Lobby {
 	private String password;
 	private String[] users;
 	private ChatHistory chatHistory;
+	private UnoGameSession gameSession;
 
 	public Lobby(String password, int size) {
 		this.id = idCount++;
@@ -21,6 +23,7 @@ public class Lobby {
 		this.privateLobby = password.equals("") ? false : true;
 		this.users = new String[size];
 		this.chatHistory = new ChatHistory();
+		this.gameSession = new UnoGameSession();
 	}
 
 	public static void resetIdCount() {

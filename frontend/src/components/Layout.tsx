@@ -20,8 +20,6 @@ export function Layout() {
   useEffect(() => {
     if (webSocketError) {
       navigate("/connection-error");
-    } else {
-      navigate("/");
     }
   }, [webSocketError]);
 

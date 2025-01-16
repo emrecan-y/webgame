@@ -10,7 +10,7 @@ export const WebSocketErrorContext = createContext<WebSocketErrorContextType>({
   setWebSocketError: () => {},
 });
 
-export const WebSocketErrorProvider = ({ children }: PropsWithChildren) => {
+export function WebSocketErrorProvider({ children }: PropsWithChildren) {
   const [webSocketError, setWebSocketError] = useState<boolean>(true);
 
   return (
@@ -18,4 +18,4 @@ export const WebSocketErrorProvider = ({ children }: PropsWithChildren) => {
       {children}
     </WebSocketErrorContext.Provider>
   );
-};
+}
