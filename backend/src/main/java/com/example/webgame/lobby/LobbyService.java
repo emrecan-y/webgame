@@ -9,6 +9,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.webgame.dto.LobbyCreateDto;
+import com.example.webgame.game.UnoCard;
+import com.example.webgame.game.UnoGameSession;
 import com.example.webgame.session.SessionService;
 import com.example.webgame.session.UserSession;
 
@@ -63,6 +65,37 @@ public class LobbyService {
 			}
 		}
 		return false;
+	}
+
+	public boolean startGame(Integer lobbyId, String nickName, String password) {
+		Lobby lobby = this.lobbyMap.get(lobbyId);
+		if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
+			if (lobby.containsUser(nickName)) {
+				lobby.startGame();
+				return true;
+			}
+
+		}
+		return false;
+	}
+
+	public Optional<Map<String, List<UnoCard>>> getSessionIdToCardsMap(int lobbyId) {
+		Optional<Lobby> lobbyOpt = this.findLobbyById(lobbyId);
+		if (lobbyOpt.isPresent()) {
+			UnoGameSession gameSession = lobbyOpt.get().getGameSession();
+			Map<String, List<UnoCard>> userCardsMap = gameSession.getUserCards();
+			Map<String, List<UnoCard>> sessionIdToCardsMap = new HashMap<>();
+
+			userCardsMap.entrySet().stream().forEach(e -> {
+				Optional<UserSession> userSessionOpt = this.sessionService.getByNickName(e.getKey());
+				if (userSessionOpt.isPresent()) {
+					String sessionId = userSessionOpt.get().getSessionId();
+					sessionIdToCardsMap.put(sessionId, e.getValue());
+				}
+			});
+			return Optional.of(sessionIdToCardsMap);
+		}
+		return Optional.empty();
 	}
 
 	private void changePlayerLobby(String nickName, Integer newLobbyId) {

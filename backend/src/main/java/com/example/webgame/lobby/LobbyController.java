@@ -1,6 +1,7 @@
 package com.example.webgame.lobby;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -13,16 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webgame.dto.LobbyCreateDto;
 import com.example.webgame.dto.PlayerRequestDto;
+import com.example.webgame.game.UnoCard;
+import com.example.webgame.session.SessionService;
 
 @RestController
 @CrossOrigin(origins = "*")
 public class LobbyController {
 
 	private LobbyService lobbyService;
+	private SessionService sessionService;
 	private SimpMessagingTemplate template;
 
-	public LobbyController(LobbyService lobbyService, SimpMessagingTemplate template) {
+	public LobbyController(LobbyService lobbyService, SessionService sessionService, SimpMessagingTemplate template) {
 		this.lobbyService = lobbyService;
+		this.sessionService = sessionService;
 		this.template = template;
 	}
 
@@ -54,4 +59,29 @@ public class LobbyController {
 		return -1;
 	}
 
+	@MessageMapping("/start-game")
+	public void startGame(PlayerRequestDto request) {
+		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.password)) {
+			Optional<Map<String, List<UnoCard>>> sessionIdToCardsMapOpt = this.lobbyService
+					.getSessionIdToCardsMap(request.lobbyId);
+			if (sessionIdToCardsMapOpt.isPresent()) {
+				sessionIdToCardsMapOpt.get().entrySet().stream().forEach(e -> {
+					this.template.convertAndSend("/queue/game-start-user" + e.getKey(), "");
+				});
+			}
+		}
+	}
+
+	@MessageMapping("/game/player-deck")
+	public void getPlayerDeck(PlayerRequestDto request) {
+		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.password)) {
+			Optional<Map<String, List<UnoCard>>> sessionIdToCardsMapOpt = this.lobbyService
+					.getSessionIdToCardsMap(request.lobbyId);
+			if (sessionIdToCardsMapOpt.isPresent()) {
+				sessionIdToCardsMapOpt.get().entrySet().stream().forEach(e -> {
+					this.template.convertAndSend("/queue/game-user" + e.getKey(), e.getValue());
+				});
+			}
+		}
+	}
 }

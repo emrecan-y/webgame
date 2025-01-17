@@ -23,11 +23,18 @@ public class Lobby {
 		this.privateLobby = password.equals("") ? false : true;
 		this.users = new String[size];
 		this.chatHistory = new ChatHistory();
-		this.gameSession = new UnoGameSession();
 	}
 
 	public static void resetIdCount() {
 		idCount = 1;
+	}
+
+	public void startGame() {
+		this.gameSession = new UnoGameSession(this.users);
+	}
+
+	public UnoGameSession getGameSession() {
+		return this.gameSession;
 	}
 
 	@Override

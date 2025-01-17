@@ -12,4 +12,12 @@ public class UnoCard {
 		this.cardType = cardType;
 	}
 
+	public UnoCardColor getColor() {
+		return color;
+	}
+
+	public UnoCardType getCardType() {
+		return cardType;
+	}
+
 }
