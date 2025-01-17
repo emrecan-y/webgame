@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webgame.dto.LobbyCreateDto;
-import com.example.webgame.dto.PlayerAddRequest;
+import com.example.webgame.dto.PlayerRequestDto;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -46,11 +46,12 @@ public class LobbyController {
 
 	@MessageMapping("/add-player-to-lobby")
 	@SendToUser("/queue/lobby/lobby-id")
-	public Integer addPlayerToLobby(PlayerAddRequest request) {
+	public Integer addPlayerToLobby(PlayerRequestDto request) {
 		if (this.lobbyService.addPlayerToLobby(request.lobbyId, request.nickName, request.password)) {
 			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
 			return request.lobbyId;
 		}
 		return -1;
 	}
+
 }
