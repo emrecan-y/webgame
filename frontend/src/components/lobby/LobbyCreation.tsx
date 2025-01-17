@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useStompClient } from "react-stomp-hooks";
+import { UserContext } from "../context/UserContext";
 
 type LobbyCreationProps = {
   setShowCreationWindow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -8,6 +9,8 @@ type LobbyCreationProps = {
 function LobbyCreation(props: LobbyCreationProps) {
   const [lobbySize, setLobbySize] = useState(2);
   const [lobbyPassword, setLobbyPassword] = useState("");
+
+  const { setLobbyPassWord } = useContext(UserContext);
 
   const stompClient = useStompClient();
 
@@ -18,6 +21,7 @@ function LobbyCreation(props: LobbyCreationProps) {
         destination: "/app/create-lobby",
         body: JSON.stringify({ password: lobbyPassword, size: lobbySize }),
       });
+      setLobbyPassWord(lobbyPassword);
     } else {
       //Handle error
     }
