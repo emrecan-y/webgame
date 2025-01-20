@@ -1,4 +1,5 @@
 export type UnoCard = {
+  id: number;
   color: UnoCardColor;
   cardType: UnoCardType;
 };

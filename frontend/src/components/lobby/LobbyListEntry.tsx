@@ -23,14 +23,14 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
     setLobbyIsFull(lobby.users.every((name) => name));
   }, [lobby.users]);
 
-  useSubscription("/user/queue/game-start", () => {
+  useSubscription("/user/queue/game/start", () => {
     navigate("/game");
   });
 
   function addPlayerToLobby(lobbyId: number, nickName: string, password: string) {
     if (stompClient) {
       stompClient.publish({
-        destination: "/app/add-player-to-lobby",
+        destination: "/app/lobby/add-player",
         body: JSON.stringify({ lobbyId: lobbyId, nickName: nickName, password: password }),
       });
       setLobbyPassWord(password);
@@ -40,7 +40,7 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   function startGame(lobbyId: number, nickName: string, password: string) {
     if (stompClient) {
       stompClient.publish({
-        destination: "/app/start-game",
+        destination: "/app/game/start",
         body: JSON.stringify({ lobbyId: lobbyId, nickName: nickName, password: password }),
       });
     }

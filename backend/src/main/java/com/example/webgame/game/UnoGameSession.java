@@ -54,14 +54,14 @@ public class UnoGameSession {
 					if (centerCard.isValidMoveOnTop(card)) {
 						userState.removeCard(card);
 						discardStack.add(card);
-						incrementUser();
+						nextUser();
 					}
 				}
 			}
 		}
 	}
 
-	public void incrementUser() {
+	public void nextUser() {
 		if (this.gameDirection.equals(Direction.CLOCKWISE)) {
 			if (currentUserIndex < userStates.size() - 1) {
 				currentUserIndex++;

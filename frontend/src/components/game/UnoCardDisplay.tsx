@@ -53,9 +53,9 @@ const colorGridElement = (
   </>
 );
 
-export function UnoCardDisplay(card: UnoCard) {
+export function UnoCardDisplay(card: Omit<UnoCard, "id">) {
   return (
-    <div className="relative select-none bg-uno-white w-28 h-44 rounded-lg flex justify-center items-center hover:scale-110 transition-transform">
+    <div className="relative select-none bg-uno-white w-28 h-44 rounded-lg flex justify-center items-center">
       {card.color === "BLACK" ? colorGridElement : middleTextElement(numbers.get(card.cardType))}
       <div className={`${colors.get(card.color)} w-24 h-40 rounded-lg flex justify-center items-center`}>
         <div className="absolute bottom-2 right-3 rotate-180 drop-shadow-uno-small-text font-bold text-xl border-black border-1 border-solid">
