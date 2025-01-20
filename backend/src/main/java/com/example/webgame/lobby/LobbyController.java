@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webgame.dto.LobbyCreateDto;
 import com.example.webgame.dto.PlayerRequestDto;
-import com.example.webgame.game.UnoCard;
+import com.example.webgame.dto.UnoGameStateDto;
+import com.example.webgame.game.UnoGameSession;
 import com.example.webgame.session.SessionService;
 
 @RestController
@@ -49,7 +50,7 @@ public class LobbyController {
 		return this.lobbyService.getLobbyList();
 	}
 
-	@MessageMapping("/add-player-to-lobby")
+	@MessageMapping("/lobby/add-player")
 	@SendToUser("/queue/lobby/lobby-id")
 	public Integer addPlayerToLobby(PlayerRequestDto request) {
 		if (this.lobbyService.addPlayerToLobby(request.lobbyId, request.nickName, request.password)) {
@@ -59,28 +60,49 @@ public class LobbyController {
 		return -1;
 	}
 
-	@MessageMapping("/start-game")
+	@MessageMapping("/game/start")
 	public void startGame(PlayerRequestDto request) {
 		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.password)) {
-			Optional<Map<String, List<UnoCard>>> sessionIdToCardsMapOpt = this.lobbyService
-					.getSessionIdToCardsMap(request.lobbyId);
-			if (sessionIdToCardsMapOpt.isPresent()) {
-				sessionIdToCardsMapOpt.get().entrySet().stream().forEach(e -> {
-					this.template.convertAndSend("/queue/game-start-user" + e.getKey(), "");
+			Optional<Map<String, UnoGameStateDto>> sessionIdToGameStateOpt = this.lobbyService
+					.getSessionIdToGameStateMap(request.lobbyId);
+			if (sessionIdToGameStateOpt.isPresent()) {
+				sessionIdToGameStateOpt.get().entrySet().stream().forEach(e -> {
+					this.template.convertAndSend("/queue/game/start-user" + e.getKey(), "");
 				});
 			}
 		}
 	}
 
-	@MessageMapping("/game/player-deck")
+	@MessageMapping("/game/state")
 	public void getPlayerDeck(PlayerRequestDto request) {
 		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.password)) {
-			Optional<Map<String, List<UnoCard>>> sessionIdToCardsMapOpt = this.lobbyService
-					.getSessionIdToCardsMap(request.lobbyId);
-			if (sessionIdToCardsMapOpt.isPresent()) {
-				sessionIdToCardsMapOpt.get().entrySet().stream().forEach(e -> {
-					this.template.convertAndSend("/queue/game-user" + e.getKey(), e.getValue());
+			Optional<Map<String, UnoGameStateDto>> sessionIdToGameStateOpt = this.lobbyService
+					.getSessionIdToGameStateMap(request.lobbyId);
+			if (sessionIdToGameStateOpt.isPresent()) {
+				sessionIdToGameStateOpt.get().entrySet().stream().forEach(e -> {
+					this.template.convertAndSend("/queue/game/state-user" + e.getKey(), e.getValue());
 				});
+			}
+		}
+	}
+
+	@MessageMapping("/game/make-move")
+	public void makeMove(PlayerRequestDto request) {
+		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.lobbyId);
+		if (lobbyOpt.isPresent()) {
+			Lobby lobby = lobbyOpt.get();
+			if (lobby.containsUser(request.nickName)
+					&& (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(request.password))) {
+				UnoGameSession gameSession = lobby.getGameSession();
+				gameSession.makeMove(request.nickName, request.cardId);
+
+				Optional<Map<String, UnoGameStateDto>> sessionIdToGameStateOpt = this.lobbyService
+						.getSessionIdToGameStateMap(request.lobbyId);
+				if (sessionIdToGameStateOpt.isPresent()) {
+					sessionIdToGameStateOpt.get().entrySet().stream().forEach(e -> {
+						this.template.convertAndSend("/queue/game/state-user" + e.getKey(), e.getValue());
+					});
+				}
 			}
 		}
 	}

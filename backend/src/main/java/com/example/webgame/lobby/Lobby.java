@@ -1,6 +1,7 @@
 package com.example.webgame.lobby;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 import com.example.webgame.chat.ChatHistory;
@@ -29,8 +30,8 @@ public class Lobby {
 		idCount = 1;
 	}
 
-	public void startGame() {
-		this.gameSession = new UnoGameSession(this.users);
+	public void startGame(HashMap<String, String> userToSessionIdMap) {
+		this.gameSession = new UnoGameSession(userToSessionIdMap);
 	}
 
 	public UnoGameSession getGameSession() {

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.Stack;
 
@@ -20,48 +21,106 @@ public class UnoGameSession {
 	private static final Random RANDOM = new Random();
 	private static final int START_CARD_COUNT = 7;
 
-	private Stack<UnoCard> cardDeck;
+	private Stack<UnoCard> drawStack;
+	private Stack<UnoCard> discardStack;
 
-	private String[] users;
+	private List<UnoUserState> userStates;
 	private int currentUserIndex;
-	private HashMap<String, List<UnoCard>> userCards;
 
 	private Direction gameDirection;
 
-	public UnoGameSession(String[] users) {
+	public UnoGameSession(HashMap<String, String> userToSessionIdMap) {
+		this.userStates = new ArrayList<>();
+		userToSessionIdMap.entrySet().stream().forEach(e -> userStates.add(new UnoUserState(e.getKey(), e.getValue())));
 
-		this.users = users;
-		this.currentUserIndex = RANDOM.nextInt(0, this.users.length - 1);
+		this.currentUserIndex = RANDOM.nextInt(0, this.userStates.size() - 1);
 		this.gameDirection = Direction.CLOCKWISE;
-		this.userCards = new HashMap<>();
+		this.discardStack = new Stack<>();
 
 		copyDeckAndShuffle();
 		dealCardsToUsers(START_CARD_COUNT);
+		this.discardStack.add(this.drawStack.pop());
 	}
 
-	private void copyDeckAndShuffle() {
-		List<UnoCard> deckCopy = new ArrayList<>(INITIAL_CARD_DECK);
-		Collections.shuffle(deckCopy);
-		cardDeck = new Stack<>();
-		cardDeck.addAll(deckCopy);
-	}
-
-	private void dealCardsToUsers(int cardCount) {
-		for (int i = 0; i < cardCount; i++) {
-			for (String user : this.users) {
-				if (user != null) {
-					UnoCard currentCard = cardDeck.pop();
-					userCards.merge(user, new ArrayList<>(List.of(currentCard)), (list, newValue) -> {
-						list.addAll(newValue);
-						return list;
-					});
+	public void makeMove(String user, int cardId) {
+		for (int i = 0; i < userStates.size(); i++) {
+			UnoUserState userState = userStates.get(i);
+			boolean isUserTurn = i == currentUserIndex;
+			if (userState.getUserNickName().equals(user) && isUserTurn) {
+				Optional<UnoCard> cardOpt = userState.findCardById(cardId);
+				if (cardOpt.isPresent()) {
+					UnoCard card = cardOpt.get();
+					UnoCard centerCard = getCenterCard();
+					if (centerCard.isValidMoveOnTop(card)) {
+						userState.removeCard(card);
+						discardStack.add(card);
+						incrementUser();
+					}
 				}
 			}
 		}
 	}
 
-	public HashMap<String, List<UnoCard>> getUserCards() {
-		return userCards;
+	public void incrementUser() {
+		if (this.gameDirection.equals(Direction.CLOCKWISE)) {
+			if (currentUserIndex < userStates.size() - 1) {
+				currentUserIndex++;
+			} else {
+				currentUserIndex = 0;
+			}
+		} else if (this.gameDirection.equals(Direction.CLOCKWISE)) {
+			if (currentUserIndex > 0) {
+				currentUserIndex--;
+			} else {
+				currentUserIndex = userStates.size() - 1;
+			}
+		}
+	}
+
+	public UnoCard getCenterCard() {
+		return this.discardStack.peek();
+	}
+
+	public Stack<UnoCard> getDrawStack() {
+		return drawStack;
+	}
+
+	public Stack<UnoCard> getDiscardStack() {
+		return discardStack;
+	}
+
+	public String[] getUsers() {
+		return this.userStates.stream().map(userState -> userState.getUserNickName()).toArray(String[]::new);
+	}
+
+	public List<UnoUserState> getUserStates() {
+		return userStates;
+	}
+
+	public int getCurrentUserIndex() {
+		return currentUserIndex;
+	}
+
+	public Direction getGameDirection() {
+		return gameDirection;
+	}
+
+	private void copyDeckAndShuffle() {
+		List<UnoCard> deckCopy = new ArrayList<>(INITIAL_CARD_DECK);
+		Collections.shuffle(deckCopy);
+		this.drawStack = new Stack<>();
+		this.drawStack.addAll(deckCopy);
+	}
+
+	private void dealCardsToUsers(int cardCount) {
+		for (int i = 0; i < cardCount; i++) {
+			for (UnoUserState userState : this.userStates) {
+				if (userState != null) {
+					UnoCard currentCard = drawStack.pop();
+					userState.addCard(currentCard);
+				}
+			}
+		}
 	}
 
 	private static List<UnoCard> readUnoCardCsv() {
@@ -82,5 +141,4 @@ public class UnoGameSession {
 		}
 		return cardDeck;
 	}
-
 }
