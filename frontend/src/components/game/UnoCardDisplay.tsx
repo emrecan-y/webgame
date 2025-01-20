@@ -30,18 +30,38 @@ const numbers = new Map(
   })
 );
 
+const middleTextElement = (value: string | undefined) => {
+  return (
+    <>
+      <div className="absolute flex justify-center items-center border-solid border-uno-white border-4 rounded-[100%] w-20 h-40 rotate-[30deg]">
+        <div className="pl-1 pb-2 drop-shadow-uno-large-text rotate-[-30deg] font-bold text-[3rem] border-black border-1 border-solid">
+          {value}
+        </div>
+      </div>
+    </>
+  );
+};
+
+const colorGridElement = (
+  <>
+    <div className="absolute flex flex-wrap border-solid border-uno-white border-4 rounded-[100%] w-20 h-40 rotate-[30deg]">
+      <div className="w-1/2 h-1/2 bg-uno-red rounded-tl-[100%]"></div>
+      <div className="w-1/2 h-1/2 bg-uno-blue rounded-tr-[100%]"></div>
+      <div className="w-1/2 h-1/2 bg-uno-green rounded-bl-[100%]"></div>
+      <div className="w-1/2 h-1/2 bg-uno-yellow rounded-br-[100%]"></div>
+    </div>
+  </>
+);
+
 export function UnoCardDisplay(card: UnoCard) {
   return (
-    <div className="relative bg-uno-white w-28 h-44 rounded-lg flex justify-center items-center">
-      <div className=" absolute border-solid border-uno-white border-4 rounded-[100%] w-20 h-40 rotate-[30deg]"></div>
+    <div className="relative select-none bg-uno-white w-28 h-44 rounded-lg flex justify-center items-center hover:scale-110 transition-transform">
+      {card.color === "BLACK" ? colorGridElement : middleTextElement(numbers.get(card.cardType))}
       <div className={`${colors.get(card.color)} w-24 h-40 rounded-lg flex justify-center items-center`}>
-        <div className="absolute bottom-3 right-4 drop-shadow-uno-small-text font-bold text-xl border-black border-1 border-solid">
+        <div className="absolute bottom-2 right-3 rotate-180 drop-shadow-uno-small-text font-bold text-xl border-black border-1 border-solid">
           {numbers.get(card.cardType)}
         </div>
-        <div className="absolute top-3 left-4  drop-shadow-uno-small-text font-bold text-xl border-black border-1 border-solid">
-          {numbers.get(card.cardType)}
-        </div>
-        <div className="drop-shadow-uno-large-text font-bold text-[5rem] border-black border-1 border-solid">
+        <div className="absolute top-2 left-3  drop-shadow-uno-small-text font-bold text-xl border-black border-1 border-solid">
           {numbers.get(card.cardType)}
         </div>
       </div>
