@@ -80,7 +80,7 @@ public class LobbyController {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			UnoGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.makeMove(request.nickName, request.cardId)) {
+			if (gameSession.makeMove(request.nickName, request.cardId, request.pickedColor)) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}

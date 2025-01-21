@@ -28,6 +28,7 @@ public class UnoGameSession {
 	private int currentUserIndex;
 	private boolean isDrawPossible;
 
+	private UnoCardColor colorOverride;
 	private Direction gameDirection;
 
 	public UnoGameSession(HashMap<String, String> userToSessionIdMap) {
@@ -44,7 +45,7 @@ public class UnoGameSession {
 		this.discardStack.add(this.drawStack.pop());
 	}
 
-	public boolean makeMove(String user, int cardId) {
+	public boolean makeMove(String user, int cardId, UnoCardColor color) {
 		for (int i = 0; i < userStates.size(); i++) {
 			UnoUserState userState = userStates.get(i);
 			boolean isUserTurn = i == currentUserIndex;
@@ -53,10 +54,11 @@ public class UnoGameSession {
 				if (cardOpt.isPresent()) {
 					UnoCard card = cardOpt.get();
 					UnoCard centerCard = getCenterCard();
-					if (centerCard.isValidMoveOnTop(card)) {
+					if (centerCard.isValidMoveOnTop(card) || card.getColor().equals(colorOverride)) {
 						userState.removeCard(card);
 						discardStack.add(card);
 						nextUser();
+						this.colorOverride = color;
 						return true;
 					}
 				}
@@ -143,8 +145,8 @@ public class UnoGameSession {
 		return isDrawPossible;
 	}
 
-	public static int getStartCardCount() {
-		return START_CARD_COUNT;
+	public UnoCardColor getColorOverride() {
+		return this.colorOverride;
 	}
 
 	private void copyDeckAndShuffle() {
@@ -183,4 +185,5 @@ public class UnoGameSession {
 		}
 		return cardDeck;
 	}
+
 }

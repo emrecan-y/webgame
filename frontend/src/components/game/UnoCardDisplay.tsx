@@ -1,4 +1,4 @@
-import { UnoCard } from "../../models/unoCard";
+import { UnoCard, UnoCardColor } from "../../models/unoCard";
 
 const colors = new Map(
   Object.entries({
@@ -7,7 +7,7 @@ const colors = new Map(
     GREEN: "bg-uno-green",
     YELLOW: "bg-uno-yellow",
     BLACK: "bg-uno-black",
-  })
+  }),
 );
 
 const numbers = new Map(
@@ -27,14 +27,14 @@ const numbers = new Map(
     REVERSE: "↻",
     SELECT_COLOR: "",
     DRAW_FOUR: "+4",
-  })
+  }),
 );
 
 const middleTextElement = (value: string | undefined) => {
   return (
     <>
-      <div className="absolute flex justify-center items-center border-solid border-uno-white border-4 rounded-[100%] w-20 h-40 rotate-[30deg]">
-        <div className="pl-1 pb-2 drop-shadow-uno-large-text rotate-[-30deg] font-bold text-[3rem] border-black border-1 border-solid">
+      <div className="absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid border-uno-white">
+        <div className="border-1 rotate-[-30deg] border-solid border-black pb-2 pl-1 text-[3rem] font-bold drop-shadow-uno-large-text">
           {value}
         </div>
       </div>
@@ -44,24 +44,34 @@ const middleTextElement = (value: string | undefined) => {
 
 const colorGridElement = (
   <>
-    <div className="absolute flex flex-wrap border-solid border-uno-white border-4 rounded-[100%] w-20 h-40 rotate-[30deg]">
-      <div className="w-1/2 h-1/2 bg-uno-red rounded-tl-[100%]"></div>
-      <div className="w-1/2 h-1/2 bg-uno-blue rounded-tr-[100%]"></div>
-      <div className="w-1/2 h-1/2 bg-uno-green rounded-bl-[100%]"></div>
-      <div className="w-1/2 h-1/2 bg-uno-yellow rounded-br-[100%]"></div>
+    <div className="absolute flex h-40 w-20 rotate-[30deg] flex-wrap rounded-[100%] border-4 border-solid border-uno-white">
+      <div className="h-1/2 w-1/2 rounded-tl-[100%] bg-uno-red"></div>
+      <div className="h-1/2 w-1/2 rounded-tr-[100%] bg-uno-blue"></div>
+      <div className="h-1/2 w-1/2 rounded-bl-[100%] bg-uno-green"></div>
+      <div className="h-1/2 w-1/2 rounded-br-[100%] bg-uno-yellow"></div>
     </div>
   </>
 );
 
-export function UnoCardDisplay(card: Omit<UnoCard, "id">) {
+export function UnoCardDisplay(
+  card: Omit<UnoCard, "id"> & { colorOverride?: UnoCardColor },
+) {
+  let color: UnoCardColor = card.color;
+  if (card.colorOverride != undefined) {
+    color = card.colorOverride;
+  }
   return (
-    <div className="relative select-none bg-uno-white w-28 h-44 rounded-lg flex justify-center items-center">
-      {card.color === "BLACK" ? colorGridElement : middleTextElement(numbers.get(card.cardType))}
-      <div className={`${colors.get(card.color)} w-24 h-40 rounded-lg flex justify-center items-center`}>
-        <div className="absolute bottom-2 right-3 rotate-180 drop-shadow-uno-small-text font-bold text-xl border-black border-1 border-solid">
+    <div className="relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-uno-white">
+      {card.color === "BLACK"
+        ? colorGridElement
+        : middleTextElement(numbers.get(card.cardType))}
+      <div
+        className={`${colors.get(color)} flex h-40 w-24 items-center justify-center rounded-lg`}
+      >
+        <div className="border-1 absolute bottom-2 right-3 rotate-180 border-solid border-black text-xl font-bold drop-shadow-uno-small-text">
           {numbers.get(card.cardType)}
         </div>
-        <div className="absolute top-2 left-3  drop-shadow-uno-small-text font-bold text-xl border-black border-1 border-solid">
+        <div className="border-1 absolute left-3 top-2 border-solid border-black text-xl font-bold drop-shadow-uno-small-text">
           {numbers.get(card.cardType)}
         </div>
       </div>

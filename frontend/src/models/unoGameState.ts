@@ -1,4 +1,4 @@
-import { UnoCard } from "./unoCard";
+import { UnoCard, UnoCardColor } from "./unoCard";
 
 export type UnoGameState = {
   users: string[];
@@ -8,6 +8,7 @@ export type UnoGameState = {
 
   direction: Direction;
   centerCard: UnoCard;
+  colorOverride: UnoCardColor;
 };
 
 export type Direction = "CLOCKWISE" | "ANTI_CLOCKWISE";
