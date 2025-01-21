@@ -4,6 +4,7 @@ export type UnoGameState = {
   users: string[];
   currentUserIndex: number;
   userCards: UnoCard[];
+  isDrawPossible: boolean;
 
   direction: Direction;
   centerCard: UnoCard;

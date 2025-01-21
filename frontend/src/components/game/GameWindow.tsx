@@ -43,6 +43,15 @@ function GameWindow() {
     }
   }
 
+  function pass() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/game/pass",
+        body: JSON.stringify({ lobbyId: userLobbyId, nickName: userNickName, password: lobbyPassWord }),
+      });
+    }
+  }
+
   if (gameState !== undefined) {
     return (
       <div className="flex flex-col items-center">
@@ -53,9 +62,15 @@ function GameWindow() {
         {isUserTurn && (
           <>
             <p className="">It's your turn</p>{" "}
-            <button className="bg-game-accent-medium p-3 rounded" onClick={drawCard}>
-              DrawCard
-            </button>
+            {gameState.isDrawPossible ? (
+              <button className="bg-game-accent-medium p-3 rounded" onClick={drawCard}>
+                DrawCard
+              </button>
+            ) : (
+              <button className="bg-game-accent-medium p-3 rounded" onClick={pass}>
+                Pass
+              </button>
+            )}
           </>
         )}
         <div className="flex gap-2 mt-16">

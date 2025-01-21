@@ -80,6 +80,20 @@ public class UnoGameSession {
 		return false;
 	}
 
+	public boolean pass(String user) {
+		if (!this.isDrawPossible) {
+			for (int i = 0; i < userStates.size(); i++) {
+				UnoUserState userState = userStates.get(i);
+				boolean isUserTurn = i == currentUserIndex;
+				if (userState.getUserNickName().equals(user) && isUserTurn) {
+					nextUser();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public void nextUser() {
 		if (this.gameDirection.equals(Direction.CLOCKWISE)) {
 			if (currentUserIndex < userStates.size() - 1) {
@@ -123,6 +137,14 @@ public class UnoGameSession {
 
 	public Direction getGameDirection() {
 		return gameDirection;
+	}
+
+	public boolean isDrawPossible() {
+		return isDrawPossible;
+	}
+
+	public static int getStartCardCount() {
+		return START_CARD_COUNT;
 	}
 
 	private void copyDeckAndShuffle() {

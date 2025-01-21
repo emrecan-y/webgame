@@ -98,6 +98,17 @@ public class LobbyController {
 		}
 	}
 
+	@MessageMapping("/game/pass")
+	public void pass(PlayerRequestDto request) {
+		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		if (gameSessionOpt.isPresent()) {
+			UnoGameSession gameSession = gameSessionOpt.get();
+			if (gameSession.pass(request.nickName)) {
+				sendGameStateToAllUsers(gameSession);
+			}
+		}
+	}
+
 	private void sendGameStateToAllUsers(UnoGameSession gameSession) {
 		Optional<Map<String, UnoGameStateDto>> sessionIdToGameStateOpt = this.lobbyService
 				.getSessionIdToGameStateMap(gameSession);

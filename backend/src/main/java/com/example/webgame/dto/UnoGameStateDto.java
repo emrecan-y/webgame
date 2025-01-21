@@ -9,6 +9,7 @@ import com.example.webgame.game.UnoGameSession;
 public class UnoGameStateDto {
 	public String[] users;
 	public int currentUserIndex;
+	public boolean isDrawPossible;
 	public List<UnoCard> userCards;
 
 	public Direction direction;
@@ -17,9 +18,12 @@ public class UnoGameStateDto {
 	public UnoGameStateDto(UnoGameSession session, List<UnoCard> userCards) {
 		this.users = session.getUsers();
 		this.currentUserIndex = session.getCurrentUserIndex();
-		this.userCards = userCards;
 		this.direction = session.getGameDirection();
 		this.centerCard = session.getCenterCard();
+		this.isDrawPossible = session.isDrawPossible();
+
+		this.userCards = userCards;
+
 	}
 
 }
