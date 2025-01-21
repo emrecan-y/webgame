@@ -34,13 +34,30 @@ function GameWindow() {
     }
   }
 
+  function drawCard() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/game/draw-card",
+        body: JSON.stringify({ lobbyId: userLobbyId, nickName: userNickName, password: lobbyPassWord }),
+      });
+    }
+  }
+
   if (gameState !== undefined) {
     return (
       <div className="flex flex-col items-center">
         <div className="">
           <UnoCardDisplay color={gameState.centerCard.color} cardType={gameState.centerCard.cardType} />
         </div>
-        {isUserTurn && <p className="">It's your turn</p>}
+
+        {isUserTurn && (
+          <>
+            <p className="">It's your turn</p>{" "}
+            <button className="bg-game-accent-medium p-3 rounded" onClick={drawCard}>
+              DrawCard
+            </button>
+          </>
+        )}
         <div className="flex gap-2 mt-16">
           {gameState?.userCards.map((e) => (
             <div className=" hover:scale-110 transition-transform" onClick={() => makeMove(e.id)}>
