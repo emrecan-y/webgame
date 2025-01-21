@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UnoCardDisplay } from "./UnoCardDisplay";
 import { UserContext } from "../context/UserContext";
@@ -6,6 +6,7 @@ import { UnoGameState } from "../../models/unoGameState";
 import { useNavigate } from "react-router-dom";
 import { PlayerRequest } from "../../models/playerRequest";
 import { UnoCard, UnoCardColor } from "../../models/unoCard";
+import UnoColorPicker from "./UnoColorPicker";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -14,6 +15,8 @@ function GameWindow() {
 
   const [gameState, setGameState] = useState<UnoGameState>();
   const [idToColorPick, setIdToColorPick] = useState<number>();
+  const [mouseEvent, setMouseEvent] =
+    useState<React.MouseEvent<HTMLDivElement, MouseEvent>>();
 
   const isUserTurn =
     gameState?.users[gameState.currentUserIndex] === userNickName;
@@ -42,8 +45,12 @@ function GameWindow() {
     navigate("/lobbies");
   });
 
-  function makeMoveEventHandler(card: UnoCard) {
+  function makeMoveEventHandler(
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    card: UnoCard,
+  ) {
     if (card.cardType === "SELECT_COLOR" || card.cardType === "DRAW_FOUR") {
+      setMouseEvent(event);
       setIdToColorPick(card.id);
     } else {
       makeMove(card.id);
@@ -92,28 +99,12 @@ function GameWindow() {
   if (gameState !== undefined) {
     return (
       <>
-        {idToColorPick !== undefined && (
-          <div className="flex flex-col items-center rounded-xl bg-game-accent-medium p-6">
-            <p>Select a color!</p>
-            <div className="mt-4 flex h-40 w-40 flex-wrap rounded-full border-4 border-uno-black bg-uno-white outline outline-8 outline-uno-white">
-              <div
-                onClick={() => pickColor("RED")}
-                className="h-1/2 w-1/2 rounded-tl-[100%] bg-uno-red transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:scale-105"
-              ></div>
-              <div
-                onClick={() => pickColor("BLUE")}
-                className="h-1/2 w-1/2 rounded-tr-[100%] bg-uno-blue transition-transform hover:-translate-y-0.5 hover:translate-x-0.5 hover:scale-105"
-              ></div>
-              <div
-                onClick={() => pickColor("GREEN")}
-                className="h-1/2 w-1/2 rounded-bl-[100%] bg-uno-green transition-transform hover:-translate-x-0.5 hover:translate-y-0.5 hover:scale-105"
-              ></div>
-              <div
-                onClick={() => pickColor("YELLOW")}
-                className="h-1/2 w-1/2 rounded-br-[100%] bg-uno-yellow transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:scale-105"
-              ></div>
-            </div>
-          </div>
+        {idToColorPick !== undefined && mouseEvent !== undefined && (
+          <UnoColorPicker
+            mouseEvent={mouseEvent}
+            setMouseEvent={setMouseEvent}
+            pickColor={pickColor}
+          />
         )}
 
         <div className="flex flex-col items-center">
@@ -146,12 +137,16 @@ function GameWindow() {
             </>
           )}
           <div className="mt-16 flex gap-2">
-            {gameState?.userCards.map((e) => (
+            {gameState.userCards.map((element) => (
               <div
                 className="transition-transform hover:scale-110"
-                onClick={() => makeMoveEventHandler(e)}
+                onClick={(event) => makeMoveEventHandler(event, element)}
+                key={"uno-card-" + element.id}
               >
-                <UnoCardDisplay color={e.color} cardType={e.cardType} />
+                <UnoCardDisplay
+                  color={element.color}
+                  cardType={element.cardType}
+                />
               </div>
             ))}
           </div>
