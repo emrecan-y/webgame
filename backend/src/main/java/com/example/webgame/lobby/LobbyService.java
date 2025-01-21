@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.webgame.dto.LobbyCreateDto;
 import com.example.webgame.dto.PlayerRequestDto;
 import com.example.webgame.dto.UnoGameStateDto;
 import com.example.webgame.game.UnoGameSession;
@@ -45,10 +44,10 @@ public class LobbyService {
 		return this.lobbyMap.containsKey(lobbyId);
 	}
 
-	public Optional<Lobby> createLobby(String sessionId, LobbyCreateDto lobbyDto) {
+	public Optional<Lobby> createLobby(String sessionId, String password, int size) {
 		Optional<UserSession> userSession = this.sessionService.getBySessionId(sessionId);
 		if (userSession.isPresent()) {
-			Lobby newLobby = new Lobby(lobbyDto.password, lobbyDto.size);
+			Lobby newLobby = new Lobby(password, size);
 			newLobby.addUser(userSession.get().getNickName());
 			lobbyMap.put(newLobby.getId(), newLobby);
 			changePlayerLobby(userSession.get().getNickName(), newLobby.getId());
@@ -107,7 +106,7 @@ public class LobbyService {
 		if (lobbyOpt.isPresent()) {
 			Lobby lobby = lobbyOpt.get();
 			if (lobby.containsUser(request.nickName)
-					&& (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(request.password))) {
+					&& (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(request.lobbyPassword))) {
 				return Optional.of(lobby.getGameSession());
 			}
 		}

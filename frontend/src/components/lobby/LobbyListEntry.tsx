@@ -3,6 +3,7 @@ import { Lobby } from "../../models/lobby";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { PlayerRequest } from "../../models/playerRequest";
 
 type LobbyListEntryProps = {
   lobby: Lobby;
@@ -19,6 +20,12 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   const isPrivate = lobby.private;
   const isUserInLobby = userLobbyId === lobby.id;
 
+  const request: PlayerRequest = {
+    lobbyId: lobby.id,
+    nickName: userNickName,
+    lobbyPassword: password,
+  };
+
   useEffect(() => {
     setLobbyIsFull(lobby.users.every((name) => name));
   }, [lobby.users]);
@@ -27,21 +34,21 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
     navigate("/game");
   });
 
-  function addPlayerToLobby(lobbyId: number, nickName: string, password: string) {
+  function addPlayerToLobby() {
     if (stompClient) {
       stompClient.publish({
         destination: "/app/lobby/add-player",
-        body: JSON.stringify({ lobbyId: lobbyId, nickName: nickName, password: password }),
+        body: JSON.stringify(request),
       });
       setLobbyPassWord(password);
     }
   }
 
-  function startGame(lobbyId: number, nickName: string, password: string) {
+  function startGame() {
     if (stompClient) {
       stompClient.publish({
         destination: "/app/game/start",
-        body: JSON.stringify({ lobbyId: lobbyId, nickName: nickName, password: password }),
+        body: JSON.stringify(request),
       });
     }
   }
@@ -64,18 +71,12 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
             </>
           )}
           {!isUserInLobby && !lobbyIsFull && (
-            <button
-              className="bg-game-accent-medium px-2 py-1 rounded"
-              onClick={() => addPlayerToLobby(lobby.id!, userNickName!, password)}
-            >
+            <button className="bg-game-accent-medium px-2 py-1 rounded" onClick={addPlayerToLobby}>
               Join
             </button>
           )}
           {isUserInLobby && lobbyIsFull && (
-            <button
-              className="bg-game-accent-medium px-2 py-1 rounded"
-              onClick={() => startGame(lobby.id!, userNickName!, password)}
-            >
+            <button className="bg-game-accent-medium px-2 py-1 rounded" onClick={startGame}>
               Start Game
             </button>
           )}

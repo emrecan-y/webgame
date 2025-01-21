@@ -4,6 +4,7 @@ import { UnoCardDisplay } from "./UnoCardDisplay";
 import { UserContext } from "../context/UserContext";
 import { UnoGameState } from "../../models/unoGameState";
 import { useNavigate } from "react-router-dom";
+import { PlayerRequest } from "../../models/playerRequest";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -13,11 +14,17 @@ function GameWindow() {
   const [gameState, setGameState] = useState<UnoGameState>();
   const isUserTurn = gameState?.users[gameState.currentUserIndex] === userNickName;
 
+  const request: PlayerRequest = {
+    lobbyId: userLobbyId,
+    nickName: userNickName,
+    lobbyPassword: lobbyPassWord,
+  };
+
   useEffect(() => {
     if (stompClient) {
       stompClient.publish({
         destination: "/app/game/state",
-        body: JSON.stringify({ lobbyId: userLobbyId, nickName: userNickName, password: lobbyPassWord }),
+        body: JSON.stringify(request),
       });
     }
   }, []);
@@ -33,9 +40,10 @@ function GameWindow() {
 
   function makeMove(cardId: number) {
     if (stompClient) {
+      const newRequest: PlayerRequest = { ...request, cardId: cardId };
       stompClient.publish({
         destination: "/app/game/make-move",
-        body: JSON.stringify({ lobbyId: userLobbyId, nickName: userNickName, password: lobbyPassWord, cardId: cardId }),
+        body: JSON.stringify(newRequest),
       });
     }
   }
@@ -44,7 +52,7 @@ function GameWindow() {
     if (stompClient) {
       stompClient.publish({
         destination: "/app/game/draw-card",
-        body: JSON.stringify({ lobbyId: userLobbyId, nickName: userNickName, password: lobbyPassWord }),
+        body: JSON.stringify(request),
       });
     }
   }
@@ -53,7 +61,7 @@ function GameWindow() {
     if (stompClient) {
       stompClient.publish({
         destination: "/app/game/pass",
-        body: JSON.stringify({ lobbyId: userLobbyId, nickName: userNickName, password: lobbyPassWord }),
+        body: JSON.stringify(request),
       });
     }
   }

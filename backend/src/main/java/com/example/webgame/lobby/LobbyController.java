@@ -12,7 +12,6 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webgame.dto.LobbyCreateDto;
 import com.example.webgame.dto.PlayerRequestDto;
 import com.example.webgame.dto.UnoGameStateDto;
 import com.example.webgame.game.UnoGameSession;
@@ -31,8 +30,8 @@ public class LobbyController {
 
 	@MessageMapping("/create-lobby")
 	@SendToUser("/queue/lobby/lobby-id")
-	public Integer createLobby(@Header("simpSessionId") String sessionId, LobbyCreateDto lobbyDto) throws Exception {
-		Optional<Lobby> lobby = this.lobbyService.createLobby(sessionId, lobbyDto);
+	public Integer createLobby(@Header("simpSessionId") String sessionId, PlayerRequestDto request) throws Exception {
+		Optional<Lobby> lobby = this.lobbyService.createLobby(sessionId, request.lobbyPassword, request.lobbySize);
 		if (lobby.isPresent()) {
 			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
 			return lobby.get().getId();
@@ -50,7 +49,7 @@ public class LobbyController {
 	@MessageMapping("/lobby/add-player")
 	@SendToUser("/queue/lobby/lobby-id")
 	public Integer addPlayerToLobby(PlayerRequestDto request) {
-		if (this.lobbyService.addPlayerToLobby(request.lobbyId, request.nickName, request.password)) {
+		if (this.lobbyService.addPlayerToLobby(request.lobbyId, request.nickName, request.lobbyPassword)) {
 			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
 			return request.lobbyId;
 		}
@@ -59,7 +58,7 @@ public class LobbyController {
 
 	@MessageMapping("/game/start")
 	public void startGame(PlayerRequestDto request) {
-		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.password)) {
+		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.lobbyPassword)) {
 			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				gameSessionOpt.get().getUserStates().forEach(userState -> this.template
