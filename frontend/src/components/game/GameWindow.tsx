@@ -3,10 +3,12 @@ import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UnoCardDisplay } from "./UnoCardDisplay";
 import { UserContext } from "../context/UserContext";
 import { UnoGameState } from "../../models/unoGameState";
+import { useNavigate } from "react-router-dom";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
   const stompClient = useStompClient();
+  const navigate = useNavigate();
 
   const [gameState, setGameState] = useState<UnoGameState>();
   const isUserTurn = gameState?.users[gameState.currentUserIndex] === userNickName;
@@ -23,6 +25,10 @@ function GameWindow() {
   useSubscription("/user/queue/game/state", (message) => {
     const gameState: UnoGameState = JSON.parse(message.body);
     setGameState(gameState);
+  });
+
+  useSubscription(`/topic/game/${userLobbyId}/stop`, () => {
+    navigate("/lobbies");
   });
 
   function makeMove(cardId: number) {

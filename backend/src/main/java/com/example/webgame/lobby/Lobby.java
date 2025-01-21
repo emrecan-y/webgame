@@ -63,8 +63,8 @@ public class Lobby {
 		return privateLobby;
 	}
 
-	public void setPrivate(boolean privateLobby) {
-		this.privateLobby = privateLobby;
+	public void deleteGameSession() {
+		this.gameSession = null;
 	}
 
 	public boolean containsUser(String userName) {

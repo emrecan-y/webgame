@@ -40,6 +40,9 @@ public class WebSocketEventHandler implements ApplicationListener<SessionConnect
 				lobby.removeUser(userSession.get().getNickName());
 				if (lobby.isEmpty()) {
 					this.lobbyService.removeByLobbyId(lobby.getId());
+				} else if (lobby.getGameSession() != null) {
+					lobby.deleteGameSession();
+					template.convertAndSend("/topic/game/" + lobby.getId() + "/stop", "");
 				}
 			}
 			this.sessionService.removeUserBySessionId(sessionId);
