@@ -26,6 +26,7 @@ public class UnoGameSession {
 
 	private List<UnoUserState> userStates;
 	private int currentUserIndex;
+	private boolean isDrawPossible;
 
 	private Direction gameDirection;
 
@@ -34,6 +35,7 @@ public class UnoGameSession {
 		userToSessionIdMap.entrySet().stream().forEach(e -> userStates.add(new UnoUserState(e.getKey(), e.getValue())));
 
 		this.currentUserIndex = RANDOM.nextInt(0, this.userStates.size() - 1);
+		this.isDrawPossible = true;
 		this.gameDirection = Direction.CLOCKWISE;
 		this.discardStack = new Stack<>();
 
@@ -42,7 +44,7 @@ public class UnoGameSession {
 		this.discardStack.add(this.drawStack.pop());
 	}
 
-	public void makeMove(String user, int cardId) {
+	public boolean makeMove(String user, int cardId) {
 		for (int i = 0; i < userStates.size(); i++) {
 			UnoUserState userState = userStates.get(i);
 			boolean isUserTurn = i == currentUserIndex;
@@ -55,10 +57,27 @@ public class UnoGameSession {
 						userState.removeCard(card);
 						discardStack.add(card);
 						nextUser();
+						return true;
 					}
 				}
 			}
 		}
+		return false;
+	}
+
+	public boolean drawCard(String user) {
+		if (this.isDrawPossible) {
+			for (int i = 0; i < userStates.size(); i++) {
+				UnoUserState userState = userStates.get(i);
+				boolean isUserTurn = i == currentUserIndex;
+				if (userState.getUserNickName().equals(user) && isUserTurn) {
+					userState.addCard(drawStack.pop());
+					this.isDrawPossible = false;
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public void nextUser() {
@@ -75,6 +94,7 @@ public class UnoGameSession {
 				currentUserIndex = userStates.size() - 1;
 			}
 		}
+		this.isDrawPossible = true;
 	}
 
 	public UnoCard getCenterCard() {

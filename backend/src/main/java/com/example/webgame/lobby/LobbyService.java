@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.webgame.dto.LobbyCreateDto;
+import com.example.webgame.dto.PlayerRequestDto;
 import com.example.webgame.dto.UnoGameStateDto;
 import com.example.webgame.game.UnoGameSession;
 import com.example.webgame.game.UnoUserState;
@@ -97,15 +98,24 @@ public class LobbyService {
 				lobby.startGame(userToSessionIdMap);
 				return true;
 			}
-
 		}
 		return false;
 	}
 
-	public Optional<Map<String, UnoGameStateDto>> getSessionIdToGameStateMap(int lobbyId) {
-		Optional<Lobby> lobbyOpt = this.findLobbyById(lobbyId);
+	public Optional<UnoGameSession> findGameSessionFromPlayerRequest(PlayerRequestDto request) {
+		Optional<Lobby> lobbyOpt = this.findLobbyById(request.lobbyId);
 		if (lobbyOpt.isPresent()) {
-			UnoGameSession gameSession = lobbyOpt.get().getGameSession();
+			Lobby lobby = lobbyOpt.get();
+			if (lobby.containsUser(request.nickName)
+					&& (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(request.password))) {
+				return Optional.of(lobby.getGameSession());
+			}
+		}
+		return Optional.empty();
+	}
+
+	public Optional<Map<String, UnoGameStateDto>> getSessionIdToGameStateMap(UnoGameSession gameSession) {
+		if (gameSession != null) {
 			List<UnoUserState> userStates = gameSession.getUserStates();
 			Map<String, UnoGameStateDto> sessionIdToGameStateMap = new HashMap<>();
 
@@ -114,8 +124,9 @@ public class LobbyService {
 				sessionIdToGameStateMap.put(sessionId, new UnoGameStateDto(gameSession, userState.getUserCards()));
 			});
 			return Optional.of(sessionIdToGameStateMap);
+		} else {
+			return Optional.empty();
 		}
-		return Optional.empty();
 	}
 
 }
