@@ -9,6 +9,7 @@ export type UnoGameState = {
   direction: Direction;
   centerCard: UnoCard;
   colorOverride: UnoCardColor;
+  drawCount: number;
 };
 
 export type Direction = "CLOCKWISE" | "ANTI_CLOCKWISE";

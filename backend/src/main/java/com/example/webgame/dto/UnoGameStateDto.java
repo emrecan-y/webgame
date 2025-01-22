@@ -16,6 +16,7 @@ public class UnoGameStateDto {
 	public Direction direction;
 	public UnoCard centerCard;
 	public UnoCardColor colorOverride;
+	public int drawCount;
 
 	public UnoGameStateDto(UnoGameSession session, List<UnoCard> userCards) {
 		this.users = session.getUsers();
@@ -24,6 +25,7 @@ public class UnoGameStateDto {
 		this.centerCard = session.getCenterCard();
 		this.isDrawPossible = session.isDrawPossible();
 		this.colorOverride = session.getColorOverride();
+		this.drawCount = session.getDrawCount();
 
 		this.userCards = userCards;
 

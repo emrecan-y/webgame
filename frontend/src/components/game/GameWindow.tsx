@@ -87,6 +87,15 @@ function GameWindow() {
     }
   }
 
+  function drawCards() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/game/draw-cards",
+        body: JSON.stringify(request),
+      });
+    }
+  }
+
   function pass() {
     if (stompClient) {
       stompClient.publish({
@@ -119,6 +128,14 @@ function GameWindow() {
           {isUserTurn && (
             <>
               <p className="">It's your turn</p>{" "}
+              {gameState.drawCount != 0 && (
+                <button
+                  className="rounded bg-game-accent-medium p-3"
+                  onClick={drawCards}
+                >
+                  Draw {gameState.drawCount}
+                </button>
+              )}
               {gameState.isDrawPossible ? (
                 <button
                   className="rounded bg-game-accent-medium p-3"
@@ -136,6 +153,7 @@ function GameWindow() {
               )}
             </>
           )}
+
           <div className="mt-16 flex gap-2">
             {gameState.userCards.map((element) => (
               <div

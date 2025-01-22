@@ -97,6 +97,17 @@ public class LobbyController {
 		}
 	}
 
+	@MessageMapping("/game/draw-cards")
+	public void drawCards(PlayerRequestDto request) {
+		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		if (gameSessionOpt.isPresent()) {
+			UnoGameSession gameSession = gameSessionOpt.get();
+			if (gameSession.drawCardCount(request.nickName)) {
+				sendGameStateToAllUsers(gameSession);
+			}
+		}
+	}
+
 	@MessageMapping("/game/pass")
 	public void pass(PlayerRequestDto request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);

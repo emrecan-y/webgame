@@ -27,6 +27,7 @@ public class UnoGameSession {
 	private List<UnoUserState> userStates;
 	private int currentUserIndex;
 	private boolean isDrawPossible;
+	private int drawCount;
 
 	private UnoCardColor colorOverride;
 	private Direction gameDirection;
@@ -37,6 +38,7 @@ public class UnoGameSession {
 
 		this.currentUserIndex = RANDOM.nextInt(0, this.userStates.size() - 1);
 		this.isDrawPossible = true;
+		this.drawCount = 0;
 		this.gameDirection = Direction.CLOCKWISE;
 		this.discardStack = new Stack<>();
 
@@ -46,6 +48,9 @@ public class UnoGameSession {
 	}
 
 	public boolean makeMove(String user, int cardId, UnoCardColor color) {
+		if (this.drawCount != 0) {
+			return false;
+		}
 		for (int i = 0; i < userStates.size(); i++) {
 			UnoUserState userState = userStates.get(i);
 			boolean isUserTurn = i == currentUserIndex;
@@ -55,6 +60,20 @@ public class UnoGameSession {
 					UnoCard card = cardOpt.get();
 					UnoCard centerCard = getCenterCard();
 					if (centerCard.isValidMoveOnTop(card) || card.getColor().equals(colorOverride)) {
+						if (card.getCardType().equals(UnoCardType.DRAW_FOUR)) {
+							this.drawCount += 4;
+						} else if (card.getCardType().equals(UnoCardType.DRAW_TWO)) {
+							this.drawCount += 2;
+						} else if (card.getCardType().equals(UnoCardType.SKIP)) {
+							nextUser();
+						} else if (card.getCardType().equals(UnoCardType.REVERSE)) {
+							this.gameDirection = this.gameDirection.equals(Direction.CLOCKWISE)
+									? Direction.ANTI_CLOCKWISE
+									: Direction.CLOCKWISE;
+							if (this.userStates.size() == 2) {
+								nextUser();
+							}
+						}
 						userState.removeCard(card);
 						discardStack.add(card);
 						nextUser();
@@ -68,13 +87,29 @@ public class UnoGameSession {
 	}
 
 	public boolean drawCard(String user) {
-		if (this.isDrawPossible) {
+		if (this.isDrawPossible && this.drawCount == 0) {
 			for (int i = 0; i < userStates.size(); i++) {
 				UnoUserState userState = userStates.get(i);
 				boolean isUserTurn = i == currentUserIndex;
 				if (userState.getUserNickName().equals(user) && isUserTurn) {
 					userState.addCard(drawStack.pop());
 					this.isDrawPossible = false;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean drawCardCount(String user) {
+		if (this.isDrawPossible) {
+			for (int i = 0; i < userStates.size(); i++) {
+				UnoUserState userState = userStates.get(i);
+				boolean isUserTurn = i == currentUserIndex;
+				if (userState.getUserNickName().equals(user) && isUserTurn) {
+					for (; this.drawCount > 0; this.drawCount--) {
+						userState.addCard(drawStack.pop());
+					}
 					return true;
 				}
 			}
@@ -147,6 +182,10 @@ public class UnoGameSession {
 
 	public UnoCardColor getColorOverride() {
 		return this.colorOverride;
+	}
+
+	public int getDrawCount() {
+		return this.drawCount;
 	}
 
 	private void copyDeckAndShuffle() {
