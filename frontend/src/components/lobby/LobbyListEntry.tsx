@@ -10,7 +10,8 @@ type LobbyListEntryProps = {
 };
 
 function LobbyListEntry({ lobby }: LobbyListEntryProps) {
-  const { userNickName, userLobbyId, setLobbyPassWord } = useContext(UserContext);
+  const { userNickName, userLobbyId, setLobbyPassWord } =
+    useContext(UserContext);
   const [password, setPassword] = useState<string>("");
   const [lobbyIsFull, setLobbyIsFull] = useState<boolean>(false);
 
@@ -54,14 +55,14 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   }
 
   return (
-    <div className="bg-game-accent-light mb-4 p-1 rounded w-full">
-      <div className="flex h-8 justify-between items-center my-1">
-        <p className="pl-1 text-gray-950 ">Lobby {lobby.id}</p>
+    <div className="mb-4 w-full rounded bg-game-accent-light p-1">
+      <div className="my-1 flex h-8 items-center justify-between">
+        <p className="pl-1 text-gray-950">Lobby {lobby.id}</p>
         <div>
           {isPrivate && !isUserInLobby && (
             <>
               <input
-                className="w-32 h-8 rounded p-2 mr-2 text-game-main-dark placeholder:text-gray-700"
+                className="mr-2 h-8 w-32 rounded p-2 text-game-main-dark placeholder:text-gray-700"
                 type="password"
                 name="lobby-password"
                 id="lobby-password"
@@ -71,25 +72,38 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
             </>
           )}
           {!isUserInLobby && !lobbyIsFull && (
-            <button className="bg-game-accent-medium px-2 py-1 rounded" onClick={addPlayerToLobby}>
+            <button
+              className="rounded bg-game-accent-medium px-2 py-1"
+              onClick={addPlayerToLobby}
+            >
               Join
             </button>
           )}
           {isUserInLobby && lobbyIsFull && (
-            <button className="bg-game-accent-medium px-2 py-1 rounded" onClick={startGame}>
+            <button
+              className="rounded bg-game-accent-medium px-2 py-1"
+              onClick={startGame}
+            >
               Start Game
             </button>
           )}
         </div>
       </div>
 
-      <div className="bg-game-accent-medium  p-1 rounded">
+      <div className="rounded bg-game-accent-medium p-1">
         <p className="pl-1">Players</p>
         <ol>
           {lobby.users.map((lobbyUser, index) => (
-            <li className="bg-game-main-dark pl-1 " key={`listEntry${lobby.id}-${index}`}>
+            <li
+              className="bg-game-main-dark pl-1"
+              key={`listEntry${lobby.id}-${index}`}
+            >
               {lobbyUser ? (
-                <p className="text-game-main-light">{lobbyUser}</p>
+                lobbyUser === userNickName ? (
+                  <p className="text-game-accent-light">{lobbyUser}</p>
+                ) : (
+                  <p className="text-game-main-light">{lobbyUser}</p>
+                )
               ) : (
                 <p className="text-game-main-medium">Free</p>
               )}
