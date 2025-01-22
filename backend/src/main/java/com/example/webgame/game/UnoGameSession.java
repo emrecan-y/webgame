@@ -45,12 +45,10 @@ public class UnoGameSession {
 		copyDeckAndShuffle();
 		dealCardsToUsers(START_CARD_COUNT);
 		this.discardStack.add(this.drawStack.pop());
+
 	}
 
 	public boolean makeMove(String user, int cardId, UnoCardColor color) {
-		if (this.drawCount != 0) {
-			return false;
-		}
 		for (int i = 0; i < userStates.size(); i++) {
 			UnoUserState userState = userStates.get(i);
 			boolean isUserTurn = i == currentUserIndex;
@@ -60,30 +58,47 @@ public class UnoGameSession {
 					UnoCard card = cardOpt.get();
 					UnoCard centerCard = getCenterCard();
 					if (centerCard.isValidMoveOnTop(card) || card.getColor().equals(colorOverride)) {
-						if (card.getCardType().equals(UnoCardType.DRAW_FOUR)) {
-							this.drawCount += 4;
-						} else if (card.getCardType().equals(UnoCardType.DRAW_TWO)) {
-							this.drawCount += 2;
-						} else if (card.getCardType().equals(UnoCardType.SKIP)) {
+						if (drawCount == 0 || isDrawCard(card)) {
+							userState.removeCard(card);
+							discardStack.add(card);
+							checkForSpecialEffects(card);
 							nextUser();
-						} else if (card.getCardType().equals(UnoCardType.REVERSE)) {
-							this.gameDirection = this.gameDirection.equals(Direction.CLOCKWISE)
-									? Direction.ANTI_CLOCKWISE
-									: Direction.CLOCKWISE;
-							if (this.userStates.size() == 2) {
-								nextUser();
-							}
+							this.colorOverride = color;
+							return true;
 						}
-						userState.removeCard(card);
-						discardStack.add(card);
-						nextUser();
-						this.colorOverride = color;
-						return true;
 					}
 				}
 			}
 		}
 		return false;
+	}
+
+	private boolean isDrawCard(UnoCard card) {
+		return card.getCardType().equals(UnoCardType.DRAW_FOUR) || card.getCardType().equals(UnoCardType.DRAW_TWO);
+	}
+
+	private void checkForSpecialEffects(UnoCard card) {
+		switch (card.getCardType()) {
+		case DRAW_FOUR:
+			this.drawCount += 4;
+			this.isDrawPossible = false;
+			break;
+		case DRAW_TWO:
+			this.drawCount += 2;
+			break;
+		case SKIP:
+			nextUser();
+			break;
+		case REVERSE:
+			this.gameDirection = this.gameDirection.equals(Direction.CLOCKWISE) ? Direction.ANTI_CLOCKWISE
+					: Direction.CLOCKWISE;
+			if (this.userStates.size() == 2) {
+				nextUser();
+			}
+			break;
+		default:
+			break;
+		}
 	}
 
 	public boolean drawCard(String user) {
@@ -138,7 +153,7 @@ public class UnoGameSession {
 			} else {
 				currentUserIndex = 0;
 			}
-		} else if (this.gameDirection.equals(Direction.CLOCKWISE)) {
+		} else if (this.gameDirection.equals(Direction.ANTI_CLOCKWISE)) {
 			if (currentUserIndex > 0) {
 				currentUserIndex--;
 			} else {
