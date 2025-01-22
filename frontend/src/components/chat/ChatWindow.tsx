@@ -81,18 +81,23 @@ export function ChatWindow(props: ChatWindowProps) {
   return (
     <>
       {getShowState(props.buttonText) && (
-        <div className="bg-game-accent-light fixed flex flex-col items-end -translate-y-full rounded rounded-br-none">
-          <button className="mr-1 text-game-main-dark" onClick={chatButtonHandler}>
+        <div className="fixed flex -translate-y-full flex-col items-end rounded rounded-br-none bg-game-accent-light">
+          <button
+            className="mr-1 text-game-main-dark"
+            onClick={chatButtonHandler}
+          >
             ✖
           </button>
           <div
             ref={chatHistoryRef}
-            className=" overflow-y-scroll text-game-main-dark h-96 px-1 bg-game-accent-light w-full"
+            className="h-96 w-full overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark"
           >
             {Array.isArray(chatHistory) &&
               chatHistory.map((e, index) => (
-                <p key={props.buttonText + index}>
-                  <span className="text-violet-950 font-semibold">{e.senderName + ": "}</span>
+                <p key={props.buttonText + index} className="w-72">
+                  <span className="font-semibold text-violet-950">
+                    {e.senderName + ": "}
+                  </span>
                   {e.message}
                 </p>
               ))}
@@ -100,12 +105,16 @@ export function ChatWindow(props: ChatWindowProps) {
           <form className="flex flex-row" onSubmit={(e) => sendMessage(e)}>
             <input
               autoFocus
-              className="m-1 w-64 bg-black text-game-main-light focus:outline-none focus:ring-0 px-1"
+              className="m-1 w-64 bg-black px-1 text-game-main-light focus:outline-none focus:ring-0"
               type="text"
               value={messageInput}
               onChange={(e) => setMessageInput(e.currentTarget.value)}
             />
-            <input className="m-1 ml-0 cursor-pointer bg-game-accent-medium rounded p-1" type="submit" value={"↵"} />
+            <input
+              className="m-1 ml-0 cursor-pointer rounded bg-game-accent-medium p-1"
+              type="submit"
+              value={"↵"}
+            />
           </form>
         </div>
       )}
@@ -114,16 +123,20 @@ export function ChatWindow(props: ChatWindowProps) {
         id={props.buttonText}
         className={
           getShowState(props.buttonText)
-            ? "bg-game-accent-light p-3 pt-4 rounded-b text-game-main-dark"
-            : "bg-game-accent-medium p-3 rounded text-game-main-light relative"
+            ? "rounded-b bg-game-accent-light p-3 pt-4 text-game-main-dark"
+            : "relative rounded bg-game-accent-medium p-3 text-game-main-light"
         }
         onClick={chatButtonHandler}
       >
         {props.buttonText} Chat
         {!getShowState(props.buttonText) && hasUnreadMessages && (
           <>
-            <div className="absolute top-0 right-0.5 p-0 m-0 text-red-400 text-xs">●</div>
-            <div className="absolute top-0 right-0.5 p-0 m-0 text-red-400 text-xs animate-ping">●</div>
+            <div className="absolute right-0.5 top-0 m-0 p-0 text-xs text-red-400">
+              ●
+            </div>
+            <div className="absolute right-0.5 top-0 m-0 animate-ping p-0 text-xs text-red-400">
+              ●
+            </div>
           </>
         )}
       </button>
