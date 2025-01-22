@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { PlayerRequest } from "../../models/playerRequest";
 import { UnoCard, UnoCardColor } from "../../models/unoCard";
 import UnoColorPicker from "./UnoColorPicker";
+import UnoGameButtons from "./UnoGameButtons";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -78,33 +79,6 @@ function GameWindow() {
     }
   }
 
-  function drawCard() {
-    if (stompClient) {
-      stompClient.publish({
-        destination: "/app/game/draw-card",
-        body: JSON.stringify(request),
-      });
-    }
-  }
-
-  function drawCards() {
-    if (stompClient) {
-      stompClient.publish({
-        destination: "/app/game/draw-cards",
-        body: JSON.stringify(request),
-      });
-    }
-  }
-
-  function pass() {
-    if (stompClient) {
-      stompClient.publish({
-        destination: "/app/game/pass",
-        body: JSON.stringify(request),
-      });
-    }
-  }
-
   if (gameState !== undefined) {
     return (
       <>
@@ -124,37 +98,16 @@ function GameWindow() {
               colorOverride={gameState.colorOverride}
             />
           </div>
+          <div className="h-32">
+            <UnoGameButtons
+              request={request}
+              isDrawPossible={gameState.isDrawPossible}
+              isUserTurn={isUserTurn}
+              drawCount={gameState.drawCount}
+            />
+          </div>
 
-          {isUserTurn && (
-            <>
-              <p className="">It's your turn</p>{" "}
-              {gameState.drawCount != 0 && (
-                <button
-                  className="rounded bg-game-accent-medium p-3"
-                  onClick={drawCards}
-                >
-                  Draw {gameState.drawCount}
-                </button>
-              )}
-              {gameState.isDrawPossible ? (
-                <button
-                  className="rounded bg-game-accent-medium p-3"
-                  onClick={drawCard}
-                >
-                  DrawCard
-                </button>
-              ) : (
-                <button
-                  className="rounded bg-game-accent-medium p-3"
-                  onClick={pass}
-                >
-                  Pass
-                </button>
-              )}
-            </>
-          )}
-
-          <div className="mt-16 flex gap-2">
+          <div className="flex gap-2">
             {gameState.userCards.map((element) => (
               <div
                 className="transition-transform hover:scale-110"
