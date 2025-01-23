@@ -67,6 +67,16 @@ public class LobbyController {
 		}
 	}
 
+	@MessageMapping("/game/restart")
+	public void restartGame(PlayerRequestDto request) {
+		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.lobbyPassword)) {
+			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+			if (gameSessionOpt.isPresent()) {
+				sendGameStateToAllUsers(gameSessionOpt.get());
+			}
+		}
+	}
+
 	@MessageMapping("/game/state")
 	public void getPlayerDeck(PlayerRequestDto request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
@@ -82,6 +92,9 @@ public class LobbyController {
 			UnoGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.makeMove(request.nickName, request.cardId, request.pickedColor)) {
 				sendGameStateToAllUsers(gameSession);
+				if (gameSession.isGameOver()) {
+					this.lobbyService.findLobbyById(request.lobbyId).get().deleteGameSession();
+				}
 			}
 		}
 	}

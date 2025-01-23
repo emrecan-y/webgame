@@ -31,6 +31,7 @@ public class UnoGameSession {
 
 	private UnoCardColor colorOverride;
 	private Direction gameDirection;
+	private boolean isGameOver;
 
 	public UnoGameSession(HashMap<String, String> userToSessionIdMap) {
 		this.userStates = new ArrayList<>();
@@ -45,30 +46,6 @@ public class UnoGameSession {
 		copyDeckAndShuffle();
 		dealCardsToUsers(START_CARD_COUNT);
 		drawCenterCard();
-	}
-
-	private void drawCenterCard() {
-		UnoCard card = drawCardFromStack();
-		List<UnoCard> specialCards = new ArrayList<>();
-		while (!isSpecialCard(card)) {
-			specialCards.add(card);
-			card = drawCardFromStack();
-		}
-		this.drawStack.addAll(specialCards);
-		this.discardStack.add(drawCardFromStack());
-	}
-
-	private UnoCard drawCardFromStack() {
-		if (!this.drawStack.isEmpty()) {
-			return drawStack.pop();
-		} else {
-			UnoCard centerCard = this.discardStack.pop();
-			this.drawStack.addAll(this.discardStack);
-			this.discardStack.clear();
-			Collections.shuffle(this.drawStack);
-			this.discardStack.add(centerCard);
-			return drawStack.pop();
-		}
 	}
 
 	public boolean makeMove(String user, int cardId, UnoCardColor color) {
@@ -87,6 +64,7 @@ public class UnoGameSession {
 							checkForSpecialEffects(card);
 							nextUser();
 							this.colorOverride = color;
+							checkForGameOver();
 							return true;
 						}
 					}
@@ -94,39 +72,6 @@ public class UnoGameSession {
 			}
 		}
 		return false;
-	}
-
-	private boolean isDrawCard(UnoCard card) {
-		return card.getCardType().equals(UnoCardType.DRAW_FOUR) || card.getCardType().equals(UnoCardType.DRAW_TWO);
-	}
-
-	private boolean isSpecialCard(UnoCard card) {
-		return isDrawCard(card) || card.getColor().equals(UnoCardColor.BLACK)
-				|| card.getCardType().equals(UnoCardType.REVERSE) || card.getCardType().equals(UnoCardType.SKIP);
-	}
-
-	private void checkForSpecialEffects(UnoCard card) {
-		switch (card.getCardType()) {
-		case DRAW_FOUR:
-			this.drawCount += 4;
-			this.isDrawPossible = false;
-			break;
-		case DRAW_TWO:
-			this.drawCount += 2;
-			break;
-		case SKIP:
-			nextUser();
-			break;
-		case REVERSE:
-			this.gameDirection = this.gameDirection.equals(Direction.CLOCKWISE) ? Direction.ANTI_CLOCKWISE
-					: Direction.CLOCKWISE;
-			if (this.userStates.size() == 2) {
-				nextUser();
-			}
-			break;
-		default:
-			break;
-		}
 	}
 
 	public boolean drawCard(String user) {
@@ -230,6 +175,75 @@ public class UnoGameSession {
 
 	public int getDrawCount() {
 		return this.drawCount;
+	}
+
+	public boolean isGameOver() {
+		return isGameOver;
+	}
+
+	private boolean isDrawCard(UnoCard card) {
+		return card.getCardType().equals(UnoCardType.DRAW_FOUR) || card.getCardType().equals(UnoCardType.DRAW_TWO);
+	}
+
+	private boolean isSpecialCard(UnoCard card) {
+		return isDrawCard(card) || card.getColor().equals(UnoCardColor.BLACK)
+				|| card.getCardType().equals(UnoCardType.REVERSE) || card.getCardType().equals(UnoCardType.SKIP);
+	}
+
+	private void checkForSpecialEffects(UnoCard card) {
+		switch (card.getCardType()) {
+		case DRAW_FOUR:
+			this.drawCount += 4;
+			this.isDrawPossible = false;
+			break;
+		case DRAW_TWO:
+			this.drawCount += 2;
+			break;
+		case SKIP:
+			nextUser();
+			break;
+		case REVERSE:
+			this.gameDirection = this.gameDirection.equals(Direction.CLOCKWISE) ? Direction.ANTI_CLOCKWISE
+					: Direction.CLOCKWISE;
+			if (this.userStates.size() == 2) {
+				nextUser();
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void drawCenterCard() {
+		UnoCard card = drawCardFromStack();
+		List<UnoCard> specialCards = new ArrayList<>();
+		while (!isSpecialCard(card)) {
+			specialCards.add(card);
+			card = drawCardFromStack();
+		}
+		this.drawStack.addAll(specialCards);
+		this.discardStack.add(drawCardFromStack());
+	}
+
+	private UnoCard drawCardFromStack() {
+		if (!this.drawStack.isEmpty()) {
+			return drawStack.pop();
+		} else {
+			UnoCard centerCard = this.discardStack.pop();
+			this.drawStack.addAll(this.discardStack);
+			this.discardStack.clear();
+			Collections.shuffle(this.drawStack);
+			this.discardStack.add(centerCard);
+			return drawStack.pop();
+		}
+	}
+
+	private void checkForGameOver() {
+		for (UnoUserState userState : this.userStates) {
+			if (userState.getUserCards().size() == 0) {
+				this.isGameOver = true;
+			}
+		}
 	}
 
 	private void copyDeckAndShuffle() {

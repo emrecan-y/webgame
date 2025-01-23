@@ -9,6 +9,7 @@ import { UnoCard, UnoCardColor } from "../../models/unoCard";
 import UnoColorPicker from "./UnoColorPicker";
 import UnoGameButtons from "./UnoGameButtons";
 import UnoPlayersInfo from "./UnoPlayersInfo";
+import UnoGameOver from "./UnoGameOver";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -29,12 +30,7 @@ function GameWindow() {
   };
 
   useEffect(() => {
-    if (stompClient) {
-      stompClient.publish({
-        destination: "/app/game/state",
-        body: JSON.stringify(request),
-      });
-    }
+    getGameState();
   }, []);
 
   useSubscription("/user/queue/game/state", (message) => {
@@ -45,6 +41,24 @@ function GameWindow() {
   useSubscription(`/topic/game/${userLobbyId}/stop`, () => {
     navigate("/lobbies");
   });
+
+  function getGameState() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/game/state",
+        body: JSON.stringify(request),
+      });
+    }
+  }
+
+  function restartGame() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/game/restart",
+        body: JSON.stringify(request),
+      });
+    }
+  }
 
   function makeMoveEventHandler(
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -88,6 +102,10 @@ function GameWindow() {
             setMouseEvent={setMouseEvent}
             pickColor={pickColor}
           />
+        )}
+
+        {gameState.isGameOver && (
+          <UnoGameOver users={gameState.users} restartGame={restartGame} />
         )}
 
         <div className="flex flex-col items-center">

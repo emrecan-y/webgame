@@ -20,6 +20,7 @@ public class UnoGameStateDto {
 	public boolean isDrawPossible;
 	public UnoCardColor colorOverride;
 	public int drawCount;
+	public boolean isGameOver;
 
 	public UnoGameStateDto(UnoGameSession session, List<UnoCard> userCards) {
 		this.users = new ArrayList<>();
@@ -32,6 +33,7 @@ public class UnoGameStateDto {
 		this.isDrawPossible = session.isDrawPossible();
 		this.colorOverride = session.getColorOverride();
 		this.drawCount = session.getDrawCount();
+		this.isGameOver = session.isGameOver();
 
 		this.userCards = userCards;
 	}

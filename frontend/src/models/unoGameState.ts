@@ -11,6 +11,7 @@ export type UnoGameState = {
   isDrawPossible: boolean;
   colorOverride: UnoCardColor;
   drawCount: number;
+  isGameOver: boolean;
 };
 
 export type Direction = "CLOCKWISE" | "ANTI_CLOCKWISE";
