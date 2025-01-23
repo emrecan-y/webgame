@@ -46,7 +46,7 @@ function UnoGameButtons({
   if (isUserTurn) {
     return (
       <div className="flex flex-col">
-        <p className="">It's your turn</p>
+        <p className="animate-bounce">It's your turn</p>
         {drawCount != 0 ? (
           <button
             className="rounded bg-game-accent-medium p-3"

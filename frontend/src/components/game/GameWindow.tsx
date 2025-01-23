@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UnoCardDisplay } from "./UnoCardDisplay";
 import { UserContext } from "../context/UserContext";
@@ -8,6 +8,7 @@ import { PlayerRequest } from "../../models/playerRequest";
 import { UnoCard, UnoCardColor } from "../../models/unoCard";
 import UnoColorPicker from "./UnoColorPicker";
 import UnoGameButtons from "./UnoGameButtons";
+import UnoPlayersInfo from "./UnoPlayersInfo";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -19,8 +20,7 @@ function GameWindow() {
   const [mouseEvent, setMouseEvent] =
     useState<React.MouseEvent<HTMLDivElement, MouseEvent>>();
 
-  const isUserTurn =
-    gameState?.users[gameState.currentUserIndex] === userNickName;
+  const isUserTurn = gameState?.currentUser === userNickName;
 
   const request: PlayerRequest = {
     lobbyId: userLobbyId,
@@ -91,14 +91,18 @@ function GameWindow() {
         )}
 
         <div className="flex flex-col items-center">
-          <div className="">
+          <UnoPlayersInfo
+            users={gameState.users}
+            currentUser={gameState.currentUser}
+          />
+          <div className="mt-32">
             <UnoCardDisplay
               color={gameState.centerCard.color}
               cardType={gameState.centerCard.cardType}
               colorOverride={gameState.colorOverride}
             />
           </div>
-          <div className="h-32">
+          <div className="h-32 pt-3">
             <UnoGameButtons
               request={request}
               isDrawPossible={gameState.isDrawPossible}
