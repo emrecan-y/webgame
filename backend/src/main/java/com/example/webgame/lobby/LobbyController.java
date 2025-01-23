@@ -102,7 +102,7 @@ public class LobbyController {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			UnoGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.drawCardCount(request.nickName)) {
+			if (gameSession.drawCards(request.nickName)) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}

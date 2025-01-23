@@ -44,8 +44,31 @@ public class UnoGameSession {
 
 		copyDeckAndShuffle();
 		dealCardsToUsers(START_CARD_COUNT);
-		this.discardStack.add(this.drawStack.pop());
+		drawCenterCard();
+	}
 
+	private void drawCenterCard() {
+		UnoCard card = drawCardFromStack();
+		List<UnoCard> specialCards = new ArrayList<>();
+		while (!isSpecialCard(card)) {
+			specialCards.add(card);
+			card = drawCardFromStack();
+		}
+		this.drawStack.addAll(specialCards);
+		this.discardStack.add(drawCardFromStack());
+	}
+
+	private UnoCard drawCardFromStack() {
+		if (!this.drawStack.isEmpty()) {
+			return drawStack.pop();
+		} else {
+			UnoCard centerCard = this.discardStack.pop();
+			this.drawStack.addAll(this.discardStack);
+			this.discardStack.clear();
+			Collections.shuffle(this.drawStack);
+			this.discardStack.add(centerCard);
+			return drawStack.pop();
+		}
 	}
 
 	public boolean makeMove(String user, int cardId, UnoCardColor color) {
@@ -75,6 +98,11 @@ public class UnoGameSession {
 
 	private boolean isDrawCard(UnoCard card) {
 		return card.getCardType().equals(UnoCardType.DRAW_FOUR) || card.getCardType().equals(UnoCardType.DRAW_TWO);
+	}
+
+	private boolean isSpecialCard(UnoCard card) {
+		return isDrawCard(card) || card.getColor().equals(UnoCardColor.BLACK)
+				|| card.getCardType().equals(UnoCardType.REVERSE) || card.getCardType().equals(UnoCardType.SKIP);
 	}
 
 	private void checkForSpecialEffects(UnoCard card) {
@@ -107,7 +135,7 @@ public class UnoGameSession {
 				UnoUserState userState = userStates.get(i);
 				boolean isUserTurn = i == currentUserIndex;
 				if (userState.getUserNickName().equals(user) && isUserTurn) {
-					userState.addCard(drawStack.pop());
+					userState.addCard(drawCardFromStack());
 					this.isDrawPossible = false;
 					return true;
 				}
@@ -116,15 +144,16 @@ public class UnoGameSession {
 		return false;
 	}
 
-	public boolean drawCardCount(String user) {
+	public boolean drawCards(String user) {
 		if (this.isDrawPossible) {
 			for (int i = 0; i < userStates.size(); i++) {
 				UnoUserState userState = userStates.get(i);
 				boolean isUserTurn = i == currentUserIndex;
 				if (userState.getUserNickName().equals(user) && isUserTurn) {
 					for (; this.drawCount > 0; this.drawCount--) {
-						userState.addCard(drawStack.pop());
+						userState.addCard(drawCardFromStack());
 					}
+					this.isDrawPossible = false;
 					return true;
 				}
 			}
@@ -214,7 +243,7 @@ public class UnoGameSession {
 		for (int i = 0; i < cardCount; i++) {
 			for (UnoUserState userState : this.userStates) {
 				if (userState != null) {
-					UnoCard currentCard = drawStack.pop();
+					UnoCard currentCard = drawCardFromStack();
 					userState.addCard(currentCard);
 				}
 			}
