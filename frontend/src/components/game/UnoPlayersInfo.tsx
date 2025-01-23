@@ -30,12 +30,12 @@ function UnoPlayersInfo({ users, currentUser }: UnoPlayersInfoProps) {
         currentUser === user.name ? (
           <div className="flex animate-bounce flex-col items-center rounded bg-game-accent-light p-2 text-game-main-dark">
             <p>{user.name}</p>
-            <p>{user.cardCount}</p>
+            <p>Cardcount: {user.cardCount}</p>
           </div>
         ) : (
           <div className="flex flex-col items-center rounded bg-game-accent-light p-2 text-game-main-dark">
             <p>{user.name}</p>
-            <p>{user.cardCount}</p>
+            <p>Cardcount: {user.cardCount}</p>
           </div>
         ),
       )}
