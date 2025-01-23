@@ -27,8 +27,12 @@ function Chat() {
   );
 
   return (
-    <div className="flex flex-row gap-x-1 items-end fixed bottom-0 right-0.5">
-      {userLobbyId !== -1 && <div className="flex flex-col items-end drop-shadow-2xl">{lobbyChat}</div>}
+    <div className="fixed bottom-0 right-0.5 z-20 flex flex-row items-end gap-x-1">
+      {userLobbyId !== -1 && (
+        <div className="flex flex-col items-end drop-shadow-2xl">
+          {lobbyChat}
+        </div>
+      )}
       <div className="flex flex-col items-end drop-shadow-2xl">{globaChat}</div>
     </div>
   );
