@@ -112,8 +112,9 @@ function GameWindow() {
           <UnoPlayersInfo
             users={gameState.users}
             currentUser={gameState.currentUser}
+            direction={gameState.direction}
           />
-          <div className="mt-32">
+          <div className="mt-24">
             <UnoCardDisplay
               color={gameState.centerCard.color}
               cardType={gameState.centerCard.cardType}

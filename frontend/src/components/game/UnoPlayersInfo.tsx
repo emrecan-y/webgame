@@ -1,31 +1,43 @@
 import { useContext } from "react";
-import { UnoUser } from "../../models/unoGameState";
+import { Direction, UnoUser } from "../../models/unoGameState";
 import { UserContext } from "../context/UserContext";
 
 type UnoPlayersInfoProps = {
   users: UnoUser[];
   currentUser: string;
+  direction: Direction;
 };
 
-function UnoPlayersInfo({ users, currentUser }: UnoPlayersInfoProps) {
+function UnoPlayersInfo({
+  users,
+  currentUser,
+  direction,
+}: UnoPlayersInfoProps) {
   const { userNickName } = useContext(UserContext);
   const applicationUserIndex = users.findIndex(
     (user) => user.name === userNickName,
   );
 
-  let usersToDisplay: UnoUser[] = users
-    .slice(0, applicationUserIndex)
-    .reverse();
-
-  usersToDisplay = [
-    ...usersToDisplay,
-    ...users.slice(applicationUserIndex + 1).reverse(),
-  ];
-
-  console.log(usersToDisplay);
+  let usersToDisplay: UnoUser[] = [];
+  if (applicationUserIndex === 0) {
+    usersToDisplay = users.slice(1);
+  } else if (applicationUserIndex === users.length - 1) {
+    usersToDisplay = users.slice(0, applicationUserIndex);
+  } else {
+    usersToDisplay = users.slice(applicationUserIndex + 1).reverse();
+    usersToDisplay = [
+      ...usersToDisplay,
+      ...users.slice(0, applicationUserIndex).reverse(),
+    ];
+  }
 
   return (
     <div className="flex gap-x-4">
+      {direction === "ANTI_CLOCKWISE" ? (
+        <p className="text-8xl text-game-accent-light">⤹</p>
+      ) : (
+        <p className="scale-y-[-1] text-8xl text-game-accent-light">⤹</p>
+      )}
       {usersToDisplay.map((user) =>
         currentUser === user.name ? (
           <div className="flex animate-bounce flex-col items-center rounded bg-game-accent-light p-2 text-game-main-dark">
@@ -38,6 +50,11 @@ function UnoPlayersInfo({ users, currentUser }: UnoPlayersInfoProps) {
             <p>Cardcount: {user.cardCount}</p>
           </div>
         ),
+      )}
+      {direction === "CLOCKWISE" ? (
+        <p className="text-8xl text-game-accent-light">⤸</p>
+      ) : (
+        <p className="scale-y-[-1] text-8xl text-game-accent-light">⤸</p>
       )}
     </div>
   );
