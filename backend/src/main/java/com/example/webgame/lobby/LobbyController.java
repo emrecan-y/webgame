@@ -77,6 +77,15 @@ public class LobbyController {
 		}
 	}
 
+	@MessageMapping("/game/exit")
+	public void exitGame(PlayerRequestDto request) {
+		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.lobbyId);
+		if (lobbyOpt.isPresent() && lobbyOpt.get().containsUser(request.nickName)
+				&& (!lobbyOpt.get().isPrivate() || lobbyOpt.get().getPassword().equals(request.lobbyPassword))) {
+			this.template.convertAndSend("/topic/game-" + request.lobbyId + "/exit", "");
+		}
+	}
+
 	@MessageMapping("/game/state")
 	public void getPlayerDeck(PlayerRequestDto request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);

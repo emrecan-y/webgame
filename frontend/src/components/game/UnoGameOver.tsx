@@ -1,12 +1,37 @@
 import { useNavigate } from "react-router-dom";
 import { UnoUser } from "../../models/unoGameState";
+import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { PlayerRequest } from "../../models/playerRequest";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 type UnoGameOverProps = { users: UnoUser[]; restartGame: () => void };
 
 function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
+  const stompClient = useStompClient();
+  const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
   const navigate = useNavigate();
 
   const winnerName = users.find((user) => user.cardCount === 0)?.name;
+
+  useSubscription(`/topic/game-${userLobbyId}/exit`, () => {
+    navigate("/lobbies");
+  });
+
+  function exitGame() {
+    const request: PlayerRequest = {
+      lobbyId: userLobbyId,
+      nickName: userNickName,
+      lobbyPassword: lobbyPassWord,
+    };
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/game/exit",
+        body: JSON.stringify(request),
+      });
+    }
+  }
+
   return (
     <>
       <div className="fixed left-0 top-0 z-10 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"></div>
@@ -24,10 +49,10 @@ function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
             Restart
           </button>
           <button
-            onClick={() => navigate("/lobbies")}
+            onClick={exitGame}
             className="w-fit rounded bg-game-accent-medium px-2 py-1"
           >
-            Continue
+            Exit
           </button>
         </div>
       </div>
