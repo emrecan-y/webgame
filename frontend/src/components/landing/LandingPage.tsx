@@ -59,8 +59,11 @@ function LandingPage() {
   return (
     <div className="flex flex-col items-center">
       <p className="min-h-6 animate-bounce">{infoText}</p>
-      <form className="flex flex-col bg-game-accent-light p-2  rounded" onSubmit={(e) => tryLogin(e)}>
-        <div className="bg-game-accent-medium p-1 flex flex-col rounded">
+      <form
+        className="flex flex-col rounded bg-game-accent-light p-2"
+        onSubmit={(e) => tryLogin(e)}
+      >
+        <div className="flex flex-col rounded bg-game-accent-medium p-1">
           <label className="pl-1" htmlFor="nickname">
             Nickname
           </label>
@@ -73,14 +76,18 @@ function LandingPage() {
             value={nickName}
           />
         </div>
-        <div className=" flex justify-between">
+        <div className="flex justify-between">
           <input
-            className="py-1 px-4 mt-3 bg-game-accent-medium rounded"
+            className="mt-3 rounded bg-game-accent-medium px-4 py-1 hover:cursor-pointer"
             type="button"
             onClick={requestRandomName}
             value="Generate"
           />
-          <input className="py-1 px-4 mt-3 bg-game-accent-medium rounded" type="submit" value="Continue" />
+          <input
+            className="mt-3 rounded bg-game-accent-medium px-4 py-1 hover:cursor-pointer"
+            type="submit"
+            value="Continue"
+          />
         </div>
       </form>
     </div>
