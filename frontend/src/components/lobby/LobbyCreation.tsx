@@ -34,20 +34,20 @@ function LobbyCreation(props: LobbyCreationProps) {
   }
 
   return (
-    <div className="fixed mt-2 flex  flex-col items-center z-20">
+    <div className="fixed z-20 mt-2 flex flex-col items-center">
       <div
-        className="fixed top-0 backdrop-blur-[4px] left-0 bg-game-main-dark bg-opacity-40 w-screen h-screen cursor-pointer -z-10"
+        className="fixed left-0 top-0 -z-10 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
         onClick={() => props.setShowCreationWindow(false)}
       ></div>
 
       <form
-        className="fixed shadow-inner  bg-game-accent-light left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded p-2 w-max flex flex-col"
+        className="fixed left-1/2 top-1/2 flex w-max -translate-x-1/2 -translate-y-1/2 flex-col rounded bg-game-accent-light p-2 shadow-inner"
         onSubmit={(e) => createLobby(e)}
       >
-        <p className="text-game-main-dark mb-1">Create New Lobby</p>
+        <p className="mb-1 text-game-main-dark">Create New Lobby</p>
 
         <div className="flex flex-row justify-between">
-          <div className="flex flex-col w-max p-1 rounded bg-game-accent-medium">
+          <div className="flex w-max flex-col rounded bg-game-accent-medium p-1">
             <label className="text-game-main-light" htmlFor="lobby-size">
               Lobby Size
             </label>
@@ -57,13 +57,13 @@ function LobbyCreation(props: LobbyCreationProps) {
               id="lobby-size"
               name="lobby-size"
               min={2}
-              max={4}
+              max={8}
               value={lobbySize}
               onChange={(e) => setLobbySize(e.currentTarget.valueAsNumber)}
             />
           </div>
 
-          <div className="flex flex-col w-max p-1 ml-2 rounded bg-game-accent-medium">
+          <div className="ml-2 flex w-max flex-col rounded bg-game-accent-medium p-1">
             <label className="text-game-main-light" htmlFor="lobby-password">
               Password
             </label>
@@ -80,13 +80,13 @@ function LobbyCreation(props: LobbyCreationProps) {
         </div>
         <div className="flex flex-row justify-end">
           <input
-            className="bg-game-accent-medium px-2 py-1 mt-2 rounded cursor-pointer mr-2"
+            className="mr-2 mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1"
             type="button"
             onClick={() => props.setShowCreationWindow(false)}
             value="Cancel"
           />
           <input
-            className="bg-game-accent-medium px-2 py-1 mt-2 rounded cursor-pointer "
+            className="mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1"
             type="submit"
             value="Create"
           />
