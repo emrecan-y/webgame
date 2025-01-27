@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.webgame.dto.PlayerRequestDto;
 import com.example.webgame.dto.UnoGameStateDto;
-import com.example.webgame.game.UnoGameSession;
-import com.example.webgame.game.UnoUserState;
+import com.example.webgame.game.uno.UnoGameSession;
+import com.example.webgame.game.uno.UnoUserState;
 import com.example.webgame.session.SessionService;
 import com.example.webgame.session.UserSession;
 

@@ -1,4 +1,4 @@
-package com.example.webgame.game;
+package com.example.webgame.game.uno;
 
 import com.example.webgame.enums.UnoCardColor;
 import com.example.webgame.enums.UnoCardType;

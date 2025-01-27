@@ -1,4 +1,4 @@
-package com.example.webgame.game;
+package com.example.webgame.game.uno;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 import com.example.webgame.chat.ChatHistory;
-import com.example.webgame.game.UnoGameSession;
+import com.example.webgame.game.uno.UnoGameSession;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Lobby {

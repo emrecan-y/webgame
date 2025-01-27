@@ -1,4 +1,4 @@
-package com.example.webgame.game;
+package com.example.webgame.game.uno;
 
 import java.util.ArrayList;
 import java.util.List;

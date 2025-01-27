@@ -5,9 +5,9 @@ import java.util.List;
 
 import com.example.webgame.enums.Direction;
 import com.example.webgame.enums.UnoCardColor;
-import com.example.webgame.game.UnoCard;
-import com.example.webgame.game.UnoGameSession;
-import com.example.webgame.game.UnoUserState;
+import com.example.webgame.game.uno.UnoCard;
+import com.example.webgame.game.uno.UnoGameSession;
+import com.example.webgame.game.uno.UnoUserState;
 
 public class UnoGameStateDto {
 	public List<UnoUserDto> users;
