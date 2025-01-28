@@ -1,11 +1,11 @@
 import { useStompClient } from "react-stomp-hooks";
-import { PlayerRequest } from "../../models/playerRequest";
+import { GeneralPlayerRequest } from "../../models/requests";
 
 type UnoGameButtonsProps = {
   isUserTurn: boolean;
   isDrawPossible: boolean;
   drawCount: number;
-  request: PlayerRequest;
+  request: GeneralPlayerRequest;
 };
 
 function UnoGameButtons({

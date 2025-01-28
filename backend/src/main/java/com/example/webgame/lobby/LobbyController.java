@@ -11,7 +11,8 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webgame.dto.PlayerRequestDto;
+import com.example.webgame.dto.GeneralPlayerRequest;
+import com.example.webgame.dto.LobbyCreateRequest;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -27,8 +28,9 @@ public class LobbyController {
 
 	@MessageMapping("/create-lobby")
 	@SendToUser("/queue/lobby/lobby-id")
-	public Integer createLobby(@Header("simpSessionId") String sessionId, PlayerRequestDto request) throws Exception {
-		Optional<Lobby> lobby = this.lobbyService.createLobby(sessionId, request.lobbyPassword, request.lobbySize);
+	public Integer createLobby(@Header("simpSessionId") String sessionId, LobbyCreateRequest request) throws Exception {
+		Optional<Lobby> lobby = this.lobbyService.createLobby(sessionId, request.getLobbyPassword(),
+				request.getLobbySize());
 		if (lobby.isPresent()) {
 			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
 			return lobby.get().getId();
@@ -45,10 +47,11 @@ public class LobbyController {
 
 	@MessageMapping("/lobby/add-player")
 	@SendToUser("/queue/lobby/lobby-id")
-	public Integer addPlayerToLobby(PlayerRequestDto request) {
-		if (this.lobbyService.addPlayerToLobby(request.lobbyId, request.nickName, request.lobbyPassword)) {
+	public Integer addPlayerToLobby(GeneralPlayerRequest request) {
+		if (this.lobbyService.addPlayerToLobby(request.getLobbyId(), request.getNickName(),
+				request.getLobbyPassword())) {
 			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
-			return request.lobbyId;
+			return request.getLobbyId();
 		}
 		return -1;
 	}

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { UnoUser } from "../../models/unoGameState";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { PlayerRequest } from "../../models/playerRequest";
+import { GeneralPlayerRequest } from "../../models/requests";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
@@ -19,7 +19,7 @@ function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
   });
 
   function exitGame() {
-    const request: PlayerRequest = {
+    const request: GeneralPlayerRequest = {
       lobbyId: userLobbyId,
       nickName: userNickName,
       lobbyPassword: lobbyPassWord,

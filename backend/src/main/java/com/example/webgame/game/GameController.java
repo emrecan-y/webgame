@@ -8,10 +8,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webgame.dto.PlayerRequestDto;
+import com.example.webgame.dto.GeneralPlayerRequest;
+import com.example.webgame.dto.PlayerMakeMoveRequest;
 import com.example.webgame.dto.UnoGameStateDto;
 import com.example.webgame.game.uno.UnoGameSession;
-import com.example.webgame.lobby.Lobby;
 import com.example.webgame.lobby.LobbyService;
 
 @RestController
@@ -26,8 +26,8 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/start")
-	public void startGame(PlayerRequestDto request) {
-		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.lobbyPassword)) {
+	public void startGame(GeneralPlayerRequest request) {
+		if (this.lobbyService.startGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
 			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				gameSessionOpt.get().getUserStates().forEach(userState -> this.template
@@ -37,8 +37,8 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/restart")
-	public void restartGame(PlayerRequestDto request) {
-		if (this.lobbyService.startGame(request.lobbyId, request.nickName, request.lobbyPassword)) {
+	public void restartGame(GeneralPlayerRequest request) {
+		if (this.lobbyService.startGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
 			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				sendGameStateToAllUsers(gameSessionOpt.get());
@@ -47,16 +47,15 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/exit")
-	public void exitGame(PlayerRequestDto request) {
-		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.lobbyId);
-		if (lobbyOpt.isPresent() && lobbyOpt.get().containsUser(request.nickName)
-				&& (!lobbyOpt.get().isPrivate() || lobbyOpt.get().getPassword().equals(request.lobbyPassword))) {
-			this.template.convertAndSend("/topic/game-" + request.lobbyId + "/exit", "");
+	public void exitGame(GeneralPlayerRequest request) {
+		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		if (gameSessionOpt.isPresent()) {
+			this.template.convertAndSend("/topic/game-" + request.getLobbyId() + "/exit", "");
 		}
 	}
 
 	@MessageMapping("/game/state")
-	public void getPlayerDeck(PlayerRequestDto request) {
+	public void getGameState(GeneralPlayerRequest request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			sendGameStateToAllUsers(gameSessionOpt.get());
@@ -64,47 +63,47 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/make-move")
-	public void makeMove(PlayerRequestDto request) {
+	public void makeMove(PlayerMakeMoveRequest request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			UnoGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.makeMove(request.nickName, request.cardId, request.pickedColor)) {
+			if (gameSession.makeMove(request.getNickName(), request.getCardId(), request.getPickedColor())) {
 				sendGameStateToAllUsers(gameSession);
 				if (gameSession.isGameOver()) {
-					this.lobbyService.findLobbyById(request.lobbyId).get().deleteGameSession();
+					this.lobbyService.findLobbyById(request.getLobbyId()).get().deleteGameSession();
 				}
 			}
 		}
 	}
 
 	@MessageMapping("/game/draw-card")
-	public void drawCard(PlayerRequestDto request) {
+	public void drawCard(GeneralPlayerRequest request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			UnoGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.drawCard(request.nickName)) {
+			if (gameSession.drawCard(request.getNickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}
 	}
 
 	@MessageMapping("/game/draw-cards")
-	public void drawCards(PlayerRequestDto request) {
+	public void drawCards(GeneralPlayerRequest request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			UnoGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.drawCards(request.nickName)) {
+			if (gameSession.drawCards(request.getNickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}
 	}
 
 	@MessageMapping("/game/pass")
-	public void pass(PlayerRequestDto request) {
+	public void pass(GeneralPlayerRequest request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			UnoGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.pass(request.nickName)) {
+			if (gameSession.pass(request.getNickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}

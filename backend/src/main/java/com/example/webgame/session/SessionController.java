@@ -6,7 +6,7 @@ import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webgame.dto.PlayerRequestDto;
+import com.example.webgame.dto.LoginRequest;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -20,9 +20,9 @@ public class SessionController {
 
 	@MessageMapping("/login")
 	@SendToUser("/queue/login/user-name")
-	public String login(@Header("simpSessionId") String sessionId, PlayerRequestDto request) throws Exception {
-		if (this.sessionService.addUser(sessionId, request.nickName)) {
-			return request.nickName;
+	public String login(@Header("simpSessionId") String sessionId, LoginRequest request) throws Exception {
+		if (this.sessionService.addUser(sessionId, request.getNickName())) {
+			return request.getNickName();
 		} else {
 			return "";
 		}

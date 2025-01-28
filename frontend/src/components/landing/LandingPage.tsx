@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
-import { PlayerRequest } from "../../models/playerRequest";
+import { LoginRequest } from "../../models/requests";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");
@@ -37,7 +37,7 @@ function LandingPage() {
     if (nickName === "") {
       setInfoText("Please pick a nickname.");
     } else if (stompClient) {
-      const request: PlayerRequest = {
+      const request: LoginRequest = {
         nickName: nickName,
       };
       stompClient.publish({

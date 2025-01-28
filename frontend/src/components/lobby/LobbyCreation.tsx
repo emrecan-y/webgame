@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useStompClient } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
-import { PlayerRequest } from "../../models/playerRequest";
+import { LobbyCreateRequest } from "../../models/requests";
 
 type LobbyCreationProps = {
   setShowCreationWindow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,7 +17,7 @@ function LobbyCreation(props: LobbyCreationProps) {
 
   function createLobby(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const request: PlayerRequest = {
+    const request: LobbyCreateRequest = {
       lobbyPassword: lobbyPassword,
       lobbySize: lobbySize,
     };

@@ -4,7 +4,10 @@ import { UnoCardDisplay } from "./UnoCardDisplay";
 import { UserContext } from "../context/UserContext";
 import { UnoGameState } from "../../models/unoGameState";
 import { useNavigate } from "react-router-dom";
-import { PlayerRequest } from "../../models/playerRequest";
+import {
+  GeneralPlayerRequest,
+  PlayerMakeMoveRequest,
+} from "../../models/requests";
 import { UnoCard, UnoCardColor } from "../../models/unoCard";
 import UnoColorPicker from "./UnoColorPicker";
 import UnoGameButtons from "./UnoGameButtons";
@@ -23,7 +26,7 @@ function GameWindow() {
 
   const isUserTurn = gameState?.currentUser === userNickName;
 
-  const request: PlayerRequest = {
+  const request: GeneralPlayerRequest = {
     lobbyId: userLobbyId,
     nickName: userNickName,
     lobbyPassword: lobbyPassWord,
@@ -79,9 +82,9 @@ function GameWindow() {
     }
   }
 
-  function makeMove(cardId: number, pickedColor?: UnoCardColor) {
+  function makeMove(cardId: number, pickedColor: UnoCardColor = "BLACK") {
     if (stompClient) {
-      const newRequest: PlayerRequest = {
+      const newRequest: PlayerMakeMoveRequest = {
         ...request,
         cardId: cardId,
         pickedColor: pickedColor,

@@ -3,7 +3,7 @@ import { Lobby } from "../../models/lobby";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import { PlayerRequest } from "../../models/playerRequest";
+import { GeneralPlayerRequest } from "../../models/requests";
 
 type LobbyListEntryProps = {
   lobby: Lobby;
@@ -21,7 +21,7 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   const isPrivate = lobby.private;
   const isUserInLobby = userLobbyId === lobby.id;
 
-  const request: PlayerRequest = {
+  const request: GeneralPlayerRequest = {
     lobbyId: lobby.id,
     nickName: userNickName,
     lobbyPassword: password,

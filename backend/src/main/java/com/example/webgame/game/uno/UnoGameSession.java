@@ -63,7 +63,7 @@ public class UnoGameSession {
 							discardStack.add(card);
 							checkForSpecialEffects(card);
 							nextUser();
-							this.colorOverride = color;
+							this.colorOverride = color.equals(UnoCardColor.BLACK) ? null : color;
 							checkForGameOver();
 							return true;
 						}
