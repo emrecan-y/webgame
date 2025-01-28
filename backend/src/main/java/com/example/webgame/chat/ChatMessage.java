@@ -6,7 +6,6 @@ public class ChatMessage {
 	private String message;
 
 	public ChatMessage(String senderName, String message) {
-		super();
 		this.senderName = senderName;
 		this.message = message;
 	}

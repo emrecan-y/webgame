@@ -13,8 +13,6 @@ type ChatWindowProps = {
 };
 
 export function ChatWindow(props: ChatWindowProps) {
-  const userContext = useContext(UserContext);
-
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const chatHistoryRef = useRef<HTMLDivElement>(null);
 
@@ -63,18 +61,11 @@ export function ChatWindow(props: ChatWindowProps) {
   function sendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (stompClient && messageInput !== "") {
-      const newMessage: ChatMessage = {
-        senderName: userContext.userNickName!,
-        message: messageInput,
-        date: new Date(), // change to Backend soon
-      };
       stompClient.publish({
         destination: props.sendDestination,
-        body: JSON.stringify(newMessage),
+        body: messageInput,
       });
       setMessageInput("");
-    } else {
-      //Handle error
     }
   }
 
