@@ -38,19 +38,15 @@ function UnoPlayersInfo({
       ) : (
         <p className="scale-y-[-1] text-8xl text-game-accent-light">⤹</p>
       )}
-      {usersToDisplay.map((user) =>
-        currentUser === user.name ? (
-          <div className="flex animate-bounce flex-col items-center rounded bg-game-accent-light p-2 text-game-main-dark">
-            <p>{user.name}</p>
-            <p>Cardcount: {user.cardCount}</p>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center rounded bg-game-accent-light p-2 text-game-main-dark">
-            <p>{user.name}</p>
-            <p>Cardcount: {user.cardCount}</p>
-          </div>
-        ),
-      )}
+      {usersToDisplay.map((user) => (
+        <div
+          key={`player-info-${user.name}`}
+          className={`flex flex-col items-center rounded bg-game-accent-light p-2 text-game-main-dark ${currentUser === user.name && "animate-bounce"}`}
+        >
+          <p>{user.name}</p>
+          <p>Cardcount: {user.cardCount}</p>
+        </div>
+      ))}
       {direction === "CLOCKWISE" ? (
         <p className="text-8xl text-game-accent-light">⤸</p>
       ) : (
