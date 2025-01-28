@@ -8,6 +8,7 @@ import com.example.webgame.enums.UnoCardColor;
 import com.example.webgame.game.uno.UnoCard;
 import com.example.webgame.game.uno.UnoGameSession;
 import com.example.webgame.game.uno.UnoUserState;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UnoGameStateDto {
 	private List<UnoUserDto> users;
@@ -81,6 +82,7 @@ public class UnoGameStateDto {
 		this.centerCard = centerCard;
 	}
 
+	@JsonProperty("isDrawPossible")
 	public boolean isDrawPossible() {
 		return isDrawPossible;
 	}
@@ -105,6 +107,7 @@ public class UnoGameStateDto {
 		this.drawCount = drawCount;
 	}
 
+	@JsonProperty("isGameOver")
 	public boolean isGameOver() {
 		return isGameOver;
 	}
