@@ -1,6 +1,5 @@
 import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import Chat from "./chat/Chat";
 import { WebSocketErrorContext } from "./context/WebSocketErrorContext";
 import { UserContext } from "./context/UserContext";
 
@@ -25,10 +24,11 @@ export function Layout() {
 
   return (
     <>
-      <div className="flex justify-center min-h-screen items-center">
+      <div className="flex min-h-screen items-center justify-center bg-transparent text-game-main-light">
         <Outlet />
       </div>
-      {userNickName !== "" && <Chat />}
+
+      <div className="absolute left-0 top-0 -z-50 h-full w-full bg-game-main-dark"></div>
     </>
   );
 }
