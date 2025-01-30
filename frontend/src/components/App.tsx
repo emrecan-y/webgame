@@ -13,21 +13,12 @@ function App() {
     <UserContextProvider>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Layout />
-                <Chat />
-              </>
-            }
-          >
+          <Route path="/" element={<Layout />}>
             <Route
               index
               element={
                 <>
-                  <LandingPage />
-                  <AnimatedBackground />
+                  <LandingPage /> <AnimatedBackground />
                 </>
               }
             />
@@ -35,22 +26,27 @@ function App() {
               path="/lobbies"
               element={
                 <>
-                  <LobbyList />
-                  <AnimatedBackground />
+                  <LobbyList /> <AnimatedBackground /> <Chat />
                 </>
               }
             />
-            <Route path="/game" element={<GameWindow />} />
+            <Route
+              path="/game"
+              element={
+                <>
+                  <GameWindow /> <Chat />
+                </>
+              }
+            />
+            <Route
+              path="/connection-error"
+              element={
+                <>
+                  <ConnectionError /> <AnimatedBackground />
+                </>
+              }
+            />
           </Route>
-          <Route
-            path="/connection-error"
-            element={
-              <>
-                <ConnectionError />
-                <AnimatedBackground />
-              </>
-            }
-          />
         </Routes>
       </BrowserRouter>
       <div className="absolute left-0 top-0 -z-50 h-full w-full bg-game-main-dark"></div>
