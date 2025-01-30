@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { LoginRequest } from "../../models/requests";
+import { useNavigate } from "react-router-dom";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");
@@ -9,8 +10,13 @@ function LandingPage() {
 
   const userContext = useContext(UserContext);
   const stompClient = useStompClient();
+  const { userNickName } = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (userNickName !== "") {
+      navigate("/lobbies");
+    }
     requestRandomName();
   }, [stompClient]);
 
