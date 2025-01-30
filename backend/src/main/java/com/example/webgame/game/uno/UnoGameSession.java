@@ -217,12 +217,12 @@ public class UnoGameSession {
 	private void drawCenterCard() {
 		UnoCard card = drawCardFromStack();
 		List<UnoCard> specialCards = new ArrayList<>();
-		while (!isSpecialCard(card)) {
+		while (isSpecialCard(card)) {
 			specialCards.add(card);
 			card = drawCardFromStack();
 		}
 		this.drawStack.addAll(specialCards);
-		this.discardStack.add(drawCardFromStack());
+		this.discardStack.add(card);
 	}
 
 	private UnoCard drawCardFromStack() {
