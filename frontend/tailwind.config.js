@@ -20,8 +20,17 @@ export default {
       },
 
       dropShadow: {
-        "uno-small-text": "-2px 2px rgb(0, 0, 0)",
-        "uno-large-text": "-4px 4px rgb(0, 0, 0)",
+        "uno-small-text": [
+          "-1.5px 1.2px rgba(0, 0, 0, 1)",
+          "0 1px 1px rgba(0, 0, 0, 0.8)",
+        ],
+        "uno-large-text": [
+          "-3px 2.5px rgba(0, 0, 0, 1)",
+          "0 1.5px 1.5px rgba(0, 0, 0, 0.8)",
+        ],
+      },
+      fontFamily: {
+        cabin: ["Cabin", "sans-serif"],
       },
     },
   },

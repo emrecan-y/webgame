@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: Cabin;
+  font-style: bold;
+  font-weight: 200 700;
+  font-display: swap;
+  src: url("./assets/Cabin-Bold.ttf") format("tff");
+}

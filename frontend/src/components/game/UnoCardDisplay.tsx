@@ -34,7 +34,7 @@ const middleTextElement = (value: string | undefined) => {
   return (
     <>
       <div className="absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid border-uno-white">
-        <div className="border-1 rotate-[-30deg] border-solid border-black pb-2 pl-1 text-[3rem] font-bold drop-shadow-uno-large-text">
+        <div className="border-1 rotate-[-30deg] border-solid border-black pb-2 pl-1 text-[3.4rem] font-bold drop-shadow-uno-large-text">
           {value}
         </div>
       </div>
@@ -61,7 +61,7 @@ export function UnoCardDisplay(
     color = card.colorOverride;
   }
   return (
-    <div className="relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-uno-white">
+    <div className="font-cabin relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-uno-white">
       {card.color === "BLACK"
         ? colorGridElement
         : middleTextElement(numbers.get(card.cardType))}
@@ -75,6 +75,21 @@ export function UnoCardDisplay(
           {numbers.get(card.cardType)}
         </div>
       </div>
+    </div>
+  );
+}
+
+export function UnoCardTopViewDisplay() {
+  return (
+    <div className="font-cabin relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-uno-white">
+      <div className="absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid border-uno-white bg-uno-red">
+        <div className="border-1 rotate-[-50deg] pl-1 text-[2.4rem] font-bold text-uno-yellow drop-shadow-uno-large-text">
+          BİR
+        </div>
+      </div>
+      <div
+        className={`${colors.get("BLACK")} flex h-40 w-24 items-center justify-center rounded-lg`}
+      ></div>
     </div>
   );
 }
