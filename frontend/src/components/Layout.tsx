@@ -27,8 +27,6 @@ export function Layout() {
       <div className="flex min-h-screen items-center justify-center bg-transparent text-game-main-light">
         <Outlet />
       </div>
-
-      <div className="absolute left-0 top-0 -z-50 h-full w-full bg-game-main-dark"></div>
     </>
   );
 }

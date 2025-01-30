@@ -53,6 +53,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
+      <div className="absolute left-0 top-0 -z-50 h-full w-full bg-game-main-dark"></div>
     </UserContextProvider>
   );
 }
