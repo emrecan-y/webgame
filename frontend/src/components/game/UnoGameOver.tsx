@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import { UnoUser } from "../../models/unoGameState";
-import { useStompClient, useSubscription } from "react-stomp-hooks";
+import { useStompClient } from "react-stomp-hooks";
 import { GeneralPlayerRequest } from "../../models/requests";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
@@ -10,13 +9,8 @@ type UnoGameOverProps = { users: UnoUser[]; restartGame: () => void };
 function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
   const stompClient = useStompClient();
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
-  const navigate = useNavigate();
 
   const winnerName = users.find((user) => user.cardCount === 0)?.name;
-
-  useSubscription(`/topic/game-${userLobbyId}/exit`, () => {
-    navigate("/lobbies");
-  });
 
   function exitGame() {
     const request: GeneralPlayerRequest = {

@@ -19,7 +19,7 @@ import com.example.webgame.enums.UnoCardType;
 public class UnoGameSession {
 	private static final List<UnoCard> INITIAL_CARD_DECK = readUnoCardCsv();
 	private static final Random RANDOM = new Random();
-	private static final int START_CARD_COUNT = 7;
+	private static final int START_CARD_COUNT = 1;
 
 	private Stack<UnoCard> drawStack;
 	private Stack<UnoCard> discardStack;

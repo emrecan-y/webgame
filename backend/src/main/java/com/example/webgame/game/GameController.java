@@ -12,6 +12,7 @@ import com.example.webgame.dto.GeneralPlayerRequest;
 import com.example.webgame.dto.PlayerMakeMoveRequest;
 import com.example.webgame.dto.UnoGameStateDto;
 import com.example.webgame.game.uno.UnoGameSession;
+import com.example.webgame.lobby.Lobby;
 import com.example.webgame.lobby.LobbyService;
 
 @RestController
@@ -38,6 +39,10 @@ public class GameController {
 
 	@MessageMapping("/game/restart")
 	public void restartGame(GeneralPlayerRequest request) {
+		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.getLobbyId());
+		if (lobbyOpt.isPresent()) {
+			lobbyOpt.get().deleteGameSession();
+		}
 		if (this.lobbyService.startGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
 			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
@@ -49,8 +54,10 @@ public class GameController {
 	@MessageMapping("/game/exit")
 	public void exitGame(GeneralPlayerRequest request) {
 		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
-		if (gameSessionOpt.isPresent()) {
-			this.template.convertAndSend("/topic/game-" + request.getLobbyId() + "/exit", "");
+		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.getLobbyId());
+		if (gameSessionOpt.isPresent() && lobbyOpt.isPresent()) {
+			lobbyOpt.get().deleteGameSession();
+			template.convertAndSend("/topic/game/" + request.getLobbyId() + "/stop", "");
 		}
 	}
 
@@ -69,9 +76,6 @@ public class GameController {
 			UnoGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.makeMove(request.getNickName(), request.getCardId(), request.getPickedColor())) {
 				sendGameStateToAllUsers(gameSession);
-				if (gameSession.isGameOver()) {
-					this.lobbyService.findLobbyById(request.getLobbyId()).get().deleteGameSession();
-				}
 			}
 		}
 	}

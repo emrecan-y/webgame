@@ -31,7 +31,9 @@ public class Lobby {
 	}
 
 	public void startGame(HashMap<String, String> userToSessionIdMap) {
-		this.gameSession = new UnoGameSession(userToSessionIdMap);
+		if (this.gameSession == null) {
+			this.gameSession = new UnoGameSession(userToSessionIdMap);
+		}
 	}
 
 	public UnoGameSession getGameSession() {
