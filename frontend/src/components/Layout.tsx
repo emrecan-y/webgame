@@ -4,23 +4,20 @@ import { WebSocketErrorContext } from "./context/WebSocketErrorContext";
 import { UserContext } from "./context/UserContext";
 
 export function Layout() {
-  const { userNickName } = useContext(UserContext);
+  const { userNickName, setUserNickName } = useContext(UserContext);
   const { webSocketError } = useContext(WebSocketErrorContext);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userNickName === "") {
+    if (userNickName === "" && !webSocketError) {
       navigate("/");
+    } else if (webSocketError) {
+      setUserNickName("");
+      navigate("/connection-error");
     } else {
       navigate("/lobbies");
     }
-  }, [userNickName]);
-
-  useEffect(() => {
-    if (webSocketError) {
-      navigate("/connection-error");
-    }
-  }, [webSocketError]);
+  }, [userNickName, webSocketError]);
 
   return (
     <>
