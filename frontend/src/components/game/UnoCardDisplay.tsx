@@ -83,7 +83,7 @@ export function UnoCardTopViewDisplay() {
   return (
     <div className="font-cabin relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-uno-white">
       <div className="absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid border-uno-white bg-uno-red">
-        <div className="border-1 rotate-[-50deg] pl-1 text-[2.4rem] font-bold text-uno-yellow drop-shadow-uno-large-text">
+        <div className="border-1 rotate-[-50deg] pl-1 text-[2rem] font-bold text-uno-yellow drop-shadow-uno-large-text">
           BİR
         </div>
       </div>
