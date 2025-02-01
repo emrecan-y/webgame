@@ -1,9 +1,11 @@
 import { useContext } from "react";
 import { ChatWindow } from "./ChatWindow";
 import { UserContext } from "../context/UserContext";
+import { useChatStore } from "./ChatStore";
 
 function Chat() {
   const { userNickName, userLobbyId } = useContext(UserContext);
+  const { hideAllChats, isAnyChatActive } = useChatStore();
 
   const globaChat = (
     <ChatWindow
@@ -28,16 +30,25 @@ function Chat() {
 
   if (userNickName) {
     return (
-      <div className="fixed bottom-0 right-0.5 z-20 flex flex-row items-end gap-x-1">
-        {userLobbyId !== -1 && (
-          <div className="flex flex-col items-end drop-shadow-2xl">
-            {lobbyChat}
-          </div>
+      <>
+        {isAnyChatActive() && (
+          <div
+            className="fixed left-0 top-0 z-40 h-screen w-screen"
+            onClick={hideAllChats}
+          ></div>
         )}
-        <div className="flex flex-col items-end drop-shadow-2xl">
-          {globaChat}
+
+        <div className="fixed bottom-0 right-0.5 z-50 flex flex-row items-end gap-x-1">
+          {userLobbyId !== -1 && (
+            <div className="flex flex-col items-end drop-shadow-2xl">
+              {lobbyChat}
+            </div>
+          )}
+          <div className="flex flex-col items-end drop-shadow-2xl">
+            {globaChat}
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 }
