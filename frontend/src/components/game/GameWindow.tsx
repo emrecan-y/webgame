@@ -33,8 +33,19 @@ function GameWindow() {
   };
 
   useEffect(() => {
-    getGameState();
-  }, []);
+    // if the game doens't load the first time, try again every 200ms
+    if (!gameState) {
+      getGameState();
+      const intervalId = setInterval(() => {
+        if (!gameState) {
+          getGameState();
+        } else {
+          clearInterval(intervalId);
+        }
+      }, 200);
+      return () => clearInterval(intervalId);
+    }
+  }, [gameState]);
 
   useSubscription("/user/queue/game/state", (message) => {
     const gameState: UnoGameState = JSON.parse(message.body);
