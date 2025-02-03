@@ -12,10 +12,11 @@ CMD [ "npm", "run", "build"]
 
 FROM node:18-alpine AS host
 WORKDIR /app
+RUN npm install -g serve
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/node_modules ./node_modules/
 
-EXPOSE 5173
+EXPOSE 80
 
-ENTRYPOINT [ "npm", "run", "preview"]
+ENTRYPOINT [ "serve", "-s", "dist", "-l", "80"]
