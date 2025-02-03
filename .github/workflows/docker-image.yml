@@ -1,0 +1,45 @@
+name: Docker Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Log into GitHub Container Registry
+      - name: "Login to GitHub Container Registry"
+        run: |
+          docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 4: Build and tag Docker images for frontend and backend
+      - name: Build frontend Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/frontend:latest ./frontend
+
+      - name: Build backend Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository }}/backend:latest ./backend
+
+      # Step 5: Push Docker images to GitHub Container Registry
+      - name: Push frontend Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository }}/frontend:latest
+
+      - name: Push backend Docker image
+        run: |
+          docker push ghcr.io/${{ github.repository }}/backend:latest
