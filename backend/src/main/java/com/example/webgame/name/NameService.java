@@ -2,8 +2,8 @@ package com.example.webgame.name;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,7 +17,8 @@ public class NameService {
 	List<String> names = new ArrayList<>();
 
 	public NameService() {
-		try (BufferedReader reader = Files.newBufferedReader(Paths.get("./src/main/resources/names.csv"))) {
+		try (InputStream inputStream = NameService.class.getResourceAsStream("/names.csv");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 			String[] adjectives = reader.readLine().split(";");
 			String[] names = reader.readLine().split(";");
 

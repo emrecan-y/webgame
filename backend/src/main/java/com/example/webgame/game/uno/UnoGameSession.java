@@ -2,8 +2,8 @@ package com.example.webgame.game.uno;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -266,7 +266,8 @@ public class UnoGameSession {
 
 	private static List<UnoCard> readUnoCardCsv() {
 		List<UnoCard> cardDeck = new ArrayList<>();
-		try (BufferedReader reader = Files.newBufferedReader(Paths.get("./src/main/resources/unoCards.csv"))) {
+		try (InputStream inputStream = UnoGameSession.class.getResourceAsStream("/unoCards.csv");
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 			// skip first line
 			String line = reader.readLine();
 			while ((line = reader.readLine()) != null) {
