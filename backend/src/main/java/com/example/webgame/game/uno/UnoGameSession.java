@@ -37,7 +37,7 @@ public class UnoGameSession {
 		this.userStates = new ArrayList<>();
 		userToSessionIdMap.entrySet().stream().forEach(e -> userStates.add(new UnoUserState(e.getKey(), e.getValue())));
 
-		this.currentUserIndex = RANDOM.nextInt(0, this.userStates.size() - 1);
+		this.currentUserIndex = RANDOM.nextInt(0, this.userStates.size());
 		this.isDrawPossible = true;
 		this.drawCount = 0;
 		this.gameDirection = Direction.CLOCKWISE;
