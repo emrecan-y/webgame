@@ -59,7 +59,7 @@ export function AnimatedBackground() {
     if (isTabActive) {
       const interval = setInterval(
         () => {
-          if (containerRef.current) {
+          if (containerRef.current && isTabActive) {
             const cardElement = document.createElement("div");
 
             const angle = getRandomNumber(-180, 180);
