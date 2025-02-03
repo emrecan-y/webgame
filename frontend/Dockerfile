@@ -1,5 +1,7 @@
 FROM node:18-alpine AS build
 
+ARG VITE_BACKEND_DOMAIN
+ENV VITE_BACKEND_DOMAIN=${VITE_BACKEND_DOMAIN}
 WORKDIR /app
 
 COPY package*.json .
@@ -7,15 +9,17 @@ RUN npm install
 
 COPY . .
 
-CMD [ "npm", "run", "build"]
+RUN  npm run build
+
+
 
 
 FROM node:18-alpine AS host
 WORKDIR /app
+
 RUN npm install -g serve
+
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/node_modules ./node_modules/
 
 EXPOSE 80
 
