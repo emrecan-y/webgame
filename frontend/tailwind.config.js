@@ -3,6 +3,16 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      keyframes: {
+        "bounce-subtle": {
+          "0%": { transform: "translateY(0%)" },
+          "50%": { transform: "translateY(-5%)" },
+          "100%": { transform: "translateY(0%)" },
+        },
+      },
+      animation: {
+        "bounce-subtle": "bounce-subtle 1s linear infinite",
+      },
       colors: {
         "game-accent-dark": "#2e1065",
         "game-accent-medium": "#5b21b6",

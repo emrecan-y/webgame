@@ -38,9 +38,9 @@ function Chat() {
           ></div>
         )}
 
-        <div className="fixed bottom-0 right-0.5 z-50 flex flex-row items-end gap-x-1">
+        <div className="fixed bottom-0 right-0.5 z-50 flex flex-row items-end gap-x-1 text-sm sm:text-base">
           {userLobbyId !== -1 && (
-            <div className="flex flex-col items-end drop-shadow-2xl">
+            <div className="relative flex flex-col items-end drop-shadow-2xl">
               {lobbyChat}
             </div>
           )}

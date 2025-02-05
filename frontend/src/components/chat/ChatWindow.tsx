@@ -80,7 +80,7 @@ export function ChatWindow(props: ChatWindowProps) {
           </button>
           <div
             ref={chatHistoryRef}
-            className="h-96 w-full overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark"
+            className="h-72 w-full overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark sm:h-96"
           >
             {Array.isArray(chatHistory) &&
               chatHistory.map((e, index) => (
@@ -101,7 +101,7 @@ export function ChatWindow(props: ChatWindowProps) {
               onChange={(e) => setMessageInput(e.currentTarget.value)}
             />
             <input
-              className="m-1 ml-0 cursor-pointer rounded bg-game-accent-medium p-1"
+              className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5"
               type="submit"
               value={"↵"}
             />
@@ -118,7 +118,7 @@ export function ChatWindow(props: ChatWindowProps) {
         }
         onClick={chatButtonHandler}
       >
-        {props.buttonText} Chat
+        {props.buttonText}
         {!getShowState(props.buttonText) && hasUnreadMessages && (
           <>
             <div className="absolute right-0.5 top-0 m-0 p-0 text-xs text-red-400">

@@ -10,9 +10,9 @@ import {
 } from "../../models/requests";
 import { UnoCard, UnoCardColor } from "../../models/unoCard";
 import UnoColorPicker from "./UnoColorPicker";
-import UnoGameButtons from "./UnoGameButtons";
 import UnoPlayersInfo from "./UnoPlayersInfo";
 import UnoGameOver from "./UnoGameOver";
+import UnoGameCenter from "./UnoGameCenter";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -23,8 +23,6 @@ function GameWindow() {
   const [idToColorPick, setIdToColorPick] = useState<number>();
   const [mouseEvent, setMouseEvent] =
     useState<React.MouseEvent<HTMLDivElement, MouseEvent>>();
-
-  const isUserTurn = gameState?.currentUser === userNickName;
 
   const request: GeneralPlayerRequest = {
     lobbyId: userLobbyId,
@@ -122,41 +120,35 @@ function GameWindow() {
           <UnoGameOver users={gameState.users} restartGame={restartGame} />
         )}
 
-        <div className="flex flex-col items-center">
-          <UnoPlayersInfo
-            users={gameState.users}
-            currentUser={gameState.currentUser}
-            direction={gameState.direction}
-          />
-          <div className="mt-24">
-            <UnoCardDisplay
-              color={gameState.centerCard.color}
-              cardType={gameState.centerCard.cardType}
-              colorOverride={gameState.colorOverride}
-            />
-          </div>
-          <div className="h-32 pt-3">
-            <UnoGameButtons
-              request={request}
-              isDrawPossible={gameState.isDrawPossible}
-              isUserTurn={isUserTurn}
-              drawCount={gameState.drawCount}
+        <div className="relative flex h-full min-h-screen w-full flex-col items-center justify-center">
+          <div className="absolute top-4">
+            <UnoPlayersInfo
+              users={gameState.users}
+              currentUser={gameState.currentUser}
+              direction={gameState.direction}
             />
           </div>
 
-          <div className="flex gap-2">
-            {gameState.userCards.map((element) => (
-              <div
-                className="transition-transform hover:scale-110"
-                onClick={(event) => makeMoveEventHandler(event, element)}
-                key={"uno-card-" + element.id}
-              >
-                <UnoCardDisplay
-                  color={element.color}
-                  cardType={element.cardType}
-                />
+          <div className="">
+            <UnoGameCenter request={request} gameState={gameState} />
+          </div>
+          <div className="fixed bottom-10 flex w-full justify-center">
+            <div className="flex overflow-x-auto overflow-y-hidden">
+              <div className="flex w-fit scale-75 flex-row flex-nowrap gap-2">
+                {gameState.userCards.map((element) => (
+                  <div
+                    className="transition-transform sm:hover:scale-110"
+                    onClick={(event) => makeMoveEventHandler(event, element)}
+                    key={"uno-card-" + element.id}
+                  >
+                    <UnoCardDisplay
+                      color={element.color}
+                      cardType={element.cardType}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </>

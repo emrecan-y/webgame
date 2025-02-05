@@ -1,12 +1,60 @@
 import { useContext } from "react";
 import { Direction, UnoUser } from "../../models/unoGameState";
 import { UserContext } from "../context/UserContext";
+import shadow from "../../assets/avatar-shadow.svg";
+import { UnoCardTopViewDisplay } from "./UnoCardDisplay";
 
 type UnoPlayersInfoProps = {
   users: UnoUser[];
   currentUser: string;
   direction: Direction;
 };
+
+function UnoPlayersInfoCards(cardCount: number) {
+  if (cardCount == 1) {
+    return (
+      <div className="relative flex h-24 w-32 flex-col items-center justify-center">
+        <div className="flex h-0 w-0 scale-[0.24] items-center justify-center">
+          <div>
+            <UnoCardTopViewDisplay />
+          </div>
+        </div>
+
+        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-uno-red text-center align-middle font-bold text-uno-white outline">
+          <span className="text-center align-middle drop-shadow-uno-small-text">
+            {cardCount}
+          </span>
+        </p>
+      </div>
+    );
+  } else {
+    cardCount = cardCount > 12 ? 12 : cardCount;
+    const arcAngle = 50;
+    const anglePerCard = (arcAngle / cardCount) * 2;
+    return (
+      <div className="relative flex h-24 w-32 flex-col items-center justify-center">
+        <div className="flex h-0 w-0 scale-[0.24] items-center justify-center">
+          {Array.from(Array(cardCount)).map((_, index) => (
+            <div
+              key={index}
+              className="-mx-11"
+              style={{
+                transform: `translateY(${Math.abs(Math.floor(cardCount / 2) - index) * 10}px) rotate(${index * anglePerCard - arcAngle}deg)`,
+              }}
+            >
+              <UnoCardTopViewDisplay />
+            </div>
+          ))}
+        </div>
+        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-uno-red text-center align-middle font-bold text-uno-white outline">
+          <span className="text-center align-middle drop-shadow-uno-small-text">
+            {cardCount}
+          </span>
+        </p>
+      </div>
+    );
+  }
+}
 
 function UnoPlayersInfo({
   users,
@@ -32,7 +80,7 @@ function UnoPlayersInfo({
   }
 
   return (
-    <div className="flex gap-x-4">
+    <div className="flex items-center">
       {direction === "ANTI_CLOCKWISE" ? (
         <p className="text-8xl text-game-accent-light">⤹</p>
       ) : (
@@ -41,10 +89,15 @@ function UnoPlayersInfo({
       {usersToDisplay.map((user) => (
         <div
           key={`player-info-${user.name}`}
-          className={`flex flex-col items-center rounded bg-game-accent-light p-2 text-game-main-dark ${currentUser === user.name && "animate-bounce"}`}
+          className={`rounded p-2 text-game-main-dark transition-transform ${currentUser === user.name && "animate-bounce-subtle"}`}
         >
-          <p>{user.name}</p>
-          <p>Cardcount: {user.cardCount}</p>
+          <div className="relative flex h-40 w-max flex-col items-center justify-between">
+            <img className="w-20" src={shadow} alt="no" />
+            <div className="absolute top-7">
+              {UnoPlayersInfoCards(user.cardCount)}
+            </div>
+            <p className="my-1.5 rounded-md bg-white p-1">{user.name}</p>
+          </div>
         </div>
       ))}
       {direction === "CLOCKWISE" ? (
