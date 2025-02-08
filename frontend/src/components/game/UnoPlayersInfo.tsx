@@ -13,8 +13,8 @@ type UnoPlayersInfoProps = {
 function UnoPlayersInfoCards(cardCount: number) {
   if (cardCount == 1) {
     return (
-      <div className="relative flex h-24 w-32 flex-col items-center justify-center">
-        <div className="flex h-0 w-0 scale-[0.24] items-center justify-center">
+      <div className="relative flex h-16 w-32 flex-col items-center justify-center sm:h-24">
+        <div className="flex h-0 w-0 scale-[0.2] items-center justify-center sm:scale-[0.24]">
           <div>
             <UnoCardTopViewDisplay />
           </div>
@@ -28,18 +28,18 @@ function UnoPlayersInfoCards(cardCount: number) {
       </div>
     );
   } else {
-    cardCount = cardCount > 12 ? 12 : cardCount;
+    const cardCountToShow = cardCount > 13 ? 13 : cardCount;
     const arcAngle = 50;
-    const anglePerCard = (arcAngle / cardCount) * 2;
+    const anglePerCard = (arcAngle / cardCountToShow) * 2;
     return (
-      <div className="relative flex h-24 w-32 flex-col items-center justify-center">
-        <div className="flex h-0 w-0 scale-[0.24] items-center justify-center">
-          {Array.from(Array(cardCount)).map((_, index) => (
+      <div className="relative flex h-16 w-32 flex-col items-center justify-center sm:h-24">
+        <div className="flex h-0 w-0 scale-[0.2] items-center justify-center sm:scale-[0.24]">
+          {Array.from(Array(cardCountToShow)).map((_, index) => (
             <div
               key={index}
               className="-mx-11"
               style={{
-                transform: `translateY(${Math.abs(Math.floor(cardCount / 2) - index) * 10}px) rotate(${index * anglePerCard - arcAngle}deg)`,
+                transform: `translateY(${Math.abs(Math.floor(cardCountToShow / 2) - index) * 10}px) rotate(${index * anglePerCard - arcAngle}deg)`,
               }}
             >
               <UnoCardTopViewDisplay />
@@ -91,12 +91,14 @@ function UnoPlayersInfo({
           key={`player-info-${user.name}`}
           className={`rounded p-2 text-game-main-dark transition-transform ${currentUser === user.name && "animate-bounce-subtle"}`}
         >
-          <div className="relative flex h-40 w-max flex-col items-center justify-between">
-            <img className="w-20" src={shadow} alt="no" />
-            <div className="absolute top-7">
+          <div className="relative flex h-28 w-max flex-col items-center justify-between sm:h-40">
+            <img className="w-16 sm:w-20" src={shadow} alt="no" />
+            <div className="absolute top-7 sm:top-8">
               {UnoPlayersInfoCards(user.cardCount)}
             </div>
-            <p className="my-1.5 rounded-md bg-white p-1">{user.name}</p>
+            <p className="rounded-md bg-white p-1 text-xs sm:my-1.5 sm:text-sm">
+              {user.name}
+            </p>
           </div>
         </div>
       ))}
