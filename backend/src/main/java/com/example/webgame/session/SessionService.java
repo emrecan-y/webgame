@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.webgame.name.NameService;
+
 @Service
 public class SessionService {
 
@@ -17,7 +19,8 @@ public class SessionService {
 	}
 
 	public boolean addUser(String sessionId, String nickName) {
-		if (!userExists(nickName)) {
+		if (!userExists(nickName) && nickName.length() <= NameService.getMaxNameLength()
+				&& nickName.length() >= NameService.getMinNameLength()) {
 			this.sessionMap.put(sessionId, nickName);
 			return true;
 		}

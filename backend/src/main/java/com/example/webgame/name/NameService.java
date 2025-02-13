@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class NameService {
-	List<String> adjectives = new ArrayList<>();
-	List<String> names = new ArrayList<>();
+	private static final int MIN_NAME_LENGTH = 4;
+	private static final int MAX_NAME_LENGTH = 14;
+	private List<String> adjectives = new ArrayList<>();
+	private List<String> names = new ArrayList<>();
 
 	public NameService() {
 		try (InputStream inputStream = NameService.class.getResourceAsStream("/names.csv");
@@ -35,12 +37,28 @@ public class NameService {
 	public String getRandomName() {
 		StringBuilder sb = new StringBuilder();
 		Random r = new Random();
-		sb.append(adjectives.get(r.nextInt(adjectives.size())));
-		sb.append(names.get(r.nextInt(names.size())));
-		if (r.nextBoolean()) {
-			sb.append(r.nextInt(10, 99));
+
+		while (true) {
+			sb.append(adjectives.get(r.nextInt(adjectives.size())));
+			sb.append(names.get(r.nextInt(names.size())));
+			if (r.nextBoolean()) {
+				sb.append(r.nextInt(1, 99));
+			}
+			String name = sb.toString();
+			if (name.length() >= MIN_NAME_LENGTH && name.length() <= MAX_NAME_LENGTH) {
+				return name;
+			} else {
+				sb = new StringBuilder();
+			}
 		}
-		return sb.toString();
+	}
+
+	public static int getMaxNameLength() {
+		return MAX_NAME_LENGTH;
+	}
+
+	public static int getMinNameLength() {
+		return MIN_NAME_LENGTH;
 	}
 
 }

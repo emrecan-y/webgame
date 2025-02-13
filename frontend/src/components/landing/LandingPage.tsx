@@ -13,6 +13,9 @@ function LandingPage() {
   const { userNickName } = useContext(UserContext);
   const navigate = useNavigate();
 
+  const maxNameLength = 14;
+  const minNameLength = 4;
+
   useEffect(() => {
     if (userNickName !== "") {
       navigate("/lobbies");
@@ -21,7 +24,11 @@ function LandingPage() {
   }, [stompClient]);
 
   useEffect(() => {
-    if (nickName !== "") {
+    if (nickName.length > maxNameLength) {
+      setInfoText("Please pick a shorter name");
+    } else if (nickName.length < minNameLength) {
+      setInfoText("Please pick a longer nickname.");
+    } else {
       setInfoText("");
     }
   }, [nickName]);
@@ -40,9 +47,11 @@ function LandingPage() {
 
   function tryLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (nickName === "") {
-      setInfoText("Please pick a nickname.");
-    } else if (stompClient) {
+    if (
+      stompClient &&
+      nickName.length <= maxNameLength &&
+      nickName.length >= minNameLength
+    ) {
       const request: LoginRequest = {
         nickName: nickName,
       };
