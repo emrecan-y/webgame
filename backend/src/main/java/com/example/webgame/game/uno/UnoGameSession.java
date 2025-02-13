@@ -36,16 +36,25 @@ public class UnoGameSession {
 	public UnoGameSession(HashMap<String, String> userToSessionIdMap) {
 		this.userStates = new ArrayList<>();
 		userToSessionIdMap.entrySet().stream().forEach(e -> userStates.add(new UnoUserState(e.getKey(), e.getValue())));
+		init();
+	}
 
+	private void init() {
 		this.currentUserIndex = RANDOM.nextInt(0, this.userStates.size());
 		this.isDrawPossible = true;
 		this.drawCount = 0;
 		this.gameDirection = Direction.CLOCKWISE;
 		this.discardStack = new Stack<>();
+		this.isGameOver = false;
 
 		copyDeckAndShuffle();
 		dealCardsToUsers(START_CARD_COUNT);
 		drawCenterCard();
+	}
+
+	public void restart() {
+		userStates.forEach(userState -> userState.removeAllCards());
+		init();
 	}
 
 	public boolean makeMove(String user, int cardId, UnoCardColor color) {

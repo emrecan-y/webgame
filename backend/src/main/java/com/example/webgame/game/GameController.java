@@ -39,11 +39,7 @@ public class GameController {
 
 	@MessageMapping("/game/restart")
 	public void restartGame(GeneralPlayerRequest request) {
-		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.getLobbyId());
-		if (lobbyOpt.isPresent()) {
-			lobbyOpt.get().deleteGameSession();
-		}
-		if (this.lobbyService.startGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
+		if (this.lobbyService.restartGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
 			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				sendGameStateToAllUsers(gameSessionOpt.get());

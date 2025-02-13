@@ -101,6 +101,17 @@ public class LobbyService {
 		return false;
 	}
 
+	public boolean restartGame(Integer lobbyId, String nickName, String password) {
+		Lobby lobby = this.lobbyMap.get(lobbyId);
+		if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
+			if (lobby.containsUser(nickName)) {
+				lobby.getGameSession().restart();
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public Optional<UnoGameSession> findGameSessionFromPlayerRequest(GeneralPlayerRequest request) {
 		Optional<Lobby> lobbyOpt = this.findLobbyById(request.getLobbyId());
 		if (lobbyOpt.isPresent()) {
