@@ -19,4 +19,5 @@ export type Direction = "CLOCKWISE" | "ANTI_CLOCKWISE";
 export type UnoUser = {
   name: string;
   cardCount: number;
+  winCount: number;
 };

@@ -7,11 +7,13 @@ import java.util.Optional;
 public class UnoUserState {
 	private String userNickName;
 	private String sessionId;
+	private int winCount;
 	private List<UnoCard> userCards;
 
 	public UnoUserState(String userNickName, String sessionId) {
 		this.userNickName = userNickName;
 		this.sessionId = sessionId;
+		this.winCount = 0;
 		this.userCards = new ArrayList<>();
 	}
 
@@ -21,6 +23,14 @@ public class UnoUserState {
 
 	public String getSessionId() {
 		return sessionId;
+	}
+
+	public void incrementWinCount() {
+		this.winCount++;
+	}
+
+	public int getWinCount() {
+		return this.winCount;
 	}
 
 	public List<UnoCard> getUserCards() {

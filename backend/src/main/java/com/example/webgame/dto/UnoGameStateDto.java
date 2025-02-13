@@ -29,7 +29,8 @@ public class UnoGameStateDto {
 	public UnoGameStateDto(UnoGameSession session, List<UnoCard> userCards) {
 		this.users = new ArrayList<>();
 		for (UnoUserState userState : session.getUserStates()) {
-			users.add(new UnoUserDto(userState.getUserNickName(), userState.getUserCards().size()));
+			users.add(new UnoUserDto(userState.getUserNickName(), userState.getUserCards().size(),
+					userState.getWinCount()));
 		}
 		this.currentUser = session.getUsers()[session.getCurrentUserIndex()];
 		this.direction = session.getGameDirection();
@@ -119,18 +120,24 @@ public class UnoGameStateDto {
 	private class UnoUserDto {
 		private String name;
 		private int cardCount;
+		private int winCount;
 
-		public UnoUserDto(String userName, int cardCount) {
+		public UnoUserDto(String userName, int cardCount, int winCount) {
 			this.name = userName;
 			this.cardCount = cardCount;
+			this.winCount = winCount;
 		}
 
 		public String getName() {
-			return name;
+			return this.name;
 		}
 
 		public int getCardCount() {
-			return cardCount;
+			return this.cardCount;
+		}
+
+		public int getWinCount() {
+			return this.winCount;
 		}
 
 	}

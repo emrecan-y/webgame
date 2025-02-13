@@ -52,6 +52,7 @@ public class UnoGameSession {
 		for (int i = 0; i < userStates.size(); i++) {
 			UnoUserState userState = userStates.get(i);
 			boolean isUserTurn = i == currentUserIndex;
+
 			if (userState.getUserNickName().equals(user) && isUserTurn) {
 				Optional<UnoCard> cardOpt = userState.findCardById(cardId);
 				if (cardOpt.isPresent()) {
@@ -241,6 +242,7 @@ public class UnoGameSession {
 	private void checkForGameOver() {
 		for (UnoUserState userState : this.userStates) {
 			if (userState.getUserCards().size() == 0) {
+				userState.incrementWinCount();
 				this.isGameOver = true;
 			}
 		}
