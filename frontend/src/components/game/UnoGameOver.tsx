@@ -9,6 +9,9 @@ type UnoGameOverProps = { users: UnoUser[]; restartGame: () => void };
 function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
   const stompClient = useStompClient();
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
+  const usersSortedByWinCount = [...users].sort(
+    (a, b) => b.winCount - a.winCount,
+  );
 
   const winnerName = users.find((user) => user.cardCount === 0)?.name;
 
@@ -37,7 +40,7 @@ function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
         </p>
         <div className="mt-2 rounded bg-game-accent-medium p-1">
           <p>Total Scores</p>
-          {users.map((user) => (
+          {usersSortedByWinCount.map((user) => (
             <div className="flex justify-between bg-game-main-dark px-1">
               <p>{user.name}</p>
               <p>{user.winCount}</p>
