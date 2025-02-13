@@ -3,6 +3,7 @@ import { Direction, UnoUser } from "../../models/unoGameState";
 import { UserContext } from "../context/UserContext";
 import shadow from "../../assets/avatar-shadow.svg";
 import { UnoCardTopViewDisplay } from "./UnoCardDisplay";
+import rotationArrow from "../../assets/rotation_arrow.png";
 
 type UnoPlayersInfoProps = {
   users: UnoUser[];
@@ -81,11 +82,12 @@ function UnoPlayersInfo({
 
   return (
     <div className="flex items-center">
-      {direction === "ANTI_CLOCKWISE" ? (
-        <p className="text-8xl text-game-accent-light">⤹</p>
-      ) : (
-        <p className="scale-y-[-1] text-8xl text-game-accent-light">⤹</p>
-      )}
+      <img
+        src={rotationArrow}
+        className={`h-16 ${direction === "CLOCKWISE" && "scale-y-[-1]"} transition-all`}
+        alt=""
+      />
+
       {usersToDisplay.map((user) => (
         <div
           key={`player-info-${user.name}`}
@@ -102,11 +104,11 @@ function UnoPlayersInfo({
           </div>
         </div>
       ))}
-      {direction === "CLOCKWISE" ? (
-        <p className="text-8xl text-game-accent-light">⤸</p>
-      ) : (
-        <p className="scale-y-[-1] text-8xl text-game-accent-light">⤸</p>
-      )}
+      <img
+        src={rotationArrow}
+        className={`h-16 scale-x-[-1] ${direction === "ANTI_CLOCKWISE" && "scale-y-[-1]"} transition-all`}
+        alt=""
+      />
     </div>
   );
 }
