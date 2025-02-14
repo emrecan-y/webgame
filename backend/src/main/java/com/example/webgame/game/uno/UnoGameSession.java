@@ -62,21 +62,25 @@ public class UnoGameSession {
 			UnoUserState userState = userStates.get(i);
 			boolean isUserTurn = i == currentUserIndex;
 
-			if (userState.getUserNickName().equals(user) && isUserTurn) {
+			if (userState.getUserNickName().equals(user)) {
 				Optional<UnoCard> cardOpt = userState.findCardById(cardId);
 				if (cardOpt.isPresent()) {
 					UnoCard card = cardOpt.get();
 					UnoCard centerCard = getCenterCard();
-					if (centerCard.isValidMoveOnTop(card) || card.getColor().equals(colorOverride)) {
-						if (drawCount == 0 || isDrawCard(card)) {
-							userState.removeCard(card);
-							discardStack.add(card);
-							checkForSpecialEffects(card);
-							nextUser();
-							this.colorOverride = color.equals(UnoCardColor.BLACK) ? null : color;
-							checkForGameOver();
-							return true;
-						}
+
+					boolean isValidRegularMove = isUserTurn
+							&& (centerCard.isValidMoveOnTop(card) || card.getColor().equals(colorOverride))
+							&& (drawCount == 0 || isDrawCard(card));
+
+					if (isValidRegularMove || centerCard.isValidMoveOnTopRegardlessOfTurn(card)) {
+						userState.removeCard(card);
+						discardStack.add(card);
+						checkForSpecialEffects(card);
+						this.currentUserIndex = i;
+						nextUser();
+						this.colorOverride = color.equals(UnoCardColor.BLACK) ? null : color;
+						checkForGameOver();
+						return true;
 					}
 				}
 			}

@@ -37,4 +37,12 @@ public class UnoCard {
 		}
 	}
 
+	public boolean isValidMoveOnTopRegardlessOfTurn(UnoCard topCard) {
+		if (topCard.cardType.isRegularType() && topCard.color.equals(color) && topCard.cardType.equals(cardType)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }
