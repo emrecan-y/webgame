@@ -92,13 +92,13 @@ function LandingPage() {
         </div>
         <div className="flex justify-between">
           <input
-            className="mt-3 rounded bg-game-accent-medium px-4 py-1 hover:cursor-pointer"
+            className="mt-3 rounded bg-game-accent-medium px-4 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
             type="button"
             onClick={requestRandomName}
             value="Generate"
           />
           <input
-            className="mt-3 rounded bg-game-accent-medium px-4 py-1 hover:cursor-pointer"
+            className="mt-3 rounded bg-game-accent-medium px-4 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
             type="submit"
             value="Continue"
           />

@@ -137,7 +137,7 @@ function GameWindow() {
               <div className="flex w-fit scale-75 flex-row flex-nowrap gap-2">
                 {gameState.userCards.map((element) => (
                   <div
-                    className="transition-transform sm:hover:scale-110"
+                    className="transition-transform duration-150 ease-in-out hover:scale-105"
                     onClick={(event) => makeMoveEventHandler(event, element)}
                     key={"uno-card-" + element.id}
                   >

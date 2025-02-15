@@ -73,7 +73,7 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
           )}
           {!isUserInLobby && !lobbyIsFull && (
             <button
-              className="rounded bg-game-accent-medium px-2 py-1"
+              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
               onClick={addPlayerToLobby}
             >
               Join
@@ -81,7 +81,7 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
           )}
           {isUserInLobby && lobbyIsFull && (
             <button
-              className="rounded bg-game-accent-medium px-2 py-1"
+              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
               onClick={startGame}
             >
               Start Game

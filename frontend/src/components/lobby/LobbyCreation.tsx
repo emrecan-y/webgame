@@ -80,13 +80,13 @@ function LobbyCreation(props: LobbyCreationProps) {
         </div>
         <div className="flex flex-row justify-end">
           <input
-            className="mr-2 mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1"
+            className="mr-2 mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
             type="button"
             onClick={() => props.setShowCreationWindow(false)}
             value="Cancel"
           />
           <input
-            className="mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1"
+            className="mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
             type="submit"
             value="Create"
           />

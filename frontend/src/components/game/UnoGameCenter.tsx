@@ -78,7 +78,7 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
 
       <div className="flex gap-2">
         <div
-          className="relative hover:scale-110"
+          className="relative transition-transform duration-150 ease-in-out hover:scale-105"
           onClick={() => drawButtonHandler(drawCount)}
         >
           {drawCount != 0 && (
@@ -97,7 +97,7 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
           <button
             className={`rounded border-8 border-solid p-5 ${
               isBirPossible
-                ? "border-uno-white bg-uno-red"
+                ? "border-uno-white bg-uno-red transition-transform duration-100 hover:scale-105"
                 : "border-game-main-medium bg-uno-black text-game-main-medium hover:cursor-default"
             }`}
             onClick={isBirPossible ? bir : undefined}
@@ -107,7 +107,7 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
           <button
             className={`rounded border-8 border-solid p-5 ${
               isPassPossible
-                ? "border-uno-white bg-uno-red"
+                ? "border-uno-white bg-uno-red transition-transform duration-100 hover:scale-105"
                 : "border-game-main-medium bg-uno-black text-game-main-medium hover:cursor-default"
             }`}
             onClick={isPassPossible ? pass : undefined}

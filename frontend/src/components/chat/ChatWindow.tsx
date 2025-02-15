@@ -73,7 +73,7 @@ export function ChatWindow(props: ChatWindowProps) {
       {getShowState(props.buttonText) && (
         <div className="fixed flex -translate-y-full flex-col items-end rounded rounded-br-none bg-game-accent-light">
           <button
-            className="mr-1 text-game-main-dark"
+            className="mr-1 text-game-main-dark transition-transform duration-150 ease-in-out hover:scale-125"
             onClick={chatButtonHandler}
           >
             ✖
@@ -101,7 +101,7 @@ export function ChatWindow(props: ChatWindowProps) {
               onChange={(e) => setMessageInput(e.currentTarget.value)}
             />
             <input
-              className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5"
+              className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5 transition-transform duration-150 ease-in-out hover:scale-110"
               type="submit"
               value={"↵"}
             />
@@ -114,7 +114,7 @@ export function ChatWindow(props: ChatWindowProps) {
         className={
           getShowState(props.buttonText)
             ? "rounded-b bg-game-accent-light p-3 pt-4 text-game-main-dark"
-            : "relative rounded bg-game-accent-medium p-3 text-game-main-light"
+            : "relative rounded bg-game-accent-medium p-3 text-game-main-light transition-transform duration-150 ease-in-out hover:scale-105"
         }
         onClick={chatButtonHandler}
       >
