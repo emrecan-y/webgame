@@ -8,9 +8,8 @@ function LandingPage() {
   const [nickName, setNickname] = useState("");
   const [infoText, setInfoText] = useState("");
 
-  const userContext = useContext(UserContext);
   const stompClient = useStompClient();
-  const { userNickName } = useContext(UserContext);
+  const { userNickName, setUserNickName } = useContext(UserContext);
   const navigate = useNavigate();
 
   const maxNameLength = 14;
@@ -65,7 +64,7 @@ function LandingPage() {
   // listen to backend for confirmation on login
   useSubscription("/user/queue/login/user-name", (message) => {
     if (message.body !== "") {
-      userContext.setUserNickName!(message.body);
+      setUserNickName!(message.body);
     } else {
       setInfoText("This name already exists");
     }
