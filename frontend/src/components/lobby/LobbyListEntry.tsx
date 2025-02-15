@@ -35,7 +35,8 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
     navigate("/game");
   });
 
-  function addPlayerToLobby() {
+  function eventListenerAddPlayerToLobby(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     if (stompClient) {
       stompClient.publish({
         destination: "/app/lobby/add-player",
@@ -58,36 +59,33 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
     <div className="mb-4 w-full rounded bg-game-accent-light p-1">
       <div className="my-1 flex h-8 items-center justify-between">
         <p className="pl-1 text-gray-950">Lobby {lobby.id}</p>
-        <div>
+        <form onSubmit={eventListenerAddPlayerToLobby}>
           {isPrivate && !isUserInLobby && (
-            <>
-              <input
-                className="mr-2 h-8 w-32 rounded p-2 text-game-main-dark placeholder:text-gray-700"
-                type="password"
-                name="lobby-password"
-                id="lobby-password"
-                placeholder="Password"
-                onChange={(e) => setPassword(e.currentTarget.value)}
-              />
-            </>
+            <input
+              className="mr-2 h-8 w-32 rounded p-2 text-game-main-dark placeholder:text-gray-700"
+              type="password"
+              name="lobby-password"
+              id="lobby-password"
+              placeholder="Password"
+              onChange={(e) => setPassword(e.currentTarget.value)}
+            />
           )}
           {!isUserInLobby && !lobbyIsFull && (
-            <button
-              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
-              onClick={addPlayerToLobby}
-            >
-              Join
-            </button>
+            <input
+              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
+              type="submit"
+              value={"Join"}
+            />
           )}
           {isUserInLobby && lobbyIsFull && (
-            <button
-              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
+            <input
+              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
               onClick={startGame}
-            >
-              Start Game
-            </button>
+              type="button"
+              value={"Start Game"}
+            />
           )}
-        </div>
+        </form>
       </div>
 
       <div className="rounded bg-game-accent-medium p-1">
@@ -98,15 +96,15 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
               className="bg-game-main-dark pl-1"
               key={`listEntry${lobby.id}-${index}`}
             >
-              {lobbyUser ? (
-                lobbyUser === userNickName ? (
-                  <p className="text-game-accent-light">{lobbyUser}</p>
-                ) : (
-                  <p className="text-game-main-light">{lobbyUser}</p>
-                )
-              ) : (
-                <p className="text-game-main-medium">Free</p>
-              )}
+              <p
+                className={
+                  lobbyUser === userNickName
+                    ? "text-game-accent-light"
+                    : "text-game-main-light"
+                }
+              >
+                {lobbyUser ? lobbyUser : "Free"}
+              </p>
             </li>
           ))}
         </ol>
