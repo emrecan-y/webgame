@@ -109,6 +109,16 @@ public class GameController {
 		}
 	}
 
+	@MessageMapping("/game/bir")
+	public void bir(GeneralPlayerRequest request) {
+		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		if (gameSessionOpt.isPresent()) {
+			UnoGameSession gameSession = gameSessionOpt.get();
+			gameSession.bir(request.getNickName());
+			sendGameStateToAllUsers(gameSession);
+		}
+	}
+
 	private void sendGameStateToAllUsers(UnoGameSession gameSession) {
 		Optional<Map<String, UnoGameStateDto>> sessionIdToGameStateOpt = this.lobbyService
 				.getSessionIdToGameStateMap(gameSession);

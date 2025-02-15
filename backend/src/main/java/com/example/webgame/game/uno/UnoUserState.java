@@ -8,6 +8,9 @@ public class UnoUserState {
 	private String userNickName;
 	private String sessionId;
 	private int winCount;
+	private boolean hasSuccessfullyDeclaredBir;
+	private boolean hasAttemptedToDeclareBir;
+
 	private List<UnoCard> userCards;
 
 	public UnoUserState(String userNickName, String sessionId) {
@@ -47,6 +50,24 @@ public class UnoUserState {
 
 	public void removeAllCards() {
 		this.userCards.clear();
+	}
+
+	public void declareBir(boolean value) {
+		this.hasAttemptedToDeclareBir = true;
+		this.hasSuccessfullyDeclaredBir = value;
+	}
+
+	public void resetBir() {
+		this.hasAttemptedToDeclareBir = false;
+		this.hasSuccessfullyDeclaredBir = false;
+	}
+
+	public boolean hasSuccessfullyDeclaredBir() {
+		return this.hasSuccessfullyDeclaredBir;
+	}
+
+	public boolean hasAttemptedToDeclareBir() {
+		return this.hasAttemptedToDeclareBir;
 	}
 
 	public Optional<UnoCard> findCardById(int id) {

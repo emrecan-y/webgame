@@ -30,7 +30,7 @@ public class UnoGameStateDto {
 		this.users = new ArrayList<>();
 		for (UnoUserState userState : session.getUserStates()) {
 			users.add(new UnoUserDto(userState.getUserNickName(), userState.getUserCards().size(),
-					userState.getWinCount()));
+					userState.getWinCount(), userState.hasAttemptedToDeclareBir()));
 		}
 		this.currentUser = session.getUsers()[session.getCurrentUserIndex()];
 		this.direction = session.getGameDirection();
@@ -121,11 +121,13 @@ public class UnoGameStateDto {
 		private String name;
 		private int cardCount;
 		private int winCount;
+		private boolean hasAttemptedToDeclareBir;
 
-		public UnoUserDto(String userName, int cardCount, int winCount) {
+		public UnoUserDto(String userName, int cardCount, int winCount, boolean hasAttemptedToDeclareBir) {
 			this.name = userName;
 			this.cardCount = cardCount;
 			this.winCount = winCount;
+			this.hasAttemptedToDeclareBir = hasAttemptedToDeclareBir;
 		}
 
 		public String getName() {
@@ -138,6 +140,11 @@ public class UnoGameStateDto {
 
 		public int getWinCount() {
 			return this.winCount;
+		}
+
+		@JsonProperty("hasAttemptedToDeclareBir")
+		public boolean hasAttemptedToDeclareBir() {
+			return hasAttemptedToDeclareBir;
 		}
 
 	}

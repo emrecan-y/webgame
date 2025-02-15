@@ -11,14 +11,17 @@ type UnoGameButtonsProps = {
 };
 
 function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
-  const { currentUser, drawCount, isDrawPossible } = gameState;
+  const { currentUser, drawCount, isDrawPossible, users } = gameState;
   const { userNickName } = useContext(UserContext);
   const isUserTurn = currentUser === userNickName;
 
   const stompClient = useStompClient();
+  const isPassPossible = isUserTurn && drawCount === 0 && !isDrawPossible;
+  const isBirPossible = users.some(
+    (user) => user.name === userNickName && !user.hasAttemptedToDeclareBir,
+  );
 
   let infoText: string;
-
   if (isUserTurn) {
     if (!isDrawPossible) {
       infoText = "Play or Pass";
@@ -58,6 +61,15 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
     }
   }
 
+  function bir() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/game/bir",
+        body: JSON.stringify(request),
+      });
+    }
+  }
+
   return (
     <div className="flex h-72 scale-75 flex-col items-center justify-center">
       <div className="h-8 text-xl">
@@ -82,48 +94,30 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
           colorOverride={gameState.colorOverride}
         />
         <div className="flex w-28 flex-col justify-between text-xl">
-          <button className="rounded border-8 border-solid border-uno-white bg-uno-red p-5">
+          <button
+            className={`rounded border-8 border-solid p-5 ${
+              isBirPossible
+                ? "border-uno-white bg-uno-red"
+                : "border-game-main-medium bg-uno-black text-game-main-medium hover:cursor-default"
+            }`}
+            onClick={isBirPossible ? bir : undefined}
+          >
             BIR!
           </button>
-          {drawCount != 0 || isDrawPossible || !isUserTurn ? (
-            <button className="border-game-main-mediu rounded border-8 border-solid bg-uno-black p-5 text-game-main-medium hover:cursor-default">
-              PASS
-            </button>
-          ) : (
-            <button
-              className="rounded border-8 border-solid border-uno-white bg-uno-red p-5"
-              onClick={pass}
-            >
-              PASS
-            </button>
-          )}
+          <button
+            className={`rounded border-8 border-solid p-5 ${
+              isPassPossible
+                ? "border-uno-white bg-uno-red"
+                : "border-game-main-medium bg-uno-black text-game-main-medium hover:cursor-default"
+            }`}
+            onClick={isPassPossible ? pass : undefined}
+          >
+            PASS
+          </button>
         </div>
       </div>
     </div>
   );
 }
-
-// {drawCount != 0 ? (
-//   <button
-//     className="rounded bg-game-accent-medium p-3"
-//     onClick={drawCards}
-//   >
-//     Draw {drawCount}
-//   </button>
-// ) : isDrawPossible ? (
-//   <button
-//     className="rounded bg-game-accent-medium p-3"
-//     onClick={drawCard}
-//   >
-//     DrawCard
-//   </button>
-// ) : (
-//   <button
-//     className="rounded bg-game-accent-medium p-3"
-//     onClick={pass}
-//   >
-//     Pass
-//   </button>
-// )}
 
 export default UnoGameCenter;

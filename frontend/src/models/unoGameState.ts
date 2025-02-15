@@ -20,4 +20,5 @@ export type UnoUser = {
   name: string;
   cardCount: number;
   winCount: number;
+  hasAttemptedToDeclareBir: boolean;
 };

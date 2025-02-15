@@ -38,11 +38,21 @@ public class UnoCard {
 	}
 
 	public boolean isValidMoveOnTopRegardlessOfTurn(UnoCard topCard) {
-		if (topCard.cardType.isRegularType() && topCard.color.equals(color) && topCard.cardType.equals(cardType)) {
+		if (!topCard.isDrawCard() && !topCard.isSpecialCard() && topCard.color.equals(color)
+				&& topCard.cardType.equals(cardType)) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	public boolean isDrawCard() {
+		return this.getCardType().equals(UnoCardType.DRAW_FOUR) || this.getCardType().equals(UnoCardType.DRAW_TWO);
+	}
+
+	public boolean isSpecialCard() {
+		return this.isDrawCard() || this.getColor().equals(UnoCardColor.BLACK)
+				|| this.getCardType().equals(UnoCardType.REVERSE) || this.getCardType().equals(UnoCardType.SKIP);
 	}
 
 }
