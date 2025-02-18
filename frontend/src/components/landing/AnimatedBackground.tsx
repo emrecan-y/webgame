@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { UnoCardTopViewDisplay } from "../game/UnoCardDisplay";
+import { BirCardTopViewDisplay } from "../game/BirCardDisplay";
 import { createRoot } from "react-dom/client";
 
 function getRandomNumber(min: number, max: number) {
@@ -73,7 +73,7 @@ export function AnimatedBackground() {
             cardElement.style.animation = `${keyframeName} ${getRandomNumber(8, 12)}s linear`;
             cardElement.style.filter = "drop-shadow(0px 0px 25px #000000)";
 
-            createRoot(cardElement).render(<UnoCardTopViewDisplay />);
+            createRoot(cardElement).render(<BirCardTopViewDisplay />);
 
             containerRef.current.appendChild(cardElement);
 
@@ -83,6 +83,8 @@ export function AnimatedBackground() {
               }
               document.head.removeChild(style);
             });
+          } else {
+            clearInterval(interval);
           }
         },
         getRandomNumber(400, 700),

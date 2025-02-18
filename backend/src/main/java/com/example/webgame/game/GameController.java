@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.webgame.dto.GeneralPlayerRequest;
 import com.example.webgame.dto.PlayerMakeMoveRequest;
-import com.example.webgame.dto.UnoGameStateDto;
-import com.example.webgame.game.uno.UnoGameSession;
+import com.example.webgame.dto.BirGameStateDto;
+import com.example.webgame.game.bir.BirGameSession;
 import com.example.webgame.lobby.Lobby;
 import com.example.webgame.lobby.LobbyService;
 
@@ -29,7 +29,7 @@ public class GameController {
 	@MessageMapping("/game/start")
 	public void startGame(GeneralPlayerRequest request) {
 		if (this.lobbyService.startGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
-			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				gameSessionOpt.get().getUserStates().forEach(userState -> this.template
 						.convertAndSend("/queue/game/start-user" + userState.getSessionId(), ""));
@@ -40,7 +40,7 @@ public class GameController {
 	@MessageMapping("/game/restart")
 	public void restartGame(GeneralPlayerRequest request) {
 		if (this.lobbyService.restartGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
-			Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				sendGameStateToAllUsers(gameSessionOpt.get());
 			}
@@ -49,7 +49,7 @@ public class GameController {
 
 	@MessageMapping("/game/exit")
 	public void exitGame(GeneralPlayerRequest request) {
-		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.getLobbyId());
 		if (gameSessionOpt.isPresent() && lobbyOpt.isPresent()) {
 			lobbyOpt.get().deleteGameSession();
@@ -59,7 +59,7 @@ public class GameController {
 
 	@MessageMapping("/game/state")
 	public void getGameState(GeneralPlayerRequest request) {
-		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			sendGameStateToAllUsers(gameSessionOpt.get());
 		}
@@ -67,9 +67,9 @@ public class GameController {
 
 	@MessageMapping("/game/make-move")
 	public void makeMove(PlayerMakeMoveRequest request) {
-		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
-			UnoGameSession gameSession = gameSessionOpt.get();
+			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.makeMove(request.getNickName(), request.getCardId(), request.getPickedColor())) {
 				sendGameStateToAllUsers(gameSession);
 			}
@@ -78,9 +78,9 @@ public class GameController {
 
 	@MessageMapping("/game/draw-card")
 	public void drawCard(GeneralPlayerRequest request) {
-		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
-			UnoGameSession gameSession = gameSessionOpt.get();
+			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.drawCard(request.getNickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
@@ -89,9 +89,9 @@ public class GameController {
 
 	@MessageMapping("/game/draw-cards")
 	public void drawCards(GeneralPlayerRequest request) {
-		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
-			UnoGameSession gameSession = gameSessionOpt.get();
+			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.drawCards(request.getNickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
@@ -100,9 +100,9 @@ public class GameController {
 
 	@MessageMapping("/game/pass")
 	public void pass(GeneralPlayerRequest request) {
-		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
-			UnoGameSession gameSession = gameSessionOpt.get();
+			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.pass(request.getNickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
@@ -111,16 +111,16 @@ public class GameController {
 
 	@MessageMapping("/game/bir")
 	public void bir(GeneralPlayerRequest request) {
-		Optional<UnoGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
-			UnoGameSession gameSession = gameSessionOpt.get();
+			BirGameSession gameSession = gameSessionOpt.get();
 			gameSession.bir(request.getNickName());
 			sendGameStateToAllUsers(gameSession);
 		}
 	}
 
-	private void sendGameStateToAllUsers(UnoGameSession gameSession) {
-		Optional<Map<String, UnoGameStateDto>> sessionIdToGameStateOpt = this.lobbyService
+	private void sendGameStateToAllUsers(BirGameSession gameSession) {
+		Optional<Map<String, BirGameStateDto>> sessionIdToGameStateOpt = this.lobbyService
 				.getSessionIdToGameStateMap(gameSession);
 		if (sessionIdToGameStateOpt.isPresent()) {
 			sessionIdToGameStateOpt.get().entrySet().stream().forEach(e -> {

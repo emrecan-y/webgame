@@ -1,10 +1,10 @@
 package com.example.webgame.dto;
 
-import com.example.webgame.enums.UnoCardColor;
+import com.example.webgame.enums.BirCardColor;
 
 public class PlayerMakeMoveRequest extends GeneralPlayerRequest {
 	private int cardId;
-	private UnoCardColor pickedColor;
+	private BirCardColor pickedColor;
 
 	public PlayerMakeMoveRequest() {
 	}
@@ -17,11 +17,11 @@ public class PlayerMakeMoveRequest extends GeneralPlayerRequest {
 		this.cardId = cardId;
 	}
 
-	public UnoCardColor getPickedColor() {
+	public BirCardColor getPickedColor() {
 		return pickedColor;
 	}
 
-	public void setPickedColor(UnoCardColor pickedColor) {
+	public void setPickedColor(BirCardColor pickedColor) {
 		this.pickedColor = pickedColor;
 	}
 

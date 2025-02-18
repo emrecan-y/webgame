@@ -1,22 +1,22 @@
-import { UnoCard, UnoCardColor } from "./unoCard";
+import { BirCard, BirCardColor } from "./birCard";
 
-export type UnoGameState = {
-  users: UnoUser[];
+export type BirGameState = {
+  users: BirUser[];
   currentUser: string;
 
-  userCards: UnoCard[];
+  userCards: BirCard[];
 
   direction: Direction;
-  centerCard: UnoCard;
+  centerCard: BirCard;
   isDrawPossible: boolean;
-  colorOverride: UnoCardColor;
+  colorOverride: BirCardColor;
   drawCount: number;
   isGameOver: boolean;
 };
 
 export type Direction = "CLOCKWISE" | "ANTI_CLOCKWISE";
 
-export type UnoUser = {
+export type BirUser = {
   name: string;
   cardCount: number;
   winCount: number;

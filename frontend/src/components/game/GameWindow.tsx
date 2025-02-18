@@ -1,25 +1,25 @@
 import { useContext, useEffect, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { UnoCardDisplay } from "./UnoCardDisplay";
+import { BirCardDisplay } from "./BirCardDisplay";
 import { UserContext } from "../context/UserContext";
-import { UnoGameState } from "../../models/unoGameState";
+import { BirGameState } from "../../models/birGameState";
 import { useNavigate } from "react-router-dom";
 import {
   GeneralPlayerRequest,
   PlayerMakeMoveRequest,
 } from "../../models/requests";
-import { UnoCard, UnoCardColor } from "../../models/unoCard";
-import UnoColorPicker from "./UnoColorPicker";
-import UnoPlayersInfo from "./UnoPlayersInfo";
-import UnoGameOver from "./UnoGameOver";
-import UnoGameCenter from "./UnoGameCenter";
+import { BirCard, BirCardColor } from "../../models/birCard";
+import BirColorPicker from "./BirColorPicker";
+import BirPlayersInfo from "./BirPlayersInfo";
+import BirGameOver from "./BirGameOver";
+import BirGameCenter from "./BirGameCenter";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
   const stompClient = useStompClient();
   const navigate = useNavigate();
 
-  const [gameState, setGameState] = useState<UnoGameState>();
+  const [gameState, setGameState] = useState<BirGameState>();
   const [idToColorPick, setIdToColorPick] = useState<number>();
   const [mouseEvent, setMouseEvent] =
     useState<React.MouseEvent<HTMLDivElement, MouseEvent>>();
@@ -46,7 +46,7 @@ function GameWindow() {
   }, [gameState]);
 
   useSubscription("/user/queue/game/state", (message) => {
-    const gameState: UnoGameState = JSON.parse(message.body);
+    const gameState: BirGameState = JSON.parse(message.body);
     setGameState(gameState);
   });
 
@@ -74,7 +74,7 @@ function GameWindow() {
 
   function makeMoveEventHandler(
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    card: UnoCard,
+    card: BirCard,
   ) {
     if (card.cardType === "SELECT_COLOR" || card.cardType === "DRAW_FOUR") {
       setMouseEvent(event);
@@ -84,14 +84,14 @@ function GameWindow() {
     }
   }
 
-  function pickColor(color: UnoCardColor) {
+  function pickColor(color: BirCardColor) {
     if (idToColorPick !== undefined) {
       makeMove(idToColorPick, color);
       setIdToColorPick(undefined);
     }
   }
 
-  function makeMove(cardId: number, pickedColor: UnoCardColor = "BLACK") {
+  function makeMove(cardId: number, pickedColor: BirCardColor = "BLACK") {
     if (stompClient) {
       const newRequest: PlayerMakeMoveRequest = {
         ...request,
@@ -109,7 +109,7 @@ function GameWindow() {
     return (
       <>
         {idToColorPick !== undefined && mouseEvent !== undefined && (
-          <UnoColorPicker
+          <BirColorPicker
             mouseEvent={mouseEvent}
             setMouseEvent={setMouseEvent}
             pickColor={pickColor}
@@ -117,12 +117,12 @@ function GameWindow() {
         )}
 
         {gameState.isGameOver && (
-          <UnoGameOver users={gameState.users} restartGame={restartGame} />
+          <BirGameOver users={gameState.users} restartGame={restartGame} />
         )}
 
         <div className="relative flex h-full min-h-screen w-full flex-col items-center justify-center">
           <div className="absolute top-4">
-            <UnoPlayersInfo
+            <BirPlayersInfo
               users={gameState.users}
               currentUser={gameState.currentUser}
               direction={gameState.direction}
@@ -130,7 +130,7 @@ function GameWindow() {
           </div>
 
           <div className="">
-            <UnoGameCenter request={request} gameState={gameState} />
+            <BirGameCenter request={request} gameState={gameState} />
           </div>
           <div className="fixed bottom-10 flex w-full justify-center">
             <div className="flex overflow-x-auto overflow-y-hidden">
@@ -139,9 +139,9 @@ function GameWindow() {
                   <div
                     className="transition-transform duration-150 ease-in-out hover:scale-105"
                     onClick={(event) => makeMoveEventHandler(event, element)}
-                    key={"uno-card-" + element.id}
+                    key={"bir-card-" + element.id}
                   >
-                    <UnoCardDisplay
+                    <BirCardDisplay
                       color={element.color}
                       cardType={element.cardType}
                     />

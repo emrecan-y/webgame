@@ -4,32 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.webgame.enums.Direction;
-import com.example.webgame.enums.UnoCardColor;
-import com.example.webgame.game.uno.UnoCard;
-import com.example.webgame.game.uno.UnoGameSession;
-import com.example.webgame.game.uno.UnoUserState;
+import com.example.webgame.enums.BirCardColor;
+import com.example.webgame.game.bir.BirCard;
+import com.example.webgame.game.bir.BirGameSession;
+import com.example.webgame.game.bir.BirUserState;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UnoGameStateDto {
-	private List<UnoUserDto> users;
+public class BirGameStateDto {
+	private List<BirUserDto> users;
 	private String currentUser;
 
-	private List<UnoCard> userCards;
+	private List<BirCard> userCards;
 
 	private Direction direction;
-	private UnoCard centerCard;
+	private BirCard centerCard;
 	private boolean isDrawPossible;
-	private UnoCardColor colorOverride;
+	private BirCardColor colorOverride;
 	private int drawCount;
 	private boolean isGameOver;
 
-	public UnoGameStateDto() {
+	public BirGameStateDto() {
 	}
 
-	public UnoGameStateDto(UnoGameSession session, List<UnoCard> userCards) {
+	public BirGameStateDto(BirGameSession session, List<BirCard> userCards) {
 		this.users = new ArrayList<>();
-		for (UnoUserState userState : session.getUserStates()) {
-			users.add(new UnoUserDto(userState.getUserNickName(), userState.getUserCards().size(),
+		for (BirUserState userState : session.getUserStates()) {
+			users.add(new BirUserDto(userState.getUserNickName(), userState.getUserCards().size(),
 					userState.getWinCount(), userState.hasAttemptedToDeclareBir()));
 		}
 		this.currentUser = session.getUsers()[session.getCurrentUserIndex()];
@@ -43,11 +43,11 @@ public class UnoGameStateDto {
 		this.userCards = userCards;
 	}
 
-	public List<UnoUserDto> getUsers() {
+	public List<BirUserDto> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<UnoUserDto> users) {
+	public void setUsers(List<BirUserDto> users) {
 		this.users = users;
 	}
 
@@ -59,11 +59,11 @@ public class UnoGameStateDto {
 		this.currentUser = currentUser;
 	}
 
-	public List<UnoCard> getUserCards() {
+	public List<BirCard> getUserCards() {
 		return userCards;
 	}
 
-	public void setUserCards(List<UnoCard> userCards) {
+	public void setUserCards(List<BirCard> userCards) {
 		this.userCards = userCards;
 	}
 
@@ -75,11 +75,11 @@ public class UnoGameStateDto {
 		this.direction = direction;
 	}
 
-	public UnoCard getCenterCard() {
+	public BirCard getCenterCard() {
 		return centerCard;
 	}
 
-	public void setCenterCard(UnoCard centerCard) {
+	public void setCenterCard(BirCard centerCard) {
 		this.centerCard = centerCard;
 	}
 
@@ -92,11 +92,11 @@ public class UnoGameStateDto {
 		this.isDrawPossible = isDrawPossible;
 	}
 
-	public UnoCardColor getColorOverride() {
+	public BirCardColor getColorOverride() {
 		return colorOverride;
 	}
 
-	public void setColorOverride(UnoCardColor colorOverride) {
+	public void setColorOverride(BirCardColor colorOverride) {
 		this.colorOverride = colorOverride;
 	}
 
@@ -117,13 +117,13 @@ public class UnoGameStateDto {
 		this.isGameOver = isGameOver;
 	}
 
-	private class UnoUserDto {
+	private class BirUserDto {
 		private String name;
 		private int cardCount;
 		private int winCount;
 		private boolean hasAttemptedToDeclareBir;
 
-		public UnoUserDto(String userName, int cardCount, int winCount, boolean hasAttemptedToDeclareBir) {
+		public BirUserDto(String userName, int cardCount, int winCount, boolean hasAttemptedToDeclareBir) {
 			this.name = userName;
 			this.cardCount = cardCount;
 			this.winCount = winCount;

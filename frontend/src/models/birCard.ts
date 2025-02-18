@@ -1,11 +1,11 @@
-export type UnoCard = {
+export type BirCard = {
   id: number;
-  color: UnoCardColor;
-  cardType: UnoCardType;
+  color: BirCardColor;
+  cardType: BirCardType;
 };
 
-export type UnoCardColor = "RED" | "BLUE" | "GREEN" | "YELLOW" | "BLACK";
-export type UnoCardType =
+export type BirCardColor = "RED" | "BLUE" | "GREEN" | "YELLOW" | "BLACK";
+export type BirCardType =
   | "ZERO"
   | "ONE"
   | "TWO"

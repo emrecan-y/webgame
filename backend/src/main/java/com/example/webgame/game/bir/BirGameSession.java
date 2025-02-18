@@ -1,4 +1,4 @@
-package com.example.webgame.game.uno;
+package com.example.webgame.game.bir;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,30 +12,30 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Stack;
 
+import com.example.webgame.enums.BirCardColor;
+import com.example.webgame.enums.BirCardType;
 import com.example.webgame.enums.Direction;
-import com.example.webgame.enums.UnoCardColor;
-import com.example.webgame.enums.UnoCardType;
 
-public class UnoGameSession {
-	private static final List<UnoCard> INITIAL_CARD_DECK = readUnoCardCsv();
+public class BirGameSession {
+	private static final List<BirCard> INITIAL_CARD_DECK = readBirCardCsv();
 	private static final Random RANDOM = new Random();
 	private static final int START_CARD_COUNT = 7;
 
-	private Stack<UnoCard> drawStack;
-	private Stack<UnoCard> discardStack;
+	private Stack<BirCard> drawStack;
+	private Stack<BirCard> discardStack;
 
-	private List<UnoUserState> userStates;
+	private List<BirUserState> userStates;
 	private int currentUserIndex;
 	private boolean isDrawPossible;
 	private int drawCount;
 
-	private UnoCardColor colorOverride;
+	private BirCardColor colorOverride;
 	private Direction gameDirection;
 	private boolean isGameOver;
 
-	public UnoGameSession(HashMap<String, String> userToSessionIdMap) {
+	public BirGameSession(HashMap<String, String> userToSessionIdMap) {
 		this.userStates = new ArrayList<>();
-		userToSessionIdMap.entrySet().stream().forEach(e -> userStates.add(new UnoUserState(e.getKey(), e.getValue())));
+		userToSessionIdMap.entrySet().stream().forEach(e -> userStates.add(new BirUserState(e.getKey(), e.getValue())));
 		init();
 	}
 
@@ -57,16 +57,16 @@ public class UnoGameSession {
 		init();
 	}
 
-	public boolean makeMove(String user, int cardId, UnoCardColor color) {
+	public boolean makeMove(String user, int cardId, BirCardColor color) {
 		for (int i = 0; i < userStates.size(); i++) {
-			UnoUserState userState = userStates.get(i);
+			BirUserState userState = userStates.get(i);
 			boolean isUserTurn = i == currentUserIndex;
 
 			if (userState.getUserNickName().equals(user)) {
-				Optional<UnoCard> cardOpt = userState.findCardById(cardId);
+				Optional<BirCard> cardOpt = userState.findCardById(cardId);
 				if (cardOpt.isPresent()) {
-					UnoCard card = cardOpt.get();
-					UnoCard centerCard = getCenterCard();
+					BirCard card = cardOpt.get();
+					BirCard centerCard = getCenterCard();
 
 					boolean isValidRegularMove = isUserTurn
 							&& (centerCard.isValidMoveOnTop(card) || card.getColor().equals(colorOverride))
@@ -78,7 +78,7 @@ public class UnoGameSession {
 						this.currentUserIndex = i;
 						checkForSpecialEffects(card);
 						nextUser();
-						this.colorOverride = color.equals(UnoCardColor.BLACK) ? null : color;
+						this.colorOverride = color.equals(BirCardColor.BLACK) ? null : color;
 						checkForGameOver();
 						userState.resetBir();
 						return true;
@@ -92,7 +92,7 @@ public class UnoGameSession {
 	public boolean drawCard(String user) {
 		if (this.isDrawPossible && this.drawCount == 0) {
 			for (int i = 0; i < userStates.size(); i++) {
-				UnoUserState userState = userStates.get(i);
+				BirUserState userState = userStates.get(i);
 				boolean isUserTurn = i == currentUserIndex;
 				if (userState.getUserNickName().equals(user) && isUserTurn) {
 					drawCardsForUser(userState, 1);
@@ -107,7 +107,7 @@ public class UnoGameSession {
 	public boolean drawCards(String user) {
 		if (this.isDrawPossible) {
 			for (int i = 0; i < userStates.size(); i++) {
-				UnoUserState userState = userStates.get(i);
+				BirUserState userState = userStates.get(i);
 				boolean isUserTurn = i == currentUserIndex;
 				if (userState.getUserNickName().equals(user) && isUserTurn) {
 					drawCardsForUser(userState, this.drawCount);
@@ -123,7 +123,7 @@ public class UnoGameSession {
 	public boolean pass(String user) {
 		if (!this.isDrawPossible) {
 			for (int i = 0; i < userStates.size(); i++) {
-				UnoUserState userState = userStates.get(i);
+				BirUserState userState = userStates.get(i);
 				boolean isUserTurn = i == currentUserIndex;
 				if (userState.getUserNickName().equals(user) && isUserTurn) {
 					nextUser();
@@ -137,7 +137,7 @@ public class UnoGameSession {
 
 	public boolean bir(String user) {
 		for (int i = 0; i < userStates.size(); i++) {
-			UnoUserState userState = userStates.get(i);
+			BirUserState userState = userStates.get(i);
 			if (userState.getUserNickName().equals(user) && !userState.hasAttemptedToDeclareBir()) {
 				if (userState.getUserCards().size() == 1) {
 					userState.declareBir(true);
@@ -151,15 +151,15 @@ public class UnoGameSession {
 		return false;
 	}
 
-	public UnoCard getCenterCard() {
+	public BirCard getCenterCard() {
 		return this.discardStack.peek();
 	}
 
-	public Stack<UnoCard> getDrawStack() {
+	public Stack<BirCard> getDrawStack() {
 		return drawStack;
 	}
 
-	public Stack<UnoCard> getDiscardStack() {
+	public Stack<BirCard> getDiscardStack() {
 		return discardStack;
 	}
 
@@ -167,7 +167,7 @@ public class UnoGameSession {
 		return this.userStates.stream().map(userState -> userState.getUserNickName()).toArray(String[]::new);
 	}
 
-	public List<UnoUserState> getUserStates() {
+	public List<BirUserState> getUserStates() {
 		return userStates;
 	}
 
@@ -183,7 +183,7 @@ public class UnoGameSession {
 		return isDrawPossible;
 	}
 
-	public UnoCardColor getColorOverride() {
+	public BirCardColor getColorOverride() {
 		return this.colorOverride;
 	}
 
@@ -195,7 +195,7 @@ public class UnoGameSession {
 		return isGameOver;
 	}
 
-	private void drawCardsForUser(UnoUserState userState, int drawCount) {
+	private void drawCardsForUser(BirUserState userState, int drawCount) {
 		while (drawCount > 0) {
 			userState.addCard(drawCardFromStack());
 			drawCount--;
@@ -219,7 +219,7 @@ public class UnoGameSession {
 		this.isDrawPossible = true;
 	}
 
-	private void checkForSpecialEffects(UnoCard card) {
+	private void checkForSpecialEffects(BirCard card) {
 		switch (card.getCardType()) {
 		case DRAW_FOUR:
 			this.drawCount += 4;
@@ -244,8 +244,8 @@ public class UnoGameSession {
 	}
 
 	private void drawCenterCard() {
-		UnoCard card = drawCardFromStack();
-		List<UnoCard> specialCards = new ArrayList<>();
+		BirCard card = drawCardFromStack();
+		List<BirCard> specialCards = new ArrayList<>();
 		while (card.isSpecialCard()) {
 			specialCards.add(card);
 			card = drawCardFromStack();
@@ -254,11 +254,11 @@ public class UnoGameSession {
 		this.discardStack.add(card);
 	}
 
-	private UnoCard drawCardFromStack() {
+	private BirCard drawCardFromStack() {
 		if (!this.drawStack.isEmpty()) {
 			return drawStack.pop();
 		} else {
-			UnoCard centerCard = this.discardStack.pop();
+			BirCard centerCard = this.discardStack.pop();
 			this.drawStack.addAll(this.discardStack);
 			this.discardStack.clear();
 			Collections.shuffle(this.drawStack);
@@ -268,7 +268,7 @@ public class UnoGameSession {
 	}
 
 	private void checkForGameOver() {
-		for (UnoUserState userState : this.userStates) {
+		for (BirUserState userState : this.userStates) {
 			if (userState.getUserCards().size() == 0) {
 				if (userState.hasSuccessfullyDeclaredBir()) {
 					userState.incrementWinCount();
@@ -281,7 +281,7 @@ public class UnoGameSession {
 	}
 
 	private void copyDeckAndShuffle() {
-		List<UnoCard> deckCopy = new ArrayList<>(INITIAL_CARD_DECK);
+		List<BirCard> deckCopy = new ArrayList<>(INITIAL_CARD_DECK);
 		Collections.shuffle(deckCopy);
 		this.drawStack = new Stack<>();
 		this.drawStack.addAll(deckCopy);
@@ -289,18 +289,18 @@ public class UnoGameSession {
 
 	private void dealCardsToUsers(int cardCount) {
 		for (int i = 0; i < cardCount; i++) {
-			for (UnoUserState userState : this.userStates) {
+			for (BirUserState userState : this.userStates) {
 				if (userState != null) {
-					UnoCard currentCard = drawCardFromStack();
+					BirCard currentCard = drawCardFromStack();
 					userState.addCard(currentCard);
 				}
 			}
 		}
 	}
 
-	private static List<UnoCard> readUnoCardCsv() {
-		List<UnoCard> cardDeck = new ArrayList<>();
-		try (InputStream inputStream = UnoGameSession.class.getResourceAsStream("/unoCards.csv");
+	private static List<BirCard> readBirCardCsv() {
+		List<BirCard> cardDeck = new ArrayList<>();
+		try (InputStream inputStream = BirGameSession.class.getResourceAsStream("/birCards.csv");
 				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
 			// skip first line
 			String line = reader.readLine();
@@ -308,7 +308,7 @@ public class UnoGameSession {
 				String[] cells = line.split(";");
 				int count = Integer.parseInt(cells[2]);
 				for (int i = 0; i < count; i++) {
-					cardDeck.add(new UnoCard(UnoCardColor.valueOf(cells[0]), UnoCardType.valueOf(cells[1])));
+					cardDeck.add(new BirCard(BirCardColor.valueOf(cells[0]), BirCardType.valueOf(cells[1])));
 				}
 
 			}

@@ -1,28 +1,28 @@
 import { useContext } from "react";
-import { Direction, UnoUser } from "../../models/unoGameState";
+import { Direction, BirUser } from "../../models/birGameState";
 import { UserContext } from "../context/UserContext";
 import shadow from "../../assets/avatar-shadow.svg";
-import { UnoCardTopViewDisplay } from "./UnoCardDisplay";
+import { BirCardTopViewDisplay } from "./BirCardDisplay";
 import rotationArrow from "../../assets/rotation_arrow.png";
 
-type UnoPlayersInfoProps = {
-  users: UnoUser[];
+type BirPlayersInfoProps = {
+  users: BirUser[];
   currentUser: string;
   direction: Direction;
 };
 
-function UnoPlayersInfoCards(cardCount: number) {
+function BirPlayerSingleInfoCard(cardCount: number) {
   if (cardCount == 1) {
     return (
       <div className="relative flex h-16 w-32 flex-col items-center justify-center sm:h-24">
         <div className="flex h-0 w-0 scale-[0.2] items-center justify-center sm:scale-[0.24]">
           <div>
-            <UnoCardTopViewDisplay />
+            <BirCardTopViewDisplay />
           </div>
         </div>
 
-        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-uno-red text-center align-middle font-bold text-uno-white outline">
-          <span className="text-center align-middle drop-shadow-uno-small-text">
+        <p className="bg-bir-red text-bir-white absolute bottom-0 h-7 w-7 rounded-full text-center align-middle font-bold outline">
+          <span className="drop-shadow-bir-small-text text-center align-middle">
             {cardCount}
           </span>
         </p>
@@ -43,12 +43,12 @@ function UnoPlayersInfoCards(cardCount: number) {
                 transform: `translateY(${Math.abs(Math.floor(cardCountToShow / 2) - index) * 10}px) rotate(${index * anglePerCard - arcAngle}deg)`,
               }}
             >
-              <UnoCardTopViewDisplay />
+              <BirCardTopViewDisplay />
             </div>
           ))}
         </div>
-        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-uno-red text-center align-middle font-bold text-uno-white outline">
-          <span className="text-center align-middle drop-shadow-uno-small-text">
+        <p className="bg-bir-red text-bir-white absolute bottom-0 h-7 w-7 rounded-full text-center align-middle font-bold outline">
+          <span className="drop-shadow-bir-small-text text-center align-middle">
             {cardCount}
           </span>
         </p>
@@ -57,17 +57,17 @@ function UnoPlayersInfoCards(cardCount: number) {
   }
 }
 
-function UnoPlayersInfo({
+function BirPlayersInfo({
   users,
   currentUser,
   direction,
-}: UnoPlayersInfoProps) {
+}: BirPlayersInfoProps) {
   const { userNickName } = useContext(UserContext);
   const applicationUserIndex = users.findIndex(
     (user) => user.name === userNickName,
   );
 
-  let usersToDisplay: UnoUser[] = [];
+  let usersToDisplay: BirUser[] = [];
   if (applicationUserIndex === 0) {
     usersToDisplay = users.slice(1);
   } else if (applicationUserIndex === users.length - 1) {
@@ -96,7 +96,7 @@ function UnoPlayersInfo({
           <div className="relative flex h-28 w-max flex-col items-center justify-between sm:h-40">
             <img className="w-16 sm:w-20" src={shadow} alt="no" />
             <div className="absolute top-7 sm:top-8">
-              {UnoPlayersInfoCards(user.cardCount)}
+              {BirPlayerSingleInfoCard(user.cardCount)}
             </div>
             <p className="rounded-md bg-white p-1 text-xs sm:my-1.5 sm:text-sm">
               {user.name}
@@ -113,4 +113,4 @@ function UnoPlayersInfo({
   );
 }
 
-export default UnoPlayersInfo;
+export default BirPlayersInfo;

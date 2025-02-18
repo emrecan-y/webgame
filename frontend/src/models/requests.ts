@@ -1,4 +1,4 @@
-import { UnoCardColor } from "./unoCard";
+import { BirCardColor } from "./birCard";
 
 export type LoginRequest = {
   nickName: string;
@@ -17,5 +17,5 @@ export type GeneralPlayerRequest = {
 
 export type PlayerMakeMoveRequest = GeneralPlayerRequest & {
   cardId: number;
-  pickedColor: UnoCardColor;
+  pickedColor: BirCardColor;
 };

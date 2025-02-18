@@ -21,20 +21,20 @@ export default {
         "game-main-medium": "#787e8f",
         "game-main-light": "#e5e7eb",
 
-        "uno-red": "#c40c00",
-        "uno-blue": "#0849a3",
-        "uno-green": "#328a10",
-        "uno-yellow": "#e7d004",
-        "uno-black": "#000000",
-        "uno-white": "#e2e2e2",
+        "bir-red": "#c40c00",
+        "bir-blue": "#0849a3",
+        "bir-green": "#328a10",
+        "bir-yellow": "#e7d004",
+        "bir-black": "#000000",
+        "bir-white": "#e2e2e2",
       },
 
       dropShadow: {
-        "uno-small-text": [
+        "bir-small-text": [
           "-1.5px 1.2px rgba(0, 0, 0, 1)",
           "0 1px 1px rgba(0, 0, 0, 0.8)",
         ],
-        "uno-large-text": [
+        "bir-large-text": [
           "-3px 2.5px rgba(0, 0, 0, 1)",
           "0 1.5px 1.5px rgba(0, 0, 0, 0.8)",
         ],

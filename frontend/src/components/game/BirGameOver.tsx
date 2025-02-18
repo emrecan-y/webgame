@@ -1,12 +1,12 @@
-import { UnoUser } from "../../models/unoGameState";
+import { BirUser } from "../../models/birGameState";
 import { useStompClient } from "react-stomp-hooks";
 import { GeneralPlayerRequest } from "../../models/requests";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 
-type UnoGameOverProps = { users: UnoUser[]; restartGame: () => void };
+type BirGameOverProps = { users: BirUser[]; restartGame: () => void };
 
-function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
+function BirGameOver({ users, restartGame }: BirGameOverProps) {
   const stompClient = useStompClient();
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
   const usersSortedByWinCount = [...users].sort(
@@ -66,4 +66,4 @@ function UnoGameOver({ users, restartGame }: UnoGameOverProps) {
   );
 }
 
-export default UnoGameOver;
+export default BirGameOver;

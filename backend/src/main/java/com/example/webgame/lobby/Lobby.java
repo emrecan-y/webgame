@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 import com.example.webgame.chat.ChatHistory;
-import com.example.webgame.game.uno.UnoGameSession;
+import com.example.webgame.game.bir.BirGameSession;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Lobby {
@@ -16,7 +16,7 @@ public class Lobby {
 	private String password;
 	private String[] users;
 	private ChatHistory chatHistory;
-	private UnoGameSession gameSession;
+	private BirGameSession gameSession;
 
 	public Lobby(String password, int size) {
 		this.id = idCount++;
@@ -32,11 +32,11 @@ public class Lobby {
 
 	public void startGame(HashMap<String, String> userToSessionIdMap) {
 		if (this.gameSession == null) {
-			this.gameSession = new UnoGameSession(userToSessionIdMap);
+			this.gameSession = new BirGameSession(userToSessionIdMap);
 		}
 	}
 
-	public UnoGameSession getGameSession() {
+	public BirGameSession getGameSession() {
 		return this.gameSession;
 	}
 

@@ -9,9 +9,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.example.webgame.dto.GeneralPlayerRequest;
-import com.example.webgame.dto.UnoGameStateDto;
-import com.example.webgame.game.uno.UnoGameSession;
-import com.example.webgame.game.uno.UnoUserState;
+import com.example.webgame.dto.BirGameStateDto;
+import com.example.webgame.game.bir.BirGameSession;
+import com.example.webgame.game.bir.BirUserState;
 import com.example.webgame.session.SessionService;
 import com.example.webgame.session.UserSession;
 
@@ -112,7 +112,7 @@ public class LobbyService {
 		return false;
 	}
 
-	public Optional<UnoGameSession> findGameSessionFromPlayerRequest(GeneralPlayerRequest request) {
+	public Optional<BirGameSession> findGameSessionFromPlayerRequest(GeneralPlayerRequest request) {
 		Optional<Lobby> lobbyOpt = this.findLobbyById(request.getLobbyId());
 		if (lobbyOpt.isPresent()) {
 			Lobby lobby = lobbyOpt.get();
@@ -124,14 +124,14 @@ public class LobbyService {
 		return Optional.empty();
 	}
 
-	public Optional<Map<String, UnoGameStateDto>> getSessionIdToGameStateMap(UnoGameSession gameSession) {
+	public Optional<Map<String, BirGameStateDto>> getSessionIdToGameStateMap(BirGameSession gameSession) {
 		if (gameSession != null) {
-			List<UnoUserState> userStates = gameSession.getUserStates();
-			Map<String, UnoGameStateDto> sessionIdToGameStateMap = new HashMap<>();
+			List<BirUserState> userStates = gameSession.getUserStates();
+			Map<String, BirGameStateDto> sessionIdToGameStateMap = new HashMap<>();
 
 			userStates.stream().forEach(userState -> {
 				String sessionId = userState.getSessionId();
-				sessionIdToGameStateMap.put(sessionId, new UnoGameStateDto(gameSession, userState.getUserCards()));
+				sessionIdToGameStateMap.put(sessionId, new BirGameStateDto(gameSession, userState.getUserCards()));
 			});
 			return Optional.of(sessionIdToGameStateMap);
 		} else {

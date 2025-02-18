@@ -1,16 +1,16 @@
 import { useStompClient } from "react-stomp-hooks";
-import { UnoGameState } from "../../models/unoGameState";
+import { BirGameState } from "../../models/birGameState";
 import { GeneralPlayerRequest } from "../../models/requests";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { UnoCardDisplay, UnoCardTopViewDisplay } from "./UnoCardDisplay";
+import { BirCardDisplay, BirCardTopViewDisplay } from "./BirCardDisplay";
 
-type UnoGameButtonsProps = {
-  gameState: UnoGameState;
+type BirGameCenterProps = {
+  gameState: BirGameState;
   request: GeneralPlayerRequest;
 };
 
-function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
+function BirGameCenter({ gameState, request }: BirGameCenterProps) {
   const { currentUser, drawCount, isDrawPossible, users } = gameState;
   const { userNickName } = useContext(UserContext);
   const isUserTurn = currentUser === userNickName;
@@ -82,13 +82,13 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
           onClick={() => drawButtonHandler(drawCount)}
         >
           {drawCount != 0 && (
-            <p className="absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-xl border-4 border-solid border-uno-white bg-uno-red p-1 text-2xl font-extrabold text-uno-yellow">
-              <span className="drop-shadow-uno-small-text">{drawCount}x</span>
+            <p className="border-bir-white bg-bir-red text-bir-yellow absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-xl border-4 border-solid p-1 text-2xl font-extrabold">
+              <span className="drop-shadow-bir-small-text">{drawCount}x</span>
             </p>
           )}
-          <UnoCardTopViewDisplay />
+          <BirCardTopViewDisplay />
         </div>
-        <UnoCardDisplay
+        <BirCardDisplay
           color={gameState.centerCard.color}
           cardType={gameState.centerCard.cardType}
           colorOverride={gameState.colorOverride}
@@ -97,8 +97,8 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
           <button
             className={`rounded border-8 border-solid p-5 ${
               isBirPossible
-                ? "border-uno-white bg-uno-red transition-transform duration-100 hover:scale-105"
-                : "border-game-main-medium bg-uno-black text-game-main-medium hover:cursor-default"
+                ? "border-bir-white bg-bir-red transition-transform duration-100 hover:scale-105"
+                : "bg-bir-black border-game-main-medium text-game-main-medium hover:cursor-default"
             }`}
             onClick={isBirPossible ? bir : undefined}
           >
@@ -107,8 +107,8 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
           <button
             className={`rounded border-8 border-solid p-5 ${
               isPassPossible
-                ? "border-uno-white bg-uno-red transition-transform duration-100 hover:scale-105"
-                : "border-game-main-medium bg-uno-black text-game-main-medium hover:cursor-default"
+                ? "border-bir-white bg-bir-red transition-transform duration-100 hover:scale-105"
+                : "bg-bir-black border-game-main-medium text-game-main-medium hover:cursor-default"
             }`}
             onClick={isPassPossible ? pass : undefined}
           >
@@ -120,4 +120,4 @@ function UnoGameCenter({ gameState, request }: UnoGameButtonsProps) {
   );
 }
 
-export default UnoGameCenter;
+export default BirGameCenter;
