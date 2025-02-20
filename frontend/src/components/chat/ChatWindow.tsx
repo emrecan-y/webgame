@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { ChatMessage } from "../../models/chat";
 import { useChatStore } from "./ChatStore";
+import { AnimatePresence, motion } from "motion/react";
 
 type ChatWindowProps = {
   buttonText: string;
@@ -70,51 +71,59 @@ export function ChatWindow(props: ChatWindowProps) {
 
   return (
     <>
-      {getShowState(props.buttonText) && (
-        <div className="fixed flex -translate-y-full flex-col items-end rounded rounded-br-none bg-game-accent-light">
-          <button
-            className="mr-1 text-game-main-dark transition-transform duration-150 ease-in-out hover:scale-125"
-            onClick={chatButtonHandler}
+      <AnimatePresence>
+        {getShowState(props.buttonText) && (
+          <motion.div
+            className="fixed flex flex-col items-end rounded rounded-br-none bg-game-accent-light"
+            initial={{ opacity: 0, translateY: "0%" }}
+            animate={{ opacity: 1, translateY: "-100%" }}
+            exit={{ opacity: 0, translateY: "0%" }}
+            transition={{ type: "easeInOut" }}
           >
-            ✖
-          </button>
-          <div
-            ref={chatHistoryRef}
-            className="h-72 w-full overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark sm:h-96"
-          >
-            {Array.isArray(chatHistory) &&
-              chatHistory.map((e, index) => (
-                <p key={props.buttonText + index} className="w-72">
-                  <span className="font-semibold text-violet-950">
-                    {e.senderName + ": "}
-                  </span>
-                  {e.message}
-                </p>
-              ))}
-          </div>
-          <form className="flex flex-row" onSubmit={(e) => sendMessage(e)}>
-            <input
-              autoFocus
-              className="m-1 w-64 bg-black px-1 text-game-main-light focus:outline-none focus:ring-0"
-              type="text"
-              value={messageInput}
-              onChange={(e) => setMessageInput(e.currentTarget.value)}
-            />
-            <input
-              className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5 transition-transform duration-150 ease-in-out hover:scale-110"
-              type="submit"
-              value={"↵"}
-            />
-          </form>
-        </div>
-      )}
+            <button
+              className="mr-1 text-game-main-dark transition-transform duration-150 ease-in-out hover:scale-125"
+              onClick={chatButtonHandler}
+            >
+              ✖
+            </button>
+            <div
+              ref={chatHistoryRef}
+              className="h-72 w-full overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark sm:h-96"
+            >
+              {Array.isArray(chatHistory) &&
+                chatHistory.map((e, index) => (
+                  <p key={props.buttonText + index} className="w-72">
+                    <span className="font-semibold text-violet-950">
+                      {e.senderName + ": "}
+                    </span>
+                    {e.message}
+                  </p>
+                ))}
+            </div>
+            <form className="flex flex-row" onSubmit={(e) => sendMessage(e)}>
+              <input
+                autoFocus
+                className="m-1 w-64 bg-black px-1 text-game-main-light focus:outline-none focus:ring-0"
+                type="text"
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.currentTarget.value)}
+              />
+              <input
+                className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5 transition-transform duration-150 ease-in-out hover:scale-110"
+                type="submit"
+                value={"↵"}
+              />
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <button
         id={props.buttonText}
         className={
           getShowState(props.buttonText)
             ? "rounded-b bg-game-accent-light p-3 pt-4 text-game-main-dark"
-            : "relative rounded bg-game-accent-medium p-3 text-game-main-light transition-transform duration-150 ease-in-out hover:scale-105"
+            : "relative rounded bg-game-accent-medium p-3 text-game-main-light transition-all duration-300 ease-in-out hover:scale-105"
         }
         onClick={chatButtonHandler}
       >
