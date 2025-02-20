@@ -4,6 +4,7 @@ import { GeneralPlayerRequest } from "../../models/requests";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { BirCardDisplay, BirCardTopViewDisplay } from "./BirCardDisplay";
+import { AnimatePresence, motion } from "motion/react";
 
 type BirGameCenterProps = {
   gameState: BirGameState;
@@ -77,9 +78,17 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
       </div>
 
       <div className="flex gap-2">
-        <div
-          className="relative transition-transform duration-150 ease-in-out hover:scale-105"
+        <motion.div
+          className="relative"
           onClick={() => drawButtonHandler(drawCount)}
+          whileHover={{
+            scale: 1.05,
+            transition: { duration: 0.15 },
+          }}
+          whileTap={{
+            scale: 0.9,
+            transition: { duration: 0.15 },
+          }}
         >
           {drawCount != 0 && (
             <p className="border-bir-white bg-bir-red text-bir-yellow absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-xl border-4 border-solid p-1 text-2xl font-extrabold">
@@ -87,33 +96,83 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
             </p>
           )}
           <BirCardTopViewDisplay />
+        </motion.div>
+        <div className="relative w-28">
+          <AnimatePresence>
+            <motion.div
+              className="absolute"
+              key={`bir-card-${gameState.centerCard.id}`}
+              initial={{ opacity: 0, top: "-40px" }}
+              animate={{ opacity: 1, top: 0 }}
+              exit={{
+                opacity: 0,
+                transition: { delay: 0.5 },
+              }}
+              transition={{ type: "linear" }}
+            >
+              <BirCardDisplay
+                color={gameState.centerCard.color}
+                cardType={gameState.centerCard.cardType}
+                colorOverride={gameState.colorOverride}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
-        <BirCardDisplay
-          color={gameState.centerCard.color}
-          cardType={gameState.centerCard.cardType}
-          colorOverride={gameState.colorOverride}
-        />
+
         <div className="flex w-28 flex-col justify-between text-xl">
-          <button
-            className={`rounded border-8 border-solid p-5 ${
-              isBirPossible
-                ? "border-bir-white bg-bir-red transition-transform duration-100 hover:scale-105"
-                : "bg-bir-black border-game-main-medium text-game-main-medium hover:cursor-default"
-            }`}
-            onClick={isBirPossible ? bir : undefined}
-          >
-            BIR!
-          </button>
-          <button
-            className={`rounded border-8 border-solid p-5 ${
-              isPassPossible
-                ? "border-bir-white bg-bir-red transition-transform duration-100 hover:scale-105"
-                : "bg-bir-black border-game-main-medium text-game-main-medium hover:cursor-default"
-            }`}
-            onClick={isPassPossible ? pass : undefined}
-          >
-            PASS
-          </button>
+          {isBirPossible ? (
+            <motion.button
+              className={
+                "border-bir-white bg-bir-red rounded border-8 border-solid p-5 transition-transform duration-100 hover:scale-105"
+              }
+              onClick={bir}
+              whileHover={{
+                scale: 1.05,
+                transition: { duration: 0.15 },
+              }}
+              whileTap={{
+                scale: 0.9,
+                transition: { duration: 0.15 },
+              }}
+            >
+              BİR!
+            </motion.button>
+          ) : (
+            <button
+              className={
+                "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
+              }
+            >
+              BİR!
+            </button>
+          )}
+
+          {isPassPossible ? (
+            <motion.button
+              className={
+                "border-bir-white bg-bir-red rounded border-8 border-solid p-5 transition-transform duration-100 hover:scale-105"
+              }
+              onClick={pass}
+              whileHover={{
+                scale: 1.05,
+                transition: { duration: 0.15 },
+              }}
+              whileTap={{
+                scale: 0.9,
+                transition: { duration: 0.15 },
+              }}
+            >
+              PASS
+            </motion.button>
+          ) : (
+            <button
+              className={
+                "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
+              }
+            >
+              PASS
+            </button>
+          )}
         </div>
       </div>
     </div>

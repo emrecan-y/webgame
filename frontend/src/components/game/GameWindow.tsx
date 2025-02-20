@@ -13,6 +13,7 @@ import BirColorPicker from "./BirColorPicker";
 import BirPlayersInfo from "./BirPlayersInfo";
 import BirGameOver from "./BirGameOver";
 import BirGameCenter from "./BirGameCenter";
+import { AnimatePresence, motion } from "motion/react";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -135,18 +136,33 @@ function GameWindow() {
           <div className="fixed bottom-10 flex w-full justify-center">
             <div className="flex overflow-x-auto overflow-y-hidden">
               <div className="flex w-fit scale-75 flex-row flex-nowrap gap-2">
-                {gameState.userCards.map((element) => (
-                  <div
-                    className="transition-transform duration-150 ease-in-out hover:scale-105"
-                    onClick={(event) => makeMoveEventHandler(event, element)}
-                    key={"bir-card-" + element.id}
-                  >
-                    <BirCardDisplay
-                      color={element.color}
-                      cardType={element.cardType}
-                    />
-                  </div>
-                ))}
+                <AnimatePresence>
+                  {gameState.userCards.map((element) => (
+                    <motion.div
+                      className="relative"
+                      onClick={(event) => makeMoveEventHandler(event, element)}
+                      key={"bir-card-" + element.id}
+                      initial={{ opacity: 0, top: "-40px" }}
+                      exit={{ opacity: 0, top: "-40px" }}
+                      animate={{ opacity: 1, top: 0 }}
+                      transition={{ type: "linear" }}
+                      layout
+                      whileHover={{
+                        scale: 1.05,
+                        transition: { duration: 0.15 },
+                      }}
+                      whileTap={{
+                        scale: 0.9,
+                        transition: { duration: 0.15 },
+                      }}
+                    >
+                      <BirCardDisplay
+                        color={element.color}
+                        cardType={element.cardType}
+                      />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </div>
             </div>
           </div>
