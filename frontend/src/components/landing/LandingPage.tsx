@@ -3,6 +3,7 @@ import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { LoginRequest } from "../../models/requests";
 import { useNavigate } from "react-router-dom";
+import { motion } from "motion/react";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");
@@ -71,7 +72,12 @@ function LandingPage() {
   });
 
   return (
-    <div className="flex flex-col items-center">
+    <motion.div
+      className="flex flex-col items-center"
+      initial={{ opacity: 0, scale: 0 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring" }}
+    >
       <p className="min-h-6 animate-bounce">{infoText}</p>
       <form
         className="flex flex-col rounded bg-game-accent-light p-2"
@@ -104,7 +110,7 @@ function LandingPage() {
           />
         </div>
       </form>
-    </div>
+    </motion.div>
   );
 }
 
