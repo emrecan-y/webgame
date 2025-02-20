@@ -4,6 +4,8 @@ import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { GeneralPlayerRequest } from "../../models/requests";
+import { AnimatePresence } from "motion/react";
+import LobbyListEntryLabel from "./LobbyListEntryLabel";
 
 type LobbyListEntryProps = {
   lobby: Lobby;
@@ -56,7 +58,9 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   }
 
   return (
-    <div className="mb-4 w-full rounded bg-game-accent-light p-1">
+    <div
+      className={`mb-4 w-full rounded bg-game-accent-light p-1 ${isUserInLobby && "animate-bounce-subtle"}`}
+    >
       <div className="my-1 flex h-8 items-center justify-between">
         <p className="pl-1 text-gray-950">Lobby {lobby.id}</p>
         <form onSubmit={eventListenerAddPlayerToLobby}>
@@ -90,24 +94,13 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
 
       <div className="rounded bg-game-accent-medium p-1">
         <p className="pl-1">Players</p>
-        <ol>
+        <div className="bg-game-main-dark pl-1">
           {lobby.users.map((lobbyUser, index) => (
-            <li
-              className="bg-game-main-dark pl-1"
-              key={`listEntry${lobby.id}-${index}`}
-            >
-              <p
-                className={
-                  lobbyUser === userNickName
-                    ? "text-game-accent-light"
-                    : "text-game-main-light"
-                }
-              >
-                {lobbyUser ? lobbyUser : "Free"}
-              </p>
-            </li>
+            <AnimatePresence key={`listEntry${lobby.id}-${index}`}>
+              <LobbyListEntryLabel lobbyUser={lobbyUser} />
+            </AnimatePresence>
           ))}
-        </ol>
+        </div>
       </div>
     </div>
   );

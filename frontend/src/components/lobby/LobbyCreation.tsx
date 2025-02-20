@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useStompClient } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { LobbyCreateRequest } from "../../models/requests";
+import { AnimatePresence, motion } from "motion/react";
 
 type LobbyCreationProps = {
   setShowCreationWindow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,15 +35,38 @@ function LobbyCreation(props: LobbyCreationProps) {
   }
 
   return (
-    <div className="fixed z-20 mt-2 flex flex-col items-center">
-      <div
-        className="fixed left-0 top-0 -z-10 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
+    <>
+      <motion.div
+        className="fixed left-0 top-0 z-20 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
         onClick={() => props.setShowCreationWindow(false)}
-      ></div>
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ type: "linear" }}
+      ></motion.div>
 
-      <form
-        className="fixed left-1/2 top-1/2 flex w-max -translate-x-1/2 -translate-y-1/2 flex-col rounded bg-game-accent-light p-2 shadow-inner"
+      <motion.form
+        className="fixed left-1/2 top-1/2 z-20 flex w-max flex-col rounded bg-game-accent-light p-2 shadow-inner"
         onSubmit={(e) => createLobby(e)}
+        initial={{
+          opacity: 0,
+          scale: 0,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        transition={{ type: "spring" }}
       >
         <p className="mb-1 text-game-main-dark">Create New Lobby</p>
 
@@ -91,8 +115,8 @@ function LobbyCreation(props: LobbyCreationProps) {
             value="Create"
           />
         </div>
-      </form>
-    </div>
+      </motion.form>
+    </>
   );
 }
 
