@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { useStompClient } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { LobbyCreateRequest } from "../../models/requests";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 
 type LobbyCreationProps = {
   setShowCreationWindow: React.Dispatch<React.SetStateAction<boolean>>;
