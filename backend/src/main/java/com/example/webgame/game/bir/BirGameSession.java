@@ -75,13 +75,17 @@ public class BirGameSession {
 					if (isValidRegularMove || centerCard.isValidMoveOnTopRegardlessOfTurn(card)) {
 						userState.removeCard(card);
 						discardStack.add(card);
-						this.currentUserIndex = i;
-						checkForSpecialEffects(card);
-						nextUser();
-						this.colorOverride = color.equals(BirCardColor.BLACK) ? null : color;
 						checkForGameOver();
-						userState.resetBir();
-						return true;
+						if (isGameOver) {
+							return true;
+						} else {
+							this.currentUserIndex = i;
+							checkForSpecialEffects(card);
+							nextUser();
+							this.colorOverride = color.equals(BirCardColor.BLACK) ? null : color;
+							userState.resetBir();
+							return true;
+						}
 					}
 				}
 			}
