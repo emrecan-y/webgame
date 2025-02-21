@@ -3,6 +3,7 @@ import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { ChatMessage } from "../../models/chat";
 import { useChatStore } from "./ChatStore";
 import { AnimatePresence, motion } from "motion/react";
+import MotionButton from "../ui/MotionButton";
 
 type ChatWindowProps = {
   buttonText: string;
@@ -80,12 +81,12 @@ export function ChatWindow(props: ChatWindowProps) {
             exit={{ opacity: 0, translateY: "0%" }}
             transition={{ type: "easeInOut" }}
           >
-            <button
-              className="mr-1 text-game-main-dark transition-transform duration-150 ease-in-out hover:scale-125"
+            <MotionButton
+              className="mr-1 text-game-main-dark"
               onClick={chatButtonHandler}
             >
               ✖
-            </button>
+            </MotionButton>
             <div
               ref={chatHistoryRef}
               className="h-72 w-full overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark sm:h-96"
@@ -108,24 +109,27 @@ export function ChatWindow(props: ChatWindowProps) {
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.currentTarget.value)}
               />
-              <input
-                className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5 transition-transform duration-150 ease-in-out hover:scale-110"
+              <MotionButton
+                className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5"
                 type="submit"
-                value={"↵"}
-              />
+              >
+                ↵
+              </MotionButton>
             </form>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <button
-        id={props.buttonText}
+      <MotionButton
         className={
           getShowState(props.buttonText)
             ? "rounded-b bg-game-accent-light p-3 pt-4 text-game-main-dark"
-            : "relative rounded bg-game-accent-medium p-3 text-game-main-light transition-all duration-300 ease-in-out hover:scale-105"
+            : "rounded bg-game-accent-medium p-3 text-game-main-light"
         }
         onClick={chatButtonHandler}
+        initial={{ translateY: "100%" }}
+        animate={{ translateY: "0%" }}
+        transition={{ type: "spring" }}
       >
         {props.buttonText}
         {!getShowState(props.buttonText) && hasUnreadMessages && (
@@ -138,7 +142,7 @@ export function ChatWindow(props: ChatWindowProps) {
             </div>
           </>
         )}
-      </button>
+      </MotionButton>
     </>
   );
 }

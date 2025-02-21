@@ -13,7 +13,8 @@ import BirColorPicker from "./BirColorPicker";
 import BirPlayersInfo from "./BirPlayersInfo";
 import BirGameOver from "./BirGameOver";
 import BirGameCenter from "./BirGameCenter";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence } from "motion/react";
+import MotionButton from "../ui/MotionButton";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -23,7 +24,7 @@ function GameWindow() {
   const [gameState, setGameState] = useState<BirGameState>();
   const [idToColorPick, setIdToColorPick] = useState<number>();
   const [mouseEvent, setMouseEvent] =
-    useState<React.MouseEvent<HTMLDivElement, MouseEvent>>();
+    useState<React.MouseEvent<HTMLButtonElement, MouseEvent>>();
 
   const request: GeneralPlayerRequest = {
     lobbyId: userLobbyId,
@@ -74,7 +75,7 @@ function GameWindow() {
   }
 
   function makeMoveEventHandler(
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     card: BirCard,
   ) {
     if (card.cardType === "SELECT_COLOR" || card.cardType === "DRAW_FOUR") {
@@ -117,9 +118,11 @@ function GameWindow() {
           />
         )}
 
-        {gameState.isGameOver && (
-          <BirGameOver users={gameState.users} restartGame={restartGame} />
-        )}
+        <AnimatePresence>
+          {gameState.isGameOver && (
+            <BirGameOver users={gameState.users} restartGame={restartGame} />
+          )}
+        </AnimatePresence>
 
         <div className="relative flex h-full min-h-screen w-full flex-col items-center justify-center">
           <div className="absolute top-4">
@@ -138,7 +141,7 @@ function GameWindow() {
               <div className="flex w-fit scale-75 flex-row flex-nowrap gap-2">
                 <AnimatePresence>
                   {gameState.userCards.map((element) => (
-                    <motion.div
+                    <MotionButton
                       className="relative"
                       onClick={(event) => makeMoveEventHandler(event, element)}
                       key={"bir-card-" + element.id}
@@ -146,21 +149,12 @@ function GameWindow() {
                       exit={{ opacity: 0, top: "-40px" }}
                       animate={{ opacity: 1, top: 0 }}
                       transition={{ type: "linear" }}
-                      layout
-                      whileHover={{
-                        scale: 1.05,
-                        transition: { duration: 0.15 },
-                      }}
-                      whileTap={{
-                        scale: 0.9,
-                        transition: { duration: 0.15 },
-                      }}
                     >
                       <BirCardDisplay
                         color={element.color}
                         cardType={element.cardType}
                       />
-                    </motion.div>
+                    </MotionButton>
                   ))}
                 </AnimatePresence>
               </div>

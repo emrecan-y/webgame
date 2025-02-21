@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { BirCardDisplay, BirCardTopViewDisplay } from "./BirCardDisplay";
 import { AnimatePresence, motion } from "motion/react";
+import MotionButton from "../ui/MotionButton";
 
 type BirGameCenterProps = {
   gameState: BirGameState;
@@ -78,17 +79,9 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
       </div>
 
       <div className="flex gap-2">
-        <motion.div
+        <MotionButton
           className="relative"
           onClick={() => drawButtonHandler(drawCount)}
-          whileHover={{
-            scale: 1.05,
-            transition: { duration: 0.15 },
-          }}
-          whileTap={{
-            scale: 0.9,
-            transition: { duration: 0.15 },
-          }}
         >
           {drawCount != 0 && (
             <p className="border-bir-white bg-bir-red text-bir-yellow absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-xl border-4 border-solid p-1 text-2xl font-extrabold">
@@ -96,14 +89,14 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
             </p>
           )}
           <BirCardTopViewDisplay />
-        </motion.div>
+        </MotionButton>
         <div className="relative w-28">
           <AnimatePresence>
             <motion.div
               className="absolute"
               key={`bir-card-${gameState.centerCard.id}`}
-              initial={{ opacity: 0, top: "-40px" }}
-              animate={{ opacity: 1, top: 0 }}
+              initial={{ top: "-40px" }}
+              animate={{ top: 0 }}
               exit={{
                 opacity: 0,
                 transition: { delay: 0.5 },
@@ -120,59 +113,29 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
         </div>
 
         <div className="flex w-28 flex-col justify-between text-xl">
-          {isBirPossible ? (
-            <motion.button
-              className={
-                "border-bir-white bg-bir-red rounded border-8 border-solid p-5 transition-transform duration-100 hover:scale-105"
-              }
-              onClick={bir}
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.15 },
-              }}
-              whileTap={{
-                scale: 0.9,
-                transition: { duration: 0.15 },
-              }}
-            >
-              BİR!
-            </motion.button>
-          ) : (
-            <button
-              className={
-                "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
-              }
-            >
-              BİR!
-            </button>
-          )}
+          <MotionButton
+            className={
+              isBirPossible
+                ? "border-bir-white bg-bir-red rounded border-8 border-solid p-5"
+                : "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
+            }
+            onClick={bir}
+            disableAnimation={!isBirPossible}
+          >
+            BİR!
+          </MotionButton>
 
-          {isPassPossible ? (
-            <motion.button
-              className={
-                "border-bir-white bg-bir-red rounded border-8 border-solid p-5 transition-transform duration-100 hover:scale-105"
-              }
-              onClick={pass}
-              whileHover={{
-                scale: 1.05,
-                transition: { duration: 0.15 },
-              }}
-              whileTap={{
-                scale: 0.9,
-                transition: { duration: 0.15 },
-              }}
-            >
-              PASS
-            </motion.button>
-          ) : (
-            <button
-              className={
-                "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
-              }
-            >
-              PASS
-            </button>
-          )}
+          <MotionButton
+            className={
+              isPassPossible
+                ? "border-bir-white bg-bir-red rounded border-8 border-solid p-5"
+                : "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
+            }
+            onClick={pass}
+            disableAnimation={!isPassPossible}
+          >
+            PASS
+          </MotionButton>
         </div>
       </div>
     </div>

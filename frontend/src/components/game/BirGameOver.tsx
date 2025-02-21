@@ -3,6 +3,9 @@ import { useStompClient } from "react-stomp-hooks";
 import { GeneralPlayerRequest } from "../../models/requests";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import MotionButton from "../ui/MotionButton";
+import { motion } from "motion/react";
+import { spring } from "motion";
 
 type BirGameOverProps = { users: BirUser[]; restartGame: () => void };
 
@@ -31,8 +34,30 @@ function BirGameOver({ users, restartGame }: BirGameOverProps) {
 
   return (
     <>
-      <div className="fixed left-0 top-0 z-10 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"></div>
-      <div className="fixed z-20 h-max w-72 rounded bg-game-accent-light p-2">
+      <motion.div
+        className="fixed left-0 top-0 z-10 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, transition: { type: spring } }}
+        transition={{ type: "spring", delay: 1.5 }}
+      />
+      <motion.div
+        className="fixed z-20 h-max w-72 rounded bg-game-accent-light p-2"
+        initial={{
+          opacity: 0,
+          scale: 0,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0,
+          transition: { type: spring },
+        }}
+        transition={{ type: "spring", delay: 1.5 }}
+      >
         <p className="mt-2 text-center text-game-main-dark">
           {"🎉 "}
           <span className="font-bold text-game-accent-dark">{winnerName} </span>
@@ -41,27 +66,30 @@ function BirGameOver({ users, restartGame }: BirGameOverProps) {
         <div className="mt-2 rounded bg-game-accent-medium p-1">
           <p>Total Scores</p>
           {usersSortedByWinCount.map((user) => (
-            <div className="flex justify-between bg-game-main-dark px-1">
+            <div
+              key={`total-score-${user.name}-${user.winCount}`}
+              className="flex justify-between bg-game-main-dark px-1"
+            >
               <p>{user.name}</p>
               <p>{user.winCount}</p>
             </div>
           ))}
         </div>
         <div className="mt-2 flex justify-end">
-          <button
+          <MotionButton
             onClick={restartGame}
             className="w-fi mr-2 rounded bg-game-accent-medium px-2 py-1"
           >
             Restart
-          </button>
-          <button
+          </MotionButton>
+          <MotionButton
             onClick={exitGame}
             className="w-fit rounded bg-game-accent-medium px-2 py-1"
           >
             Exit
-          </button>
+          </MotionButton>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

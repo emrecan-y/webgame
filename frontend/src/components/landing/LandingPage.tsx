@@ -4,6 +4,7 @@ import { UserContext } from "../context/UserContext";
 import { LoginRequest } from "../../models/requests";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
+import MotionButton from "../ui/MotionButton";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");
@@ -97,17 +98,18 @@ function LandingPage() {
           />
         </div>
         <div className="flex justify-between">
-          <input
-            className="mt-3 rounded bg-game-accent-medium px-4 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
-            type="button"
+          <MotionButton
+            className="mt-3 rounded bg-game-accent-medium px-4 py-1"
             onClick={requestRandomName}
-            value="Generate"
-          />
-          <input
-            className="mt-3 rounded bg-game-accent-medium px-4 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
+          >
+            Generate
+          </MotionButton>
+          <MotionButton
+            className="mt-3 rounded bg-game-accent-medium px-4 py-1"
             type="submit"
-            value="Continue"
-          />
+          >
+            Continue
+          </MotionButton>
         </div>
       </form>
     </motion.div>

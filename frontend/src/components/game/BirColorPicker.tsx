@@ -2,10 +2,10 @@ import { useEffect, useRef } from "react";
 import { BirCardColor } from "../../models/birCard";
 
 type BirColorPickerProps = {
-  mouseEvent: React.MouseEvent<HTMLDivElement, MouseEvent>;
+  mouseEvent: React.MouseEvent<HTMLButtonElement, MouseEvent>;
   setMouseEvent: React.Dispatch<
     React.SetStateAction<
-      React.MouseEvent<HTMLDivElement, MouseEvent> | undefined
+      React.MouseEvent<HTMLButtonElement, MouseEvent> | undefined
     >
   >;
   pickColor: (color: BirCardColor) => void;

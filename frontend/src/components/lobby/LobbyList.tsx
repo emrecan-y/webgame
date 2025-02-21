@@ -5,6 +5,7 @@ import LobbyCreation from "./LobbyCreation";
 import LobbyListEntry from "./LobbyListEntry";
 import { UserContext } from "../context/UserContext";
 import { AnimatePresence, motion } from "motion/react";
+import MotionButton from "../ui/MotionButton";
 
 function LobbyList() {
   const [lobbyList, setLobbyList] = useState<Lobby[]>([]);
@@ -61,7 +62,7 @@ function LobbyList() {
       <AnimatePresence onExitComplete={checkForYOverFlow}>
         {lobbyList?.map((e) => (
           <motion.div
-            key={`listEntry${e.id}`}
+            key={`list-entry-${e.id}`}
             className="w-96"
             initial={{ opacity: 0, height: 0 }}
             exit={{ opacity: 0, height: 0 }}
@@ -88,12 +89,12 @@ function LobbyList() {
             </motion.div>
           )}
         </AnimatePresence>
-        <button
-          className="z-20 w-96 rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
+        <MotionButton
+          className="z-20 w-96 rounded bg-game-accent-medium px-2 py-1"
           onClick={() => setShowCreationWindow(true)}
         >
           New Lobby
-        </button>
+        </MotionButton>
       </div>
       <AnimatePresence>
         {showCreationWindow && (

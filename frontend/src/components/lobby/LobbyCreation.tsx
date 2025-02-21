@@ -3,6 +3,7 @@ import { useStompClient } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { LobbyCreateRequest } from "../../models/requests";
 import { motion } from "motion/react";
+import MotionButton from "../ui/MotionButton";
 
 type LobbyCreationProps = {
   setShowCreationWindow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +36,7 @@ function LobbyCreation(props: LobbyCreationProps) {
   }
 
   return (
-    <>
+    <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
       <motion.div
         className="fixed left-0 top-0 z-20 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
         onClick={() => props.setShowCreationWindow(false)}
@@ -46,25 +47,19 @@ function LobbyCreation(props: LobbyCreationProps) {
       ></motion.div>
 
       <motion.form
-        className="fixed left-1/2 top-1/2 z-20 flex w-max flex-col rounded bg-game-accent-light p-2 shadow-inner"
+        className="fixed z-20 h-max w-max rounded bg-game-accent-light p-2"
         onSubmit={(e) => createLobby(e)}
         initial={{
           opacity: 0,
           scale: 0,
-          translateX: "-50%",
-          translateY: "-50%",
         }}
         animate={{
           opacity: 1,
           scale: 1,
-          translateX: "-50%",
-          translateY: "-50%",
         }}
         exit={{
           opacity: 0,
           scale: 0,
-          translateX: "-50%",
-          translateY: "-50%",
         }}
         transition={{ type: "spring" }}
       >
@@ -103,20 +98,22 @@ function LobbyCreation(props: LobbyCreationProps) {
           </div>
         </div>
         <div className="flex flex-row justify-end">
-          <input
-            className="mr-2 mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
+          <MotionButton
+            className="mr-2 mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1"
             type="button"
             onClick={() => props.setShowCreationWindow(false)}
-            value="Cancel"
-          />
-          <input
-            className="mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105"
+          >
+            Cancel
+          </MotionButton>
+          <MotionButton
+            className="mt-2 cursor-pointer rounded bg-game-accent-medium px-2 py-1"
             type="submit"
-            value="Create"
-          />
+          >
+            Create
+          </MotionButton>
         </div>
       </motion.form>
-    </>
+    </div>
   );
 }
 

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { GeneralPlayerRequest } from "../../models/requests";
 import { AnimatePresence } from "motion/react";
 import LobbyListEntryLabel from "./LobbyListEntryLabel";
+import MotionButton from "../ui/MotionButton";
 
 type LobbyListEntryProps = {
   lobby: Lobby;
@@ -75,19 +76,20 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
             />
           )}
           {!isUserInLobby && !lobbyIsFull && (
-            <input
-              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
+            <MotionButton
+              className="rounded bg-game-accent-medium px-2 py-1"
               type="submit"
-              value={"Join"}
-            />
+            >
+              Join
+            </MotionButton>
           )}
           {isUserInLobby && lobbyIsFull && (
-            <input
-              className="rounded bg-game-accent-medium px-2 py-1 transition-transform duration-150 ease-in-out hover:scale-105 hover:cursor-pointer"
+            <MotionButton
+              className="rounded bg-game-accent-medium px-2 py-1"
               onClick={startGame}
-              type="button"
-              value={"Start Game"}
-            />
+            >
+              Start Game
+            </MotionButton>
           )}
         </form>
       </div>
