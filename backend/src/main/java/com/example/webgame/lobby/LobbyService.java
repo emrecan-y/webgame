@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import org.springframework.stereotype.Service;
 
-import com.example.webgame.dto.GeneralPlayerRequest;
 import com.example.webgame.dto.BirGameStateDto;
+import com.example.webgame.dto.GeneralPlayerRequest;
 import com.example.webgame.game.bir.BirGameSession;
 import com.example.webgame.game.bir.BirUserState;
 import com.example.webgame.session.SessionService;
@@ -22,7 +23,7 @@ public class LobbyService {
 
 	public LobbyService(SessionService sessionService) {
 		this.sessionService = sessionService;
-		this.lobbyMap = new HashMap<>();
+		this.lobbyMap = new TreeMap<>();
 	}
 
 	public List<Lobby> getLobbyList() {
@@ -30,18 +31,23 @@ public class LobbyService {
 	}
 
 	public void removeByLobbyId(Integer lobbyId) {
-		this.lobbyMap.remove(lobbyId);
-		if (this.lobbyMap.isEmpty()) {
-			Lobby.resetIdCount();
+		if (lobbyId != null) {
+			this.lobbyMap.remove(lobbyId);
+			if (this.lobbyMap.isEmpty()) {
+				Lobby.resetIdCount();
+			}
 		}
 	}
 
 	public Optional<Lobby> findLobbyById(Integer lobbyId) {
-		return Optional.ofNullable(this.lobbyMap.get(lobbyId));
+		if (lobbyId != null) {
+			return Optional.ofNullable(this.lobbyMap.get(lobbyId));
+		}
+		return Optional.empty();
 	}
 
 	public boolean containsLobbyId(Integer lobbyId) {
-		return this.lobbyMap.containsKey(lobbyId);
+		return lobbyId != null && this.lobbyMap.containsKey(lobbyId);
 	}
 
 	public Optional<Lobby> createLobby(String sessionId, String password, int size) {
@@ -58,11 +64,13 @@ public class LobbyService {
 	}
 
 	public boolean addPlayerToLobby(Integer lobbyId, String nickName, String password) {
-		Lobby lobby = this.lobbyMap.get(lobbyId);
-		if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
-			if (lobby.addUser(nickName)) {
-				changePlayerLobby(nickName, lobbyId);
-				return true;
+		if (lobbyId != null) {
+			Lobby lobby = this.lobbyMap.get(lobbyId);
+			if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
+				if (lobby.addUser(nickName)) {
+					changePlayerLobby(nickName, lobbyId);
+					return true;
+				}
 			}
 		}
 		return false;
@@ -72,41 +80,46 @@ public class LobbyService {
 		Optional<UserSession> userSessionOpt = this.sessionService.getByNickName(nickName);
 		if (userSessionOpt.isPresent()) {
 			UserSession userSession = userSessionOpt.get();
-			Lobby oldLobby = this.lobbyMap.get(userSession.getCurrentLobbyId());
-			if (oldLobby != null) {
-				oldLobby.removeUser(nickName);
-				if (oldLobby.isEmpty()) {
-					this.lobbyMap.remove(oldLobby.getId());
+			if (userSession.getCurrentLobbyId() != null) {
+				Lobby oldLobby = this.lobbyMap.get(userSession.getCurrentLobbyId());
+				if (oldLobby != null) {
+					oldLobby.removeUser(nickName);
+					if (oldLobby.isEmpty()) {
+						this.lobbyMap.remove(oldLobby.getId());
+					}
 				}
 			}
 			userSession.setCurrentLobbyId(newLobbyId);
-
 		}
 	}
 
 	public boolean startGame(Integer lobbyId, String nickName, String password) {
-		Lobby lobby = this.lobbyMap.get(lobbyId);
-		if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
-			if (lobby.containsUser(nickName)) {
-				String[] users = lobby.getUsers();
-				HashMap<String, String> userToSessionIdMap = new HashMap<>();
-				for (String userNickName : users) {
-					userToSessionIdMap.put(userNickName,
-							this.sessionService.getByNickName(userNickName).get().getSessionId());
+		if (lobbyId != null) {
+			Lobby lobby = this.lobbyMap.get(lobbyId);
+			if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
+				if (lobby.containsUser(nickName)) {
+					String[] users = lobby.getUsers();
+					HashMap<String, String> userToSessionIdMap = new HashMap<>();
+					for (String userNickName : users) {
+						userToSessionIdMap.put(userNickName,
+								this.sessionService.getByNickName(userNickName).get().getSessionId());
+					}
+					lobby.startGame(userToSessionIdMap);
+					return true;
 				}
-				lobby.startGame(userToSessionIdMap);
-				return true;
 			}
 		}
 		return false;
 	}
 
 	public boolean restartGame(Integer lobbyId, String nickName, String password) {
-		Lobby lobby = this.lobbyMap.get(lobbyId);
-		if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
-			if (lobby.containsUser(nickName)) {
-				lobby.getGameSession().restart();
-				return true;
+		if (lobbyId != null) {
+			Lobby lobby = this.lobbyMap.get(lobbyId);
+			if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
+				if (lobby.containsUser(nickName)) {
+					lobby.getGameSession().restart();
+					return true;
+				}
 			}
 		}
 		return false;
