@@ -56,10 +56,8 @@ const colorGridElement = (
 export function BirCardDisplay(
   card: Omit<BirCard, "id"> & { colorOverride?: BirCardColor },
 ) {
-  let color: BirCardColor = card.color;
-  if (card.colorOverride != undefined) {
-    color = card.colorOverride;
-  }
+  const color = card.colorOverride || card.color;
+
   return (
     <div className="bg-bir-white relative flex h-44 w-28 select-none items-center justify-center rounded-lg font-cabin">
       {card.color === "BLACK"
