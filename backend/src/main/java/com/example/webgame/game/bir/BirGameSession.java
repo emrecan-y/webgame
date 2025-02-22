@@ -46,6 +46,7 @@ public class BirGameSession {
 		this.gameDirection = Direction.CLOCKWISE;
 		this.discardStack = new Stack<>();
 		this.isGameOver = false;
+		this.userStates.forEach(userState -> userState.resetBir());
 
 		copyDeckAndShuffle();
 		dealCardsToUsers(START_CARD_COUNT);
@@ -75,6 +76,7 @@ public class BirGameSession {
 					if (isValidRegularMove || centerCard.isValidMoveOnTopRegardlessOfTurn(card)) {
 						userState.removeCard(card);
 						discardStack.add(card);
+						this.colorOverride = color.equals(BirCardColor.BLACK) ? null : color;
 						checkForGameOver();
 						if (isGameOver) {
 							return true;
@@ -82,7 +84,6 @@ public class BirGameSession {
 							this.currentUserIndex = i;
 							checkForSpecialEffects(card);
 							nextUser();
-							this.colorOverride = color.equals(BirCardColor.BLACK) ? null : color;
 							userState.resetBir();
 							return true;
 						}
@@ -295,8 +296,7 @@ public class BirGameSession {
 		for (int i = 0; i < cardCount; i++) {
 			for (BirUserState userState : this.userStates) {
 				if (userState != null) {
-					BirCard currentCard = drawCardFromStack();
-					userState.addCard(currentCard);
+					userState.addCard(drawCardFromStack());
 				}
 			}
 		}
