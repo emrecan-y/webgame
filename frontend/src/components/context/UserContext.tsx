@@ -1,4 +1,10 @@
-import { createContext, useState, PropsWithChildren, Dispatch, SetStateAction } from "react";
+import {
+  createContext,
+  useState,
+  PropsWithChildren,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
 type UserContextProviderType = {
   userNickName: string;
@@ -7,6 +13,7 @@ type UserContextProviderType = {
   setLobbyPassWord: Dispatch<SetStateAction<string>>;
   userLobbyId: number;
   setUserLobbyId: Dispatch<SetStateAction<number>>;
+  resetUserContext: () => void;
 };
 
 export const UserContext = createContext<UserContextProviderType>({
@@ -16,6 +23,7 @@ export const UserContext = createContext<UserContextProviderType>({
   setLobbyPassWord: () => {},
   userLobbyId: -1,
   setUserLobbyId: () => {},
+  resetUserContext: () => {},
 });
 
 export function UserContextProvider({ children }: PropsWithChildren) {
@@ -23,9 +31,23 @@ export function UserContextProvider({ children }: PropsWithChildren) {
   const [lobbyPassWord, setLobbyPassWord] = useState("");
   const [userLobbyId, setUserLobbyId] = useState(-1);
 
+  function resetUserContext() {
+    setUserNickName("");
+    setLobbyPassWord("");
+    setUserLobbyId(-1);
+  }
+
   return (
     <UserContext.Provider
-      value={{ userNickName, setUserNickName, lobbyPassWord, setLobbyPassWord, userLobbyId, setUserLobbyId }}
+      value={{
+        userNickName,
+        setUserNickName,
+        lobbyPassWord,
+        setLobbyPassWord,
+        userLobbyId,
+        setUserLobbyId,
+        resetUserContext,
+      }}
     >
       {children}
     </UserContext.Provider>

@@ -2,9 +2,10 @@ import { useContext, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { WebSocketErrorContext } from "./context/WebSocketErrorContext";
 import { UserContext } from "./context/UserContext";
+import Chat from "./chat/Chat";
 
 export function Layout() {
-  const { userNickName, setUserNickName } = useContext(UserContext);
+  const { userNickName, resetUserContext } = useContext(UserContext);
   const { webSocketError } = useContext(WebSocketErrorContext);
   const navigate = useNavigate();
 
@@ -12,7 +13,7 @@ export function Layout() {
     if (userNickName === "" && !webSocketError) {
       navigate("/");
     } else if (webSocketError) {
-      setUserNickName("");
+      resetUserContext();
       navigate("/connection-error");
     } else {
       navigate("/lobbies");
@@ -24,6 +25,7 @@ export function Layout() {
       <div className="flex min-h-screen items-center justify-center bg-transparent text-game-main-light">
         <Outlet />
       </div>
+      <Chat />
     </>
   );
 }

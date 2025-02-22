@@ -5,7 +5,6 @@ import LobbyList from "./lobby/LobbyList";
 import ConnectionError from "./error/ConnectionError";
 import { UserContextProvider } from "./context/UserContext";
 import GameWindow from "./game/GameWindow";
-import Chat from "./chat/Chat";
 import { AnimatedBackground } from "./landing/AnimatedBackground";
 
 function App() {
@@ -26,7 +25,7 @@ function App() {
               path="/lobbies"
               element={
                 <>
-                  <LobbyList /> <AnimatedBackground /> <Chat />
+                  <LobbyList /> <AnimatedBackground />
                 </>
               }
             />
@@ -34,7 +33,7 @@ function App() {
               path="/game"
               element={
                 <>
-                  <GameWindow /> <Chat />
+                  <GameWindow />
                 </>
               }
             />
