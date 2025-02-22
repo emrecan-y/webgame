@@ -13,7 +13,7 @@ import BirColorPicker from "./BirColorPicker";
 import BirPlayersInfo from "./BirPlayersInfo";
 import BirGameOver from "./BirGameOver";
 import BirGameCenter from "./BirGameCenter";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
 
 function GameWindow() {
@@ -149,6 +149,7 @@ function GameWindow() {
                       exit={{ opacity: 0, top: "-40px" }}
                       animate={{ opacity: 1, top: 0 }}
                       transition={{ type: "linear" }}
+                      layout
                     >
                       <BirCardDisplay
                         color={element.color}
@@ -165,14 +166,25 @@ function GameWindow() {
     );
   } else {
     return (
-      <div className="animate-bounce rounded bg-game-accent-medium p-3 text-center text-game-main-light">
+      <motion.div
+        className="animate-bounce rounded bg-game-accent-medium p-3 text-center text-game-main-light"
+        initial={{
+          opacity: 0,
+          scale: 0,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+        }}
+        transition={{ type: "spring", delay: 0.5 }}
+      >
         <h1>The game is loading.</h1>
 
         <div className="mt-1 flex items-center justify-center gap-1">
           <h1> Please wait</h1>
           <span className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-game-accent-light border-b-transparent"></span>
         </div>
-      </div>
+      </motion.div>
     );
   }
 }

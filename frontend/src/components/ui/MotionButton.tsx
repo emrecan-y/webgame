@@ -18,6 +18,7 @@ type MotionButtonProps = {
   animate?: boolean | VariantLabels | TargetAndTransition | AnimationControls;
   transition?: Transition;
   disableAnimation?: boolean;
+  layout?: boolean | "position" | "size" | "preserve-aspect";
 };
 
 function MotionButton({
@@ -31,6 +32,7 @@ function MotionButton({
   animate,
   transition,
   disableAnimation,
+  layout,
 }: MotionButtonProps) {
   if (disableAnimation) {
     return (
@@ -46,17 +48,18 @@ function MotionButton({
         onClick={onClick}
         type={type}
         whileHover={{
-          scale: 1.05,
+          scale: 1.08,
           transition: { duration: 0.15 },
         }}
         whileTap={{
-          scale: 0.95,
+          scale: 0.92,
           transition: { duration: 0.15 },
         }}
         initial={initial}
         exit={exit}
         animate={animate}
         transition={transition}
+        layout={layout}
       >
         {children}
       </motion.button>
