@@ -66,7 +66,7 @@ function LandingPage() {
   // listen to backend for confirmation on login
   useSubscription("/user/queue/login/user-name", (message) => {
     if (message.body !== "") {
-      setUserNickName!(message.body);
+      setUserNickName(message.body);
     } else {
       setInfoText("This name already exists");
     }
@@ -81,7 +81,7 @@ function LandingPage() {
     >
       <p className="min-h-6 animate-bounce">{infoText}</p>
       <form
-        className="flex flex-col rounded bg-game-accent-light p-2"
+        className="flex w-56 flex-col rounded bg-game-accent-light p-2"
         onSubmit={(e) => tryLogin(e)}
       >
         <div className="flex flex-col rounded bg-game-accent-medium p-1">
@@ -89,7 +89,7 @@ function LandingPage() {
             Nickname
           </label>
           <input
-            className="bg-game-main-dark pl-1"
+            className="w-full bg-game-main-dark pl-1"
             type="text"
             name="nickname"
             id="nickname"

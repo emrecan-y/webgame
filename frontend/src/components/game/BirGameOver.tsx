@@ -5,7 +5,6 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import MotionButton from "../ui/MotionButton";
 import { motion } from "motion/react";
-import { spring } from "motion";
 
 type BirGameOverProps = { users: BirUser[]; restartGame: () => void };
 
@@ -38,7 +37,7 @@ function BirGameOver({ users, restartGame }: BirGameOverProps) {
         className="fixed left-0 top-0 z-10 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0, transition: { type: spring } }}
+        exit={{ opacity: 0, transition: { type: "spring", delay: 0.5 } }}
         transition={{ type: "spring", delay: 1.5 }}
       />
       <motion.div
@@ -54,7 +53,7 @@ function BirGameOver({ users, restartGame }: BirGameOverProps) {
         exit={{
           opacity: 0,
           scale: 0,
-          transition: { type: spring },
+          transition: { type: "spring", delay: 0.5 },
         }}
         transition={{ type: "spring", delay: 1.5 }}
       >

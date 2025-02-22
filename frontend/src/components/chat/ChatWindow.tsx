@@ -46,7 +46,7 @@ export function ChatWindow(props: ChatWindowProps) {
     return () => {
       removeChat(props.buttonText);
     };
-  }, []);
+  }, [stompClient]);
 
   useEffect(() => {
     if (chatHistoryRef.current) {
@@ -110,7 +110,7 @@ export function ChatWindow(props: ChatWindowProps) {
                 onChange={(e) => setMessageInput(e.currentTarget.value)}
               />
               <MotionButton
-                className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5"
+                className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5 text-game-main-light"
                 type="submit"
               >
                 ↵

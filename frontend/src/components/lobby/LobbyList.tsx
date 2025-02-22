@@ -89,12 +89,18 @@ function LobbyList() {
             </motion.div>
           )}
         </AnimatePresence>
-        <MotionButton
-          className="z-20 w-96 rounded bg-game-accent-medium px-2 py-1"
-          onClick={() => setShowCreationWindow(true)}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 100, damping: 10 }}
         >
-          New Lobby
-        </MotionButton>
+          <MotionButton
+            className="z-20 w-96 rounded bg-game-accent-medium px-2 py-1"
+            onClick={() => setShowCreationWindow(true)}
+          >
+            New Lobby
+          </MotionButton>
+        </motion.div>
       </div>
       <AnimatePresence>
         {showCreationWindow && (
