@@ -2,6 +2,7 @@ package com.example.webgame.lobby;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -99,7 +100,7 @@ public class LobbyService {
 			if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
 				if (lobby.containsUser(nickName)) {
 					String[] users = lobby.getUsers();
-					HashMap<String, String> userToSessionIdMap = new HashMap<>();
+					HashMap<String, String> userToSessionIdMap = new LinkedHashMap<>();
 					for (String userNickName : users) {
 						userToSessionIdMap.put(userNickName,
 								this.sessionService.getByNickName(userNickName).get().getSessionId());
