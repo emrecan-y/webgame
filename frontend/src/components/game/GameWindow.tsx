@@ -15,6 +15,7 @@ import BirGameOver from "./BirGameOver";
 import BirGameCenter from "./BirGameCenter";
 import { AnimatePresence, motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
+import useTitleEffect from "../../hooks/useTitleEffect";
 
 function GameWindow() {
   const { userNickName, userLobbyId, lobbyPassWord } = useContext(UserContext);
@@ -25,6 +26,7 @@ function GameWindow() {
   const [idToColorPick, setIdToColorPick] = useState<number>();
   const [mouseEvent, setMouseEvent] =
     useState<React.MouseEvent<HTMLButtonElement, MouseEvent>>();
+  const [setCurrentTitle, setIsBlinking] = useTitleEffect();
 
   const request: GeneralPlayerRequest = {
     lobbyId: userLobbyId,
@@ -46,6 +48,16 @@ function GameWindow() {
       return () => clearInterval(intervalId);
     }
   }, [gameState]);
+
+  useEffect(() => {
+    if (gameState?.currentUser === userNickName) {
+      setCurrentTitle("- PLAY");
+      setIsBlinking(true);
+    } else if (gameState?.currentUser) {
+      setCurrentTitle("- WAIT");
+      setIsBlinking(false);
+    }
+  }, [gameState?.currentUser]);
 
   useSubscription("/user/queue/game/state", (message) => {
     const gameState: BirGameState = JSON.parse(message.body);
