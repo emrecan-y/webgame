@@ -5,84 +5,53 @@ import java.util.Optional;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webgame.lobby.Lobby;
-import com.example.webgame.lobby.LobbyService;
-import com.example.webgame.session.SessionService;
-import com.example.webgame.session.UserSession;
-
-@RestController
+@Controller
 @CrossOrigin(origins = "*")
 public class ChatRoomController {
-	private LobbyService lobbySevice;
-	private SessionService sessionService;
+	private final ChatRoomService chatRoomService;
 
-	private ChatHistory globalChat;
+	private final SimpMessagingTemplate template;
 
-	public ChatRoomController(LobbyService lobbyService, SessionService sessionService) {
-		this.globalChat = new ChatHistory();
-		this.lobbySevice = lobbyService;
-		this.sessionService = sessionService;
+	public ChatRoomController(ChatRoomService chatRoomService, SimpMessagingTemplate template) {
+		this.chatRoomService = chatRoomService;
+		this.template = template;
 	}
 
 	@MessageMapping("/connect/global-chat")
-	@SendToUser("/queue/chat/global-chat")
-	public ChatHistory connectToGlobalChat(@Header("simpSessionId") String sessionId) {
-		if (this.sessionService.getBySessionId(sessionId).isPresent()) {
-			return this.globalChat;
+	public void connectToGlobalChat(@Header("simpSessionId") String sessionId) {
+		Optional<ChatHistory> globalChatOpt = this.chatRoomService.connectToGlobalChat(sessionId);
+		if (globalChatOpt.isPresent()) {
+			this.template.convertAndSend("/queue/game/state-user" + sessionId, globalChatOpt.get());
 		}
-		return new ChatHistory();
 	}
 
 	@MessageMapping("/chat/global-chat")
-	@SendTo("/topic/chat/global-chat")
-	public ChatHistory receiveGlobalChatMessage(@Header("simpSessionId") String sessionId, String message)
-			throws Exception {
-		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
-		if (sessionOpt.isPresent()) {
-			ChatMessage chatMessage = new ChatMessage(sessionOpt.get().getNickName(), message);
-			globalChat.addNewMessage(chatMessage);
-			return globalChat;
+	public void receiveGlobalChatMessage(@Header("simpSessionId") String sessionId, String message) {
+		Optional<ChatHistory> globalChatOpt = this.chatRoomService.receiveGlobalChatMessage(sessionId, message);
+		if (globalChatOpt.isPresent()) {
+			this.template.convertAndSend("/topic/chat/global-chat", globalChatOpt.get());
 		}
-		return new ChatHistory();
 	}
 
 	@MessageMapping("/connect/lobby/{lobbyId}")
-	@SendToUser("/queue/chat/lobby/{lobbyId}")
-	public ChatHistory connectToChatRoom(@Header("simpSessionId") String sessionId,
-			@DestinationVariable Integer lobbyId) {
-		Optional<Lobby> lobbyOpt = this.lobbySevice.findLobbyById(lobbyId);
-		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
-		if (lobbyOpt.isPresent() && sessionOpt.isPresent()) {
-			Lobby lobby = lobbyOpt.get();
-			UserSession userSession = sessionOpt.get();
-			if (lobby.getId() == userSession.getCurrentLobbyId()) {
-				return lobby.getChatHistory();
-			}
+	public void connectToLobbyChat(@Header("simpSessionId") String sessionId, @DestinationVariable Integer lobbyId) {
+		Optional<ChatHistory> lobbyChatOpt = this.chatRoomService.connectToLobbyChat(sessionId, lobbyId);
+		if (lobbyChatOpt.isPresent()) {
+			this.template.convertAndSend("/queue/chat/lobby/" + lobbyId + "-user" + sessionId, lobbyChatOpt.get());
 		}
-		return new ChatHistory();
 	}
 
 	@MessageMapping("/chat/lobby/{lobbyId}")
-	@SendTo("/topic/chat/lobby/{lobbyId}")
-	public ChatHistory receiveNewLobbyMessage(@DestinationVariable Integer lobbyId,
-			@Header("simpSessionId") String sessionId, String message) {
-		Optional<Lobby> lobbyOpt = this.lobbySevice.findLobbyById(lobbyId);
-		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
-		if (lobbyOpt.isPresent() && sessionOpt.isPresent()) {
-			Lobby lobby = lobbyOpt.get();
-			UserSession userSession = sessionOpt.get();
-			if (lobby.getId() == userSession.getCurrentLobbyId()) {
-				ChatMessage chatMessage = new ChatMessage(userSession.getNickName(), message);
-				lobby.getChatHistory().addNewMessage(chatMessage);
-				return lobby.getChatHistory();
-			}
+	public void receiveNewLobbyMessage(@DestinationVariable Integer lobbyId, @Header("simpSessionId") String sessionId,
+			String message) {
+		Optional<ChatHistory> lobbyChatOpt = this.chatRoomService.receiveNewLobbyMessage(lobbyId, sessionId, message);
+		if (lobbyChatOpt.isPresent()) {
+			this.template.convertAndSend("/topic/chat/lobby/" + lobbyId, lobbyChatOpt.get());
 		}
-		return new ChatHistory();
 	}
 
 }
