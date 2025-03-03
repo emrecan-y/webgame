@@ -2,11 +2,9 @@ package com.example.webgame.name;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
-@RestController
-@CrossOrigin(origins = "*")
+@Controller
 public class NameController {
 
 	private NameService nameService;

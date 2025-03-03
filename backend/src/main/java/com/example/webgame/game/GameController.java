@@ -5,8 +5,7 @@ import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import com.example.webgame.dto.BirGameStateDto;
 import com.example.webgame.game.bir.BirGameSession;
@@ -15,8 +14,7 @@ import com.example.webgame.lobby.LobbyService;
 import com.example.webgame.record.GeneralPlayerRequest;
 import com.example.webgame.record.PlayerMakeMoveRequest;
 
-@RestController
-@CrossOrigin(origins = "*")
+@Controller
 public class GameController {
 	private LobbyService lobbyService;
 	private SimpMessagingTemplate template;

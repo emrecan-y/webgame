@@ -3,13 +3,11 @@ package com.example.webgame.session;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
 
 import com.example.webgame.record.LoginRequest;
 
-@RestController
-@CrossOrigin(origins = "*")
+@Controller
 public class SessionController {
 
 	private SessionService sessionService;

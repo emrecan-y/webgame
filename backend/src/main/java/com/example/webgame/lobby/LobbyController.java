@@ -8,13 +8,11 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.example.webgame.record.GeneralPlayerRequest;
 import com.example.webgame.record.LobbyCreateRequest;
 
 @Controller
-@CrossOrigin(origins = "*")
 public class LobbyController {
 
 	private LobbyService lobbyService;
