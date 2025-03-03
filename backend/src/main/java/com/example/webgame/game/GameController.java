@@ -8,12 +8,12 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.webgame.dto.GeneralPlayerRequest;
-import com.example.webgame.dto.PlayerMakeMoveRequest;
 import com.example.webgame.dto.BirGameStateDto;
 import com.example.webgame.game.bir.BirGameSession;
 import com.example.webgame.lobby.Lobby;
 import com.example.webgame.lobby.LobbyService;
+import com.example.webgame.record.GeneralPlayerRequest;
+import com.example.webgame.record.PlayerMakeMoveRequest;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -28,7 +28,7 @@ public class GameController {
 
 	@MessageMapping("/game/start")
 	public void startGame(GeneralPlayerRequest request) {
-		if (this.lobbyService.startGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
+		if (this.lobbyService.startGame(request.lobbyId(), request.nickName(), request.lobbyPassword())) {
 			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				gameSessionOpt.get().getUserStates().forEach(userState -> this.template
@@ -39,7 +39,7 @@ public class GameController {
 
 	@MessageMapping("/game/restart")
 	public void restartGame(GeneralPlayerRequest request) {
-		if (this.lobbyService.restartGame(request.getLobbyId(), request.getNickName(), request.getLobbyPassword())) {
+		if (this.lobbyService.restartGame(request.lobbyId(), request.nickName(), request.lobbyPassword())) {
 			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 			if (gameSessionOpt.isPresent()) {
 				sendGameStateToAllUsers(gameSessionOpt.get());
@@ -50,10 +50,10 @@ public class GameController {
 	@MessageMapping("/game/exit")
 	public void exitGame(GeneralPlayerRequest request) {
 		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
-		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.getLobbyId());
+		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.lobbyId());
 		if (gameSessionOpt.isPresent() && lobbyOpt.isPresent()) {
 			lobbyOpt.get().deleteGameSession();
-			template.convertAndSend("/topic/game/" + request.getLobbyId() + "/stop", "");
+			template.convertAndSend("/topic/game/" + request.lobbyId() + "/stop", "");
 		}
 	}
 
@@ -70,7 +70,7 @@ public class GameController {
 		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.makeMove(request.getNickName(), request.getCardId(), request.getPickedColor())) {
+			if (gameSession.makeMove(request.nickName(), request.cardId(), request.pickedColor())) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}
@@ -81,7 +81,7 @@ public class GameController {
 		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.drawCard(request.getNickName())) {
+			if (gameSession.drawCard(request.nickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}
@@ -92,7 +92,7 @@ public class GameController {
 		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.drawCards(request.getNickName())) {
+			if (gameSession.drawCards(request.nickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}
@@ -103,7 +103,7 @@ public class GameController {
 		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
-			if (gameSession.pass(request.getNickName())) {
+			if (gameSession.pass(request.nickName())) {
 				sendGameStateToAllUsers(gameSession);
 			}
 		}
@@ -114,7 +114,7 @@ public class GameController {
 		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
-			gameSession.bir(request.getNickName());
+			gameSession.bir(request.nickName());
 			sendGameStateToAllUsers(gameSession);
 		}
 	}

@@ -11,9 +11,9 @@ import java.util.TreeMap;
 import org.springframework.stereotype.Service;
 
 import com.example.webgame.dto.BirGameStateDto;
-import com.example.webgame.dto.GeneralPlayerRequest;
 import com.example.webgame.game.bir.BirGameSession;
 import com.example.webgame.game.bir.BirUserState;
+import com.example.webgame.record.PlayerRequest;
 import com.example.webgame.session.SessionService;
 import com.example.webgame.session.UserSession;
 
@@ -126,12 +126,12 @@ public class LobbyService {
 		return false;
 	}
 
-	public Optional<BirGameSession> findGameSessionFromPlayerRequest(GeneralPlayerRequest request) {
-		Optional<Lobby> lobbyOpt = this.findLobbyById(request.getLobbyId());
+	public Optional<BirGameSession> findGameSessionFromPlayerRequest(PlayerRequest request) {
+		Optional<Lobby> lobbyOpt = this.findLobbyById(request.lobbyId());
 		if (lobbyOpt.isPresent()) {
 			Lobby lobby = lobbyOpt.get();
-			if (lobby.containsUser(request.getNickName()) && (!lobby.isPrivate()
-					|| lobby.isPrivate() && lobby.getPassword().equals(request.getLobbyPassword()))) {
+			if (lobby.containsUser(request.nickName()) && (!lobby.isPrivate()
+					|| lobby.isPrivate() && lobby.getPassword().equals(request.lobbyPassword()))) {
 				return Optional.of(lobby.getGameSession());
 			}
 		}
