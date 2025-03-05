@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.webgame.exception.LoginException;
 import com.example.webgame.name.NameService;
 
 @Service
@@ -18,13 +19,17 @@ public class SessionService {
 		return this.sessionMap.getActiveNickNames().contains(nickName);
 	}
 
-	public boolean addUser(String sessionId, String nickName) {
-		if (!userExists(nickName) && nickName.length() <= NameService.getMaxNameLength()
-				&& nickName.length() >= NameService.getMinNameLength()) {
+	public boolean addUser(String sessionId, String nickName) throws LoginException {
+		if (userExists(nickName)) {
+			throw new LoginException("This name is already taken.");
+		} else if (nickName.length() > NameService.getMaxNameLength()) {
+			throw new LoginException("This name is too long.");
+		} else if (nickName.length() < NameService.getMinNameLength()) {
+			throw new LoginException("This name is too short.");
+		} else {
 			this.sessionMap.put(sessionId, nickName);
 			return true;
 		}
-		return false;
 	}
 
 	public void removeUserBySessionId(String sessionId) {

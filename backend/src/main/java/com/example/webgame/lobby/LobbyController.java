@@ -9,6 +9,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.stereotype.Controller;
 
+import com.example.webgame.exception.LobbyException;
 import com.example.webgame.record.GeneralPlayerRequest;
 import com.example.webgame.record.LobbyCreateRequest;
 
@@ -30,7 +31,7 @@ public class LobbyController {
 	}
 
 	@MessageMapping("/create-lobby")
-	public void createLobby(@Header("simpSessionId") String sessionId, LobbyCreateRequest request) throws Exception {
+	public void createLobby(@Header("simpSessionId") String sessionId, LobbyCreateRequest request) {
 		Optional<Lobby> lobby = this.lobbyService.createLobby(sessionId, request.lobbyPassword(), request.lobbySize());
 		if (lobby.isPresent()) {
 			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
@@ -41,7 +42,8 @@ public class LobbyController {
 	}
 
 	@MessageMapping("/lobby/add-player")
-	public void addPlayerToLobby(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+	public void addPlayerToLobby(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request)
+			throws LobbyException {
 		if (this.lobbyService.addPlayerToLobby(request.lobbyId(), request.nickName(), request.lobbyPassword())) {
 			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyList());
 

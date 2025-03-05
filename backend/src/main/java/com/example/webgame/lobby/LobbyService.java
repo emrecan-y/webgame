@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import org.springframework.stereotype.Service;
 
 import com.example.webgame.dto.BirGameStateDto;
+import com.example.webgame.exception.LobbyException;
 import com.example.webgame.game.bir.BirGameSession;
 import com.example.webgame.game.bir.BirUserState;
 import com.example.webgame.record.PlayerRequest;
@@ -64,17 +65,24 @@ public class LobbyService {
 		}
 	}
 
-	public boolean addPlayerToLobby(Integer lobbyId, String nickName, String password) {
+	public boolean addPlayerToLobby(Integer lobbyId, String nickName, String password) throws LobbyException {
 		if (lobbyId != null) {
 			Lobby lobby = this.lobbyMap.get(lobbyId);
-			if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
-				if (lobby.addUser(nickName)) {
-					changePlayerLobby(nickName, lobbyId);
-					return true;
-				}
+			if (lobby == null) {
+				throw new LobbyException("The lobby with id " + lobbyId + " doesn't exist");
+			} else if (lobby.isPrivate() && !lobby.getPassword().equals(password)) {
+				throw new LobbyException("Wrong lobby password!");
+			} else if (lobby.containsUser(nickName)) {
+				throw new LobbyException(nickName + " already inside lobby.");
+			} else if (lobby.addUser(nickName)) {
+				changePlayerLobby(nickName, lobbyId);
+				return true;
+			} else {
+				throw new LobbyException("The lobby is full!");
 			}
+		} else {
+			throw new LobbyException("The lobby id is missing.");
 		}
-		return false;
 	}
 
 	private void changePlayerLobby(String nickName, Integer newLobbyId) {
