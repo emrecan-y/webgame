@@ -146,6 +146,7 @@ public class BirGameSession {
 			if (userState.getUserNickName().equals(user) && !userState.hasAttemptedToDeclareBir()) {
 				if (userState.getUserCards().size() == 1) {
 					userState.declareBir(true);
+					break;
 				} else {
 					userState.declareBir(false);
 					drawCardsForUser(userState, 2);
