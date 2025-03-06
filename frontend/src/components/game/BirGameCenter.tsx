@@ -80,14 +80,23 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
 
       <div className="flex gap-2">
         <MotionButton
-          className="relative"
+          className="relative flex justify-center"
           onClick={() => drawButtonHandler(drawCount)}
         >
-          {drawCount != 0 && (
-            <p className="border-bir-white bg-bir-red text-bir-yellow absolute left-1/2 top-3 z-20 -translate-x-1/2 rounded-xl border-4 border-solid p-1 text-2xl font-extrabold">
-              <span className="drop-shadow-bir-small-text">{drawCount}x</span>
-            </p>
-          )}
+          <AnimatePresence>
+            {drawCount != 0 && (
+              <motion.div
+                key={`draw-${drawCount}x`}
+                className="border-bir-white bg-bir-red text-bir-yellow absolute top-3 z-20 rounded-xl border-4 border-solid p-1 text-2xl font-extrabold"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0 }}
+                transition={{ type: "linear" }}
+              >
+                <p className="drop-shadow-bir-small-text">{drawCount}x</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <BirCardTopViewDisplay />
         </MotionButton>
         <div className="relative w-28">
