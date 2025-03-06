@@ -22,6 +22,8 @@ export default {
         "game-main-light": "#e5e7eb",
 
         "bir-red": "#c40c00",
+        "bir-red-light": "#d4847f",
+
         "bir-blue": "#0849a3",
         "bir-green": "#328a10",
         "bir-yellow": "#e7d004",

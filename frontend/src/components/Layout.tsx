@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { WebSocketErrorContext } from "./context/WebSocketErrorContext";
 import { UserContext } from "./context/UserContext";
 import Chat from "./chat/Chat";
+import { InfoPopUpContainer } from "./landing/InfoPopUp";
 
 export function Layout() {
   const { userNickName, resetUserContext } = useContext(UserContext);
@@ -26,6 +27,7 @@ export function Layout() {
         <Outlet />
       </div>
       <Chat />
+      <InfoPopUpContainer />
     </>
   );
 }
