@@ -3,6 +3,7 @@ package com.example.webgame.game;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -25,9 +26,10 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/start")
-	public void startGame(GeneralPlayerRequest request) {
-		if (this.lobbyService.startGame(request.lobbyId(), request.nickName(), request.lobbyPassword())) {
-			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void startGame(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		if (this.lobbyService.startGame(sessionId, request.lobbyId(), request.nickName(), request.lobbyPassword())) {
+			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+					request);
 			if (gameSessionOpt.isPresent()) {
 				gameSessionOpt.get().getUserStates().forEach(userState -> this.template
 						.convertAndSend("/queue/game/start-user" + userState.getSessionId(), ""));
@@ -36,9 +38,10 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/restart")
-	public void restartGame(GeneralPlayerRequest request) {
-		if (this.lobbyService.restartGame(request.lobbyId(), request.nickName(), request.lobbyPassword())) {
-			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void restartGame(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		if (this.lobbyService.restartGame(sessionId, request.lobbyId(), request.nickName(), request.lobbyPassword())) {
+			Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+					request);
 			if (gameSessionOpt.isPresent()) {
 				sendGameStateToAllUsers(gameSessionOpt.get());
 			}
@@ -46,8 +49,9 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/exit")
-	public void exitGame(GeneralPlayerRequest request) {
-		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void exitGame(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+				request);
 		Optional<Lobby> lobbyOpt = this.lobbyService.findLobbyById(request.lobbyId());
 		if (gameSessionOpt.isPresent() && lobbyOpt.isPresent()) {
 			lobbyOpt.get().deleteGameSession();
@@ -56,16 +60,18 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/state")
-	public void getGameState(GeneralPlayerRequest request) {
-		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void getGameState(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+				request);
 		if (gameSessionOpt.isPresent()) {
 			sendGameStateToAllUsers(gameSessionOpt.get());
 		}
 	}
 
 	@MessageMapping("/game/make-move")
-	public void makeMove(PlayerMakeMoveRequest request) {
-		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void makeMove(@Header("simpSessionId") String sessionId, PlayerMakeMoveRequest request) {
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+				request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.makeMove(request.nickName(), request.cardId(), request.pickedColor())) {
@@ -75,8 +81,9 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/draw-card")
-	public void drawCard(GeneralPlayerRequest request) {
-		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void drawCard(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+				request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.drawCard(request.nickName())) {
@@ -86,8 +93,9 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/draw-cards")
-	public void drawCards(GeneralPlayerRequest request) {
-		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void drawCards(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+				request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.drawCards(request.nickName())) {
@@ -97,8 +105,9 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/pass")
-	public void pass(GeneralPlayerRequest request) {
-		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void pass(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+				request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
 			if (gameSession.pass(request.nickName())) {
@@ -108,8 +117,9 @@ public class GameController {
 	}
 
 	@MessageMapping("/game/bir")
-	public void bir(GeneralPlayerRequest request) {
-		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(request);
+	public void bir(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
+		Optional<BirGameSession> gameSessionOpt = this.lobbyService.findGameSessionFromPlayerRequest(sessionId,
+				request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
 			gameSession.bir(request.nickName());

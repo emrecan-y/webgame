@@ -23,10 +23,9 @@ public class ChatRoomController {
 
 	@MessageMapping("/connect/global-chat")
 	public void connectToGlobalChat(@Header("simpSessionId") String sessionId) {
-		Optional<ChatHistory> globalChatOpt = this.chatRoomService.connectToGlobalChat(sessionId);
-		if (globalChatOpt.isPresent()) {
-			this.template.convertAndSend("/queue/chat/global-chat-user" + sessionId, globalChatOpt.get());
-		}
+		this.template.convertAndSend("/queue/chat/global-chat-user" + sessionId,
+				this.chatRoomService.getGlobalChat(sessionId));
+
 	}
 
 	@MessageMapping("/chat/global-chat")

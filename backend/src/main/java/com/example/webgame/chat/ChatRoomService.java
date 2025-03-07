@@ -22,14 +22,15 @@ public class ChatRoomService {
 		this.sessionService = sessionService;
 	}
 
-	public Optional<ChatHistory> connectToGlobalChat(String sessionId) {
-		if (this.sessionService.getBySessionId(sessionId).isPresent()) {
-			return Optional.of(this.globalChat);
-		}
-		return Optional.empty();
+	public ChatHistory getGlobalChat(String sessionId) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
+		return this.globalChat;
 	}
 
 	public Optional<ChatHistory> receiveGlobalChatMessage(String sessionId, String message) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
 		if (sessionOpt.isPresent()) {
 			ChatMessage chatMessage = new ChatMessage(sessionOpt.get().getNickName(), message);
@@ -40,6 +41,8 @@ public class ChatRoomService {
 	}
 
 	public Optional<ChatHistory> connectToLobbyChat(String sessionId, Integer lobbyId) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		Optional<Lobby> lobbyOpt = this.lobbySevice.findLobbyById(lobbyId);
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
 		if (lobbyOpt.isPresent() && sessionOpt.isPresent()) {
@@ -53,6 +56,8 @@ public class ChatRoomService {
 	}
 
 	public Optional<ChatHistory> receiveNewLobbyMessage(Integer lobbyId, String sessionId, String message) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		Optional<Lobby> lobbyOpt = this.lobbySevice.findLobbyById(lobbyId);
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
 		if (lobbyOpt.isPresent() && sessionOpt.isPresent()) {

@@ -4,6 +4,7 @@ import { WebSocketErrorContext } from "./context/WebSocketErrorContext";
 import { UserContext } from "./context/UserContext";
 import Chat from "./chat/Chat";
 import { InfoPopUpContainer } from "./landing/InfoPopUp";
+import { useSubscription } from "react-stomp-hooks";
 
 export function Layout() {
   const { userNickName, resetUserContext } = useContext(UserContext);
@@ -20,6 +21,10 @@ export function Layout() {
       navigate("/lobbies");
     }
   }, [userNickName, webSocketError]);
+
+  useSubscription("/user/queue/reset", () => {
+    resetUserContext();
+  });
 
   return (
     <>

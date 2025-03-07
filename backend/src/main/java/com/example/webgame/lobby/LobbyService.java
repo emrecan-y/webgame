@@ -32,6 +32,12 @@ public class LobbyService {
 		return new ArrayList<>(this.lobbyMap.values());
 	}
 
+	public List<Lobby> getLobbyListIfSessionValid(String sessionId) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
+		return new ArrayList<>(this.lobbyMap.values());
+	}
+
 	public void removeByLobbyId(Integer lobbyId) {
 		if (lobbyId != null) {
 			this.lobbyMap.remove(lobbyId);
@@ -53,6 +59,8 @@ public class LobbyService {
 	}
 
 	public Optional<Lobby> createLobby(String sessionId, String password, int size) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		Optional<UserSession> userSession = this.sessionService.getBySessionId(sessionId);
 		if (userSession.isPresent()) {
 			Lobby newLobby = new Lobby(password, size);
@@ -65,7 +73,9 @@ public class LobbyService {
 		}
 	}
 
-	public boolean addPlayerToLobby(Integer lobbyId, String nickName, String password) throws LobbyException {
+	public boolean addPlayerToLobby(String sessionId, Integer lobbyId, String nickName, String password) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		if (lobbyId != null) {
 			Lobby lobby = this.lobbyMap.get(lobbyId);
 			if (lobby == null) {
@@ -102,7 +112,9 @@ public class LobbyService {
 		}
 	}
 
-	public boolean startGame(Integer lobbyId, String nickName, String password) {
+	public boolean startGame(String sessionId, Integer lobbyId, String nickName, String password) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		if (lobbyId != null) {
 			Lobby lobby = this.lobbyMap.get(lobbyId);
 			if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
@@ -121,11 +133,13 @@ public class LobbyService {
 		return false;
 	}
 
-	public boolean restartGame(Integer lobbyId, String nickName, String password) {
+	public boolean restartGame(String sessionId, Integer lobbyId, String nickName, String password) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		if (lobbyId != null) {
 			Lobby lobby = this.lobbyMap.get(lobbyId);
 			if (lobby != null && (!lobby.isPrivate() || lobby.isPrivate() && lobby.getPassword().equals(password))) {
-				if (lobby.containsUser(nickName)) {
+				if (lobby.containsUser(nickName) && lobby.getGameSession().isGameOver()) {
 					lobby.getGameSession().restart();
 					return true;
 				}
@@ -134,7 +148,9 @@ public class LobbyService {
 		return false;
 	}
 
-	public Optional<BirGameSession> findGameSessionFromPlayerRequest(PlayerRequest request) {
+	public Optional<BirGameSession> findGameSessionFromPlayerRequest(String sessionId, PlayerRequest request) {
+		this.sessionService.isSessionIdRegistered(sessionId);
+
 		Optional<Lobby> lobbyOpt = this.findLobbyById(request.lobbyId());
 		if (lobbyOpt.isPresent()) {
 			Lobby lobby = lobbyOpt.get();
