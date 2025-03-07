@@ -11,10 +11,12 @@ export const WebSocketErrorContext = createContext<WebSocketErrorContextType>({
 });
 
 export function WebSocketErrorProvider({ children }: PropsWithChildren) {
-  const [webSocketError, setWebSocketError] = useState<boolean>(true);
+  const [webSocketError, setWebSocketError] = useState<boolean>(false);
 
   return (
-    <WebSocketErrorContext.Provider value={{ webSocketError, setWebSocketError }}>
+    <WebSocketErrorContext.Provider
+      value={{ webSocketError, setWebSocketError }}
+    >
       {children}
     </WebSocketErrorContext.Provider>
   );
