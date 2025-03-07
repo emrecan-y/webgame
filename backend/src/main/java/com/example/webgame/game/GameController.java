@@ -2,6 +2,7 @@ package com.example.webgame.game;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -13,6 +14,7 @@ import com.example.webgame.game.bir.BirGameSession;
 import com.example.webgame.lobby.Lobby;
 import com.example.webgame.lobby.LobbyService;
 import com.example.webgame.record.GeneralPlayerRequest;
+import com.example.webgame.record.InfoPopUp;
 import com.example.webgame.record.PlayerMakeMoveRequest;
 
 @Controller
@@ -122,7 +124,10 @@ public class GameController {
 				request);
 		if (gameSessionOpt.isPresent()) {
 			BirGameSession gameSession = gameSessionOpt.get();
-			gameSession.bir(request.nickName());
+			if (gameSession.bir(request.nickName())) {
+				this.template.convertAndSend("/queue/info-pop-up-user" + sessionId,
+						new InfoPopUp(UUID.randomUUID(), "Invalid BIR press! +2 as a penalty.", false));
+			}
 			sendGameStateToAllUsers(gameSession);
 		}
 	}
