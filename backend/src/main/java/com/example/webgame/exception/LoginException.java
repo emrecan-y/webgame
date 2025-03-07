@@ -1,6 +1,6 @@
 package com.example.webgame.exception;
 
-public class LoginException extends Exception {
+public class LoginException extends RuntimeException {
 
 	private static final long serialVersionUID = 5146636103944702112L;
 
