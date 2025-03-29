@@ -1,10 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { UserContext } from "../context/UserContext";
 import { LoginRequest } from "../../models/requests";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
+import { ProfanityFilterContext } from "../context/ProfanityFilterContext";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");
@@ -12,6 +13,7 @@ function LandingPage() {
 
   const stompClient = useStompClient();
   const { userNickName, setUserNickName } = useContext(UserContext);
+  const { censor } = useContext(ProfanityFilterContext);
   const navigate = useNavigate();
 
   const maxNameLength = 14;
@@ -20,23 +22,50 @@ function LandingPage() {
   useEffect(() => {
     if (userNickName !== "") {
       navigate("/lobbies");
-    }
-    requestRandomName();
-  }, [stompClient]);
-
-  useEffect(() => {
-    if (nickName.length > maxNameLength) {
-      setInfoText("Please pick a shorter name");
-    } else if (nickName.length < minNameLength) {
-      setInfoText("Please pick a longer nickname.");
     } else {
-      setInfoText("");
+      requestRandomName();
     }
-  }, [nickName]);
+  }, [stompClient]);
 
   useSubscription("/user/queue/random-name", (message) => {
     setNickname(message.body);
   });
+
+  useSubscription("/user/queue/login/user-name", (message) => {
+    if (message.body !== "") {
+      setUserNickName(message.body);
+    }
+  });
+
+  const nameIsValid = useMemo(() => {
+    if (!startsWithLetter(nickName)) {
+      setInfoText("Please begin with a letter.");
+    } else if (nickName.length < minNameLength) {
+      setInfoText("Please pick a longer nickname.");
+    } else if (!containsOnlyLettersAndNumbers(nickName)) {
+      setInfoText("No special characters allowed.");
+    } else if (nickName.length > maxNameLength) {
+      setInfoText("Please pick a shorter name.");
+    } else {
+      setInfoText("");
+      return true;
+    }
+    return false;
+  }, [nickName]);
+
+  function tryLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (stompClient && nameIsValid) {
+      const request: LoginRequest = {
+        nickName: censor(nickName),
+      };
+
+      stompClient.publish({
+        destination: "/app/login",
+        body: JSON.stringify(request),
+      });
+    }
+  }
 
   function requestRandomName() {
     if (stompClient) {
@@ -46,40 +75,28 @@ function LandingPage() {
     }
   }
 
-  function tryLogin(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (
-      stompClient &&
-      nickName.length <= maxNameLength &&
-      nickName.length >= minNameLength
-    ) {
-      const request: LoginRequest = {
-        nickName: nickName,
-      };
-      stompClient.publish({
-        destination: "/app/login",
-        body: JSON.stringify(request),
-      });
-    }
+  function containsOnlyLettersAndNumbers(input: string) {
+    const regex = new RegExp("^[a-zA-Z0-9]*$");
+    return regex.test(input);
   }
 
-  // listen to backend for confirmation on login
-  useSubscription("/user/queue/login/user-name", (message) => {
-    if (message.body !== "") {
-      setUserNickName(message.body);
-    } else {
-      setInfoText("This name already exists");
-    }
-  });
+  function startsWithLetter(input: string) {
+    const regex = new RegExp("^[a-zA-Z].*$");
+    return regex.test(input);
+  }
 
   return (
     <motion.div
-      className="flex flex-col items-center"
+      className="relative flex flex-col items-center"
       initial={{ opacity: 0, scale: 0 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring" }}
     >
-      <p className="min-h-6 animate-bounce">{infoText}</p>
+      {infoText !== "" && (
+        <p className="absolute -top-10 w-max animate-bounce rounded border border-game-accent-light bg-game-accent-medium p-2 text-game-main-light">
+          {infoText}
+        </p>
+      )}
       <form
         className="flex w-56 flex-col rounded bg-game-accent-light p-2"
         onSubmit={(e) => tryLogin(e)}
