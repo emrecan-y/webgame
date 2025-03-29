@@ -1,11 +1,14 @@
 package com.example.webgame.chat;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -24,7 +27,7 @@ public class ChatRoomController {
 	@MessageMapping("/connect/global-chat")
 	public void connectToGlobalChat(@Header("simpSessionId") String sessionId) {
 		this.template.convertAndSend("/queue/chat/global-chat-user" + sessionId,
-				this.chatRoomService.getGlobalChat(sessionId));
+				this.chatRoomService.getGlobalChatIfRegistered(sessionId));
 
 	}
 
@@ -51,6 +54,19 @@ public class ChatRoomController {
 		if (lobbyChatOpt.isPresent()) {
 			this.template.convertAndSend("/topic/chat/lobby/" + lobbyId, lobbyChatOpt.get());
 		}
+	}
+
+	@Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
+	public void deleteOldGlobalChatMessages() {
+
+		// Handle globaChat
+		this.chatRoomService.getGlobalChat().deleteOldMessages(15);
+		this.template.convertAndSend("/topic/chat/global-chat", this.chatRoomService.getGlobalChat());
+
+		// Handle lobbyChats
+		Map<Integer, ChatHistory> lobbyMapCopy = this.chatRoomService.deleteOldLobbyMessages(1);
+		lobbyMapCopy.entrySet()
+				.forEach(e -> this.template.convertAndSend("/topic/chat/lobby/" + e.getKey(), e.getValue()));
 	}
 
 }

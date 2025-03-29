@@ -1,6 +1,6 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { ChatMessage } from "../../models/chat";
+import { ChatHistory, ChatMessage } from "../../models/chat";
 import { useChatStore } from "./ChatStore";
 import { AnimatePresence, motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
@@ -27,10 +27,13 @@ export function ChatWindow(props: ChatWindowProps) {
   const { setShowChat, getShowState, removeChat } = useChatStore();
 
   useSubscription(props.receiveDestinationTopic, (message) => {
-    setChatHistory(JSON.parse(message.body).history);
-    if (!getShowState(props.buttonText)) {
-      setHasUnreadMessages(true);
-    }
+    const { history }: ChatHistory = JSON.parse(message.body);
+    setChatHistory((prev) => {
+      if (!getShowState(props.buttonText) && history.length > prev.length) {
+        setHasUnreadMessages(true);
+      }
+      return history;
+    });
   });
 
   useSubscription(props.receiveDestinationUser, (message) => {
@@ -89,9 +92,10 @@ export function ChatWindow(props: ChatWindowProps) {
             >
               ✖
             </MotionButton>
+
             <div
               ref={chatHistoryRef}
-              className="h-72 w-full overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark sm:h-96"
+              className="flex h-72 w-full flex-col overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark sm:h-96"
             >
               {Array.isArray(chatHistory) &&
                 chatHistory.map((e, index) => (
@@ -109,6 +113,7 @@ export function ChatWindow(props: ChatWindowProps) {
                 className="m-1 w-64 bg-black px-1 text-game-main-light focus:outline-none focus:ring-0"
                 type="text"
                 value={messageInput}
+                placeholder="Messages delete after 15 minutes."
                 onChange={(e) => setMessageInput(e.currentTarget.value)}
               />
               <MotionButton

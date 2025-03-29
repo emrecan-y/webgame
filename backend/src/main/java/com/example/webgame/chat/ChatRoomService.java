@@ -1,5 +1,6 @@
 package com.example.webgame.chat;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -22,9 +23,13 @@ public class ChatRoomService {
 		this.sessionService = sessionService;
 	}
 
-	public ChatHistory getGlobalChat(String sessionId) {
+	public ChatHistory getGlobalChatIfRegistered(String sessionId) {
 		this.sessionService.isSessionIdRegistered(sessionId);
 
+		return this.globalChat;
+	}
+
+	public ChatHistory getGlobalChat() {
 		return this.globalChat;
 	}
 
@@ -70,6 +75,10 @@ public class ChatRoomService {
 			}
 		}
 		return Optional.empty();
+	}
+
+	public Map<Integer, ChatHistory> deleteOldLobbyMessages(int timeDeltaInMinutes) {
+		return this.lobbySevice.deleteOldLobbyMessages(timeDeltaInMinutes);
 	}
 
 }

@@ -1,29 +1,29 @@
 package com.example.webgame.chat;
 
+import java.time.LocalDateTime;
+
 public class ChatMessage {
 
-	private String senderName;
-	private String message;
+	private final String senderName;
+	private final String message;
+	private final LocalDateTime timeOfCreation;
 
 	public ChatMessage(String senderName, String message) {
 		this.senderName = senderName;
 		this.message = message;
+		this.timeOfCreation = LocalDateTime.now();
 	}
 
 	public String getSenderName() {
 		return senderName;
 	}
 
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
-	}
-
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public LocalDateTime getTimeOfCreation() {
+		return timeOfCreation;
 	}
 
 }

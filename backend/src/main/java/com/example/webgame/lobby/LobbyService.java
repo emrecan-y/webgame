@@ -7,9 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.example.webgame.chat.ChatHistory;
 import com.example.webgame.dto.BirGameStateDto;
 import com.example.webgame.exception.LobbyException;
 import com.example.webgame.game.bir.BirGameSession;
@@ -177,4 +179,9 @@ public class LobbyService {
 		}
 	}
 
+	public Map<Integer, ChatHistory> deleteOldLobbyMessages(int timeDeltaInMinutes) {
+		this.lobbyMap.values().forEach(lobby -> lobby.getChatHistory().deleteOldMessages(timeDeltaInMinutes));
+		return this.lobbyMap.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getChatHistory()));
+	}
 }
