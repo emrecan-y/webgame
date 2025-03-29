@@ -1,6 +1,7 @@
 package com.example.webgame.session;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,15 @@ public class SessionService {
 	}
 
 	public boolean addUser(String sessionId, String nickName) {
+
 		if (userExists(nickName)) {
 			throw new LoginException("This name is already taken.");
+		} else if (nickName.contains("*")) {
+			throw new LoginException(String.format("The name \"%s\" is not allowed.", nickName));
+		} else if (!Pattern.compile("^[a-zA-Z].*$").matcher(nickName).find()) {
+			throw new LoginException("This name doesn't start with a letter.");
+		} else if (!Pattern.compile("^[a-zA-Z0-9]*$").matcher(nickName).find()) {
+			throw new LoginException("This name contains special characters, only letters and numbers allowed.");
 		} else if (nickName.length() > NameService.getMaxNameLength()) {
 			throw new LoginException("This name is too long.");
 		} else if (nickName.length() < NameService.getMinNameLength()) {
