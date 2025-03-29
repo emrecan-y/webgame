@@ -33,8 +33,8 @@ const numbers = new Map(
 const middleTextElement = (value: string | undefined) => {
   return (
     <>
-      <div className="border-bir-white absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid">
-        <div className="border-1 drop-shadow-bir-large-text rotate-[-30deg] border-solid border-black pb-2 pl-1 text-[3.4rem] font-bold">
+      <div className="absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid border-bir-white">
+        <div className="border-1 rotate-[-30deg] border-solid border-black pb-2 pl-1 text-[3.4rem] font-bold drop-shadow-bir-large-text">
           {value}
         </div>
       </div>
@@ -44,11 +44,11 @@ const middleTextElement = (value: string | undefined) => {
 
 const colorGridElement = (
   <>
-    <div className="border-bir-white absolute flex h-40 w-20 rotate-[30deg] flex-wrap rounded-[100%] border-4 border-solid">
-      <div className="bg-bir-red h-1/2 w-1/2 rounded-tl-[100%]"></div>
-      <div className="bg-bir-blue h-1/2 w-1/2 rounded-tr-[100%]"></div>
-      <div className="bg-bir-green h-1/2 w-1/2 rounded-bl-[100%]"></div>
-      <div className="bg-bir-yellow h-1/2 w-1/2 rounded-br-[100%]"></div>
+    <div className="absolute flex h-40 w-20 rotate-[30deg] flex-wrap rounded-[100%] border-4 border-solid border-bir-white">
+      <div className="h-1/2 w-1/2 rounded-tl-[100%] bg-bir-red"></div>
+      <div className="h-1/2 w-1/2 rounded-tr-[100%] bg-bir-blue"></div>
+      <div className="h-1/2 w-1/2 rounded-bl-[100%] bg-bir-green"></div>
+      <div className="h-1/2 w-1/2 rounded-br-[100%] bg-bir-yellow"></div>
     </div>
   </>
 );
@@ -59,17 +59,17 @@ export function BirCardDisplay(
   const color = card.colorOverride || card.color;
 
   return (
-    <div className="bg-bir-white relative flex h-44 w-28 select-none items-center justify-center rounded-lg font-cabin">
+    <div className="relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-bir-white font-cabin">
       {card.color === "BLACK"
         ? colorGridElement
         : middleTextElement(numbers.get(card.cardType))}
       <div
         className={`${colors.get(color)} flex h-40 w-24 items-center justify-center rounded-lg`}
       >
-        <div className="border-1 drop-shadow-bir-small-text absolute bottom-2 right-3 rotate-180 border-solid border-black text-xl font-bold">
+        <div className="border-1 absolute bottom-2 right-3 rotate-180 border-solid border-black text-xl font-bold drop-shadow-bir-small-text">
           {numbers.get(card.cardType)}
         </div>
-        <div className="border-1 drop-shadow-bir-small-text absolute left-3 top-2 border-solid border-black text-xl font-bold">
+        <div className="border-1 absolute left-3 top-2 border-solid border-black text-xl font-bold drop-shadow-bir-small-text">
           {numbers.get(card.cardType)}
         </div>
       </div>
@@ -79,9 +79,9 @@ export function BirCardDisplay(
 
 export function BirCardTopViewDisplay() {
   return (
-    <div className="bg-bir-white relative flex h-44 w-28 select-none items-center justify-center rounded-lg font-cabin">
-      <div className="border-bir-white bg-bir-red absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid">
-        <div className="border-1 text-bir-yellow drop-shadow-bir-large-text rotate-[-50deg] pl-1 text-[2rem] font-bold">
+    <div className="relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-bir-white font-cabin">
+      <div className="absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid border-bir-white bg-game-accent-medium">
+        <div className="border-1 rotate-[-50deg] pl-1 text-[2rem] font-bold text-bir-yellow drop-shadow-bir-large-text">
           BİR
         </div>
       </div>

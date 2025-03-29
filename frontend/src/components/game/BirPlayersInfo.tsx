@@ -21,8 +21,8 @@ function BirPlayerSingleInfoCard(cardCount: number) {
           </div>
         </div>
 
-        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-bir-red text-center align-middle font-bold text-bir-white outline">
-          <span className="text-center align-middle drop-shadow-bir-small-text">
+        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-game-accent-medium text-center align-middle font-bold text-bir-white outline">
+          <span className="text-center align-middle text-bir-yellow drop-shadow-bir-small-text">
             {cardCount}
           </span>
         </p>
@@ -47,8 +47,8 @@ function BirPlayerSingleInfoCard(cardCount: number) {
             </div>
           ))}
         </div>
-        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-bir-red text-center align-middle font-bold text-bir-white outline">
-          <span className="text-center align-middle drop-shadow-bir-small-text">
+        <p className="absolute bottom-0 h-7 w-7 rounded-full bg-game-accent-medium text-center align-middle font-bold text-bir-white outline">
+          <span className="text-center align-middle text-bir-yellow drop-shadow-bir-small-text">
             {cardCount}
           </span>
         </p>

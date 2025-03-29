@@ -87,7 +87,7 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
             {drawCount != 0 && (
               <motion.div
                 key={`draw-${drawCount}x`}
-                className="border-bir-white bg-bir-red text-bir-yellow absolute top-3 z-20 rounded-xl border-4 border-solid p-1 text-2xl font-extrabold"
+                className="absolute top-3 z-20 rounded-xl border-4 border-solid border-bir-white bg-game-accent-medium p-1 text-2xl font-extrabold text-bir-yellow"
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
@@ -125,8 +125,8 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
           <MotionButton
             className={
               isBirPossible
-                ? "border-bir-white bg-bir-red rounded border-8 border-solid p-5"
-                : "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
+                ? "rounded border-8 border-solid border-bir-white bg-game-accent-medium p-5"
+                : "rounded border-8 border-solid border-game-main-medium bg-bir-black p-5 text-game-main-medium hover:cursor-default"
             }
             onClick={bir}
             disableAnimation={!isBirPossible}
@@ -137,8 +137,8 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
           <MotionButton
             className={
               isPassPossible
-                ? "border-bir-white bg-bir-red rounded border-8 border-solid p-5"
-                : "bg-bir-black rounded border-8 border-solid border-game-main-medium p-5 text-game-main-medium hover:cursor-default"
+                ? "rounded border-8 border-solid border-bir-white bg-game-accent-medium p-5"
+                : "rounded border-8 border-solid border-game-main-medium bg-bir-black p-5 text-game-main-medium hover:cursor-default"
             }
             onClick={pass}
             disableAnimation={!isPassPossible}
