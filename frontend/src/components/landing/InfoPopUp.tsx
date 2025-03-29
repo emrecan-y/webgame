@@ -10,7 +10,7 @@ export function InfoPopUpContainer() {
 
   useSubscription("/user/queue/info-pop-up", (message) => {
     const newInfoPopUp: InfoPopUp = JSON.parse(message.body);
-    setInfoPopUps((prevInfoPopUps) => [...prevInfoPopUps, newInfoPopUp]);
+    setInfoPopUps((prevInfoPopUps) => [newInfoPopUp, ...prevInfoPopUps]);
     setTimeout(() => {
       setInfoPopUps((prevInfoPopUps) =>
         prevInfoPopUps.filter((infoPopUp) => infoPopUp.id !== newInfoPopUp.id),
