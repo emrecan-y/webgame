@@ -1,9 +1,10 @@
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { ChatMessage } from "../../models/chat";
 import { useChatStore } from "./ChatStore";
 import { AnimatePresence, motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
+import { ProfanityFilterContext } from "../context/ProfanityFilterContext";
 
 type ChatWindowProps = {
   buttonText: string;
@@ -20,6 +21,7 @@ export function ChatWindow(props: ChatWindowProps) {
   const [messageInput, setMessageInput] = useState("");
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
+  const { censor } = useContext(ProfanityFilterContext);
   const stompClient = useStompClient();
 
   const { setShowChat, getShowState, removeChat } = useChatStore();
@@ -64,7 +66,7 @@ export function ChatWindow(props: ChatWindowProps) {
     if (stompClient && messageInput !== "") {
       stompClient.publish({
         destination: props.sendDestination,
-        body: messageInput,
+        body: censor(messageInput),
       });
       setMessageInput("");
     }
