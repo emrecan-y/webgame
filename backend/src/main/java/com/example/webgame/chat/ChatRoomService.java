@@ -38,7 +38,7 @@ public class ChatRoomService {
 
 	public Optional<ChatHistory> receiveGlobalChatMessage(String sessionId, String message) {
 		this.sessionService.isSessionIdRegistered(sessionId);
-		this.checkChatMessageValidity(message);
+		message = this.validateChatMessage(message);
 
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
 		if (sessionOpt.isPresent()) {
@@ -66,7 +66,7 @@ public class ChatRoomService {
 
 	public Optional<ChatHistory> receiveNewLobbyMessage(Integer lobbyId, String sessionId, String message) {
 		this.sessionService.isSessionIdRegistered(sessionId);
-		this.checkChatMessageValidity(message);
+		message = this.validateChatMessage(message);
 
 		Optional<Lobby> lobbyOpt = this.lobbySevice.findLobbyById(lobbyId);
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
@@ -82,7 +82,7 @@ public class ChatRoomService {
 		return Optional.empty();
 	}
 
-	private void checkChatMessageValidity(String message) {
+	private String validateChatMessage(String message) {
 		String strippedMessage;
 		if (message == null || (strippedMessage = message.strip()) == "") {
 			throw new ChatException("Chat message can`t be empty.");
@@ -93,6 +93,7 @@ public class ChatRoomService {
 		} else if (strippedMessage.length() > MAX_CHAT_LENGTH) {
 			throw new ChatException(String.format("Chat message is too long, maximum %d characters.", MAX_CHAT_LENGTH));
 		}
+		return strippedMessage;
 	}
 
 	public Map<Integer, ChatHistory> deleteOldLobbyMessages(int timeDeltaInMinutes) {
