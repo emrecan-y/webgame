@@ -22,6 +22,8 @@ import com.example.webgame.session.UserSession;
 
 @Service
 public class LobbyService {
+	private static final int MIN_LOBBY_SIZE = 2;
+	private static final int MAX_LOBBY_SIZE = 8;
 	private Map<Integer, Lobby> lobbyMap;
 	private SessionService sessionService;
 
@@ -62,6 +64,12 @@ public class LobbyService {
 
 	public Optional<Lobby> createLobby(String sessionId, String password, int size) {
 		this.sessionService.isSessionIdRegistered(sessionId);
+
+		if(size < MIN_LOBBY_SIZE){
+			throw new LobbyException("Lobby creation failed, size too small.");
+		}else if(size > MAX_LOBBY_SIZE){
+			throw new LobbyException("Lobby creation failed, size too big.");
+		}
 
 		Optional<UserSession> userSession = this.sessionService.getBySessionId(sessionId);
 		if (userSession.isPresent()) {
