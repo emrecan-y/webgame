@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.example.webgame.exception.ChatException;
 import com.example.webgame.lobby.Lobby;
 import com.example.webgame.lobby.LobbyService;
 import com.example.webgame.session.SessionService;
@@ -12,6 +13,8 @@ import com.example.webgame.session.UserSession;
 
 @Service
 public class ChatRoomService {
+	private static final int MIN_CHAT_LENGTH = 1;
+	private static final int MAX_CHAT_LENGTH = 180;
 	private final LobbyService lobbySevice;
 	private final SessionService sessionService;
 
@@ -35,6 +38,7 @@ public class ChatRoomService {
 
 	public Optional<ChatHistory> receiveGlobalChatMessage(String sessionId, String message) {
 		this.sessionService.isSessionIdRegistered(sessionId);
+		this.checkChatMessageValidity(message);
 
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
 		if (sessionOpt.isPresent()) {
@@ -62,6 +66,7 @@ public class ChatRoomService {
 
 	public Optional<ChatHistory> receiveNewLobbyMessage(Integer lobbyId, String sessionId, String message) {
 		this.sessionService.isSessionIdRegistered(sessionId);
+		this.checkChatMessageValidity(message);
 
 		Optional<Lobby> lobbyOpt = this.lobbySevice.findLobbyById(lobbyId);
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
@@ -75,6 +80,19 @@ public class ChatRoomService {
 			}
 		}
 		return Optional.empty();
+	}
+
+	private void checkChatMessageValidity(String message) {
+		String strippedMessage;
+		if (message == null || (strippedMessage = message.strip()) == "") {
+			throw new ChatException("Chat message can`t be empty.");
+		}
+		if (strippedMessage.length() < MIN_CHAT_LENGTH) {
+			throw new ChatException(
+					String.format("Chat message is too short, minimum %d characters.", MIN_CHAT_LENGTH));
+		} else if (strippedMessage.length() > MAX_CHAT_LENGTH) {
+			throw new ChatException(String.format("Chat message is too long, maximum %d characters.", MAX_CHAT_LENGTH));
+		}
 	}
 
 	public Map<Integer, ChatHistory> deleteOldLobbyMessages(int timeDeltaInMinutes) {

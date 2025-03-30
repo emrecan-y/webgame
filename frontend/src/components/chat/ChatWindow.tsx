@@ -1,4 +1,11 @@
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import {
+  FormEvent,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
 import { ChatHistory, ChatMessage } from "../../models/chat";
 import { useChatStore } from "./ChatStore";
@@ -19,12 +26,16 @@ export function ChatWindow(props: ChatWindowProps) {
   const chatHistoryRef = useRef<HTMLDivElement>(null);
 
   const [messageInput, setMessageInput] = useState("");
+  const [infoText, setInfoText] = useState("");
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
   const { censor } = useContext(ProfanityFilterContext);
   const stompClient = useStompClient();
 
   const { setShowChat, getShowState, removeChat } = useChatStore();
+
+  const minChatMessageLength = 1;
+  const maxChatMessageLength = 180;
 
   useSubscription(props.receiveDestinationTopic, (message) => {
     const { history }: ChatHistory = JSON.parse(message.body);
@@ -59,6 +70,18 @@ export function ChatWindow(props: ChatWindowProps) {
     }
   }, [chatHistory, getShowState(props.buttonText)]);
 
+  const isChatMessageValid = useMemo(() => {
+    if (messageInput.length < minChatMessageLength) {
+      setInfoText("");
+    } else if (messageInput.length > maxChatMessageLength) {
+      setInfoText("Message is too long.");
+    } else {
+      setInfoText("");
+      return true;
+    }
+    return false;
+  }, [messageInput]);
+
   function chatButtonHandler() {
     setShowChat(props.buttonText, !getShowState(props.buttonText));
     setHasUnreadMessages(false);
@@ -66,7 +89,7 @@ export function ChatWindow(props: ChatWindowProps) {
 
   function sendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (stompClient && messageInput !== "") {
+    if (stompClient && isChatMessageValid) {
       stompClient.publish({
         destination: props.sendDestination,
         body: censor(messageInput),
@@ -107,7 +130,10 @@ export function ChatWindow(props: ChatWindowProps) {
                   </p>
                 ))}
             </div>
-            <form className="flex flex-row" onSubmit={(e) => sendMessage(e)}>
+            <form className="relative flex flex-row" onSubmit={sendMessage}>
+              <p className="absolute -top-5 w-full bg-game-accent-light pl-1 text-bir-red">
+                {infoText}
+              </p>
               <input
                 autoFocus
                 className="m-1 w-64 bg-black px-1 text-game-main-light focus:outline-none focus:ring-0"
@@ -117,8 +143,9 @@ export function ChatWindow(props: ChatWindowProps) {
                 onChange={(e) => setMessageInput(e.currentTarget.value)}
               />
               <MotionButton
-                className="m-1 ml-0 w-7 cursor-pointer rounded bg-game-accent-medium p-0.5 text-game-main-light"
+                className={`m-1 ml-0 w-7 cursor-pointer rounded p-0.5 text-game-main-light ${isChatMessageValid ? "bg-game-accent-medium" : "bg-game-main-medium hover:cursor-default"}`}
                 type="submit"
+                disableAnimation={!isChatMessageValid}
               >
                 ↵
               </MotionButton>

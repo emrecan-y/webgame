@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 		this.template = template;
 	}
 
-	@MessageExceptionHandler({ LoginException.class, LobbyException.class, })
+	@MessageExceptionHandler({ LoginException.class, LobbyException.class, ChatException.class })
 	@SendToUser("/queue/info-pop-up")
 	public InfoPopUp handleGeneralException(Exception ex, StompHeaderAccessor headerAccessor) {
 		return new InfoPopUp(UUID.randomUUID(), ex.getMessage(), true);
