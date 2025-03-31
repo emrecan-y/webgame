@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useStompClient, useSubscription } from "react-stomp-hooks";
-import { BirCardDisplay } from "./BirCardDisplay";
+import { BirCardFront } from "./BirCard";
 import { UserContext } from "../context/UserContext";
 import { BirGameState } from "../../models/birGameState";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ import {
 } from "../../models/requests";
 import { BirCard, BirCardColor } from "../../models/birCard";
 import BirColorPicker from "./BirColorPicker";
-import BirPlayersInfo from "./BirPlayersInfo";
+import BirPlayersInfo from "./playersInfo/BirPlayersInfo";
 import BirGameOver from "./BirGameOver";
 import BirGameCenter from "./BirGameCenter";
 import { AnimatePresence, motion } from "motion/react";
@@ -140,7 +140,7 @@ function GameWindow() {
           <div className="absolute top-4">
             <BirPlayersInfo
               users={gameState.users}
-              currentUser={gameState.currentUser}
+              currentUserName={gameState.currentUser}
               direction={gameState.direction}
             />
           </div>
@@ -163,7 +163,7 @@ function GameWindow() {
                       transition={{ type: "linear" }}
                       layout
                     >
-                      <BirCardDisplay
+                      <BirCardFront
                         color={element.color}
                         cardType={element.cardType}
                       />

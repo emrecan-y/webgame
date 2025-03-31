@@ -3,7 +3,7 @@ import { BirGameState } from "../../models/birGameState";
 import { GeneralPlayerRequest } from "../../models/requests";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
-import { BirCardDisplay, BirCardTopViewDisplay } from "./BirCardDisplay";
+import { BirCardFront, BirCardBack } from "./BirCard";
 import { AnimatePresence, motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
 
@@ -97,7 +97,7 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
               </motion.div>
             )}
           </AnimatePresence>
-          <BirCardTopViewDisplay />
+          <BirCardBack />
         </MotionButton>
         <div className="relative w-28">
           <AnimatePresence>
@@ -112,7 +112,7 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
               }}
               transition={{ type: "linear" }}
             >
-              <BirCardDisplay
+              <BirCardFront
                 color={gameState.centerCard.color}
                 cardType={gameState.centerCard.cardType}
                 colorOverride={gameState.colorOverride}

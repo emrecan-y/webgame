@@ -53,7 +53,7 @@ const colorGridElement = (
   </>
 );
 
-export function BirCardDisplay(
+export function BirCardFront(
   card: Omit<BirCard, "id"> & { colorOverride?: BirCardColor },
 ) {
   const color = card.colorOverride || card.color;
@@ -77,7 +77,7 @@ export function BirCardDisplay(
   );
 }
 
-export function BirCardTopViewDisplay() {
+export function BirCardBack() {
   return (
     <div className="relative flex h-44 w-28 select-none items-center justify-center rounded-lg bg-bir-white font-cabin">
       <div className="absolute flex h-40 w-20 rotate-[30deg] items-center justify-center rounded-[100%] border-4 border-solid border-bir-white bg-game-accent-medium">
