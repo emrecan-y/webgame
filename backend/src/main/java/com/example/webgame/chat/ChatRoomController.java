@@ -58,13 +58,13 @@ public class ChatRoomController {
 
 	@Scheduled(fixedRate = 1, timeUnit = TimeUnit.MINUTES)
 	public void deleteOldGlobalChatMessages() {
-
+		final int timeDeltaInMinutes = 15;
 		// Handle globaChat
-		this.chatRoomService.getGlobalChat().deleteOldMessages(15);
+		this.chatRoomService.getGlobalChat().deleteOldMessages(timeDeltaInMinutes);
 		this.template.convertAndSend("/topic/chat/global-chat", this.chatRoomService.getGlobalChat());
 
 		// Handle lobbyChats
-		Map<Integer, ChatHistory> lobbyMapCopy = this.chatRoomService.deleteOldLobbyMessages(1);
+		Map<Integer, ChatHistory> lobbyMapCopy = this.chatRoomService.deleteOldLobbyMessages(timeDeltaInMinutes);
 		lobbyMapCopy.entrySet()
 				.forEach(e -> this.template.convertAndSend("/topic/chat/lobby/" + e.getKey(), e.getValue()));
 	}
