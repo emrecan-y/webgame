@@ -6,10 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
 import { ProfanityFilterContext } from "../context/ProfanityFilterContext";
+import PrivacyPolicy from "./PrivacyPolicy";
 
 function LandingPage() {
   const [nickName, setNickname] = useState("");
   const [infoText, setInfoText] = useState("");
+
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
 
   const stompClient = useStompClient();
   const { userNickName, setUserNickName } = useContext(UserContext);
@@ -92,13 +95,18 @@ function LandingPage() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring" }}
     >
+      {showPrivacyPolicy && (
+        <PrivacyPolicy
+          setShowPrivacyPolicy={setShowPrivacyPolicy}
+        ></PrivacyPolicy>
+      )}
       {infoText !== "" && (
         <p className="absolute -top-10 w-max animate-bounce rounded border border-game-accent-light bg-game-accent-medium p-2 text-game-main-light">
           {infoText}
         </p>
       )}
       <form
-        className="flex w-56 flex-col rounded bg-game-accent-light p-2"
+        className="flex w-60 flex-col rounded bg-game-accent-light p-2"
         onSubmit={(e) => tryLogin(e)}
       >
         <div className="flex flex-col rounded bg-game-accent-medium p-1">
@@ -129,6 +137,19 @@ function LandingPage() {
           </MotionButton>
         </div>
       </form>
+      <p className="absolute top-28 mt-2 w-56 text-center text-xs text-game-main-light">
+        By continuing, you confirm that you have read and understood the{" "}
+        <span className="">
+          <button
+            className="underline hover:text-game-accent-light"
+            type="button"
+            onClick={() => setShowPrivacyPolicy(true)}
+          >
+            Privacy Policy
+          </button>
+        </span>
+        .
+      </p>
     </motion.div>
   );
 }
