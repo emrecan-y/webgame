@@ -66,6 +66,9 @@ server {
     listen 80;
     server_name $DOMAIN $WWW_DOMAIN;
 
+    access_log off;
+    error_log off;
+
     # Redirect HTTP to HTTPS
     return 301 https://\$host\$request_uri;
 }
@@ -73,6 +76,9 @@ server {
 server {
     listen 443 ssl;
     server_name $DOMAIN $WWW_DOMAIN;
+
+    access_log off;
+    error_log off;
 
     ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
@@ -89,7 +95,6 @@ server {
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
 
-        access_log /var/log/nginx/proxy_access.log;
     }
 
     location / {
@@ -118,6 +123,14 @@ sudo systemctl restart nginx
 
 # Pull and start your Docker container (replace with your Docker image)
 echo "Pulling Docker image and running container..."
+if [ $(docker ps -q -f name=$GITHUB_CONTAINER_NAME) ]; then
+    echo "Stopping and removing existing container..."
+    docker stop $GITHUB_CONTAINER_NAME
+    docker rm $GITHUB_CONTAINER_NAME
+else
+    echo "No existing container to stop and remove."
+fi
+
 docker login ghcr.io -u $GITHUB_USERNAME -p $GITHUB_PAK
 docker pull ghcr.io/$GITHUB_USERNAME/$GITHUB_REPOSITORY/$GITHUB_CONTAINER_NAME
 docker run -d -p $DOCKER_APP_PORT:$DOCKER_APP_PORT --name $GITHUB_CONTAINER_NAME ghcr.io/$GITHUB_USERNAME/$GITHUB_REPOSITORY/$GITHUB_CONTAINER_NAME
