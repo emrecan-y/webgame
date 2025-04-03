@@ -10,6 +10,7 @@ import { MouseEventHandler } from "react";
 type MotionButtonProps = {
   id?: string;
   className?: string;
+  title?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
   children?: React.ReactNode;
   type?: "button" | "submit" | "reset";
@@ -24,6 +25,7 @@ type MotionButtonProps = {
 function MotionButton({
   id,
   className,
+  title,
   onClick,
   children,
   type = "button",
@@ -36,7 +38,13 @@ function MotionButton({
 }: MotionButtonProps) {
   if (disableAnimation) {
     return (
-      <button id={id} className={className} onClick={onClick} type={type}>
+      <button
+        id={id}
+        className={className}
+        title={title}
+        onClick={onClick}
+        type={type}
+      >
         {children}
       </button>
     );
@@ -45,6 +53,7 @@ function MotionButton({
       <motion.button
         id={id}
         className={className}
+        title={title}
         onClick={onClick}
         type={type}
         whileHover={{
