@@ -2,10 +2,24 @@ import { useContext } from "react";
 import { ChatWindow } from "./ChatWindow";
 import { UserContext } from "../context/UserContext";
 import { useChatStore } from "./ChatStore";
+import { useSubscription } from "react-stomp-hooks";
 
 function Chat() {
   const { userNickName, userLobbyId } = useContext(UserContext);
-  const { hideAllChats, isAnyChatActive } = useChatStore();
+  const { hideAllChats, isAnyChatActive, setIsChatDisabled } = useChatStore();
+
+  useSubscription("/user/queue/disable-chat", (message) => {
+    const remainingCoolDownInSeconds = parseInt(message.body);
+    setIsChatDisabled(true);
+
+    const timeOut = setTimeout(() => {
+      setIsChatDisabled(false);
+    }, remainingCoolDownInSeconds * 1000);
+
+    return () => {
+      clearTimeout(timeOut);
+    };
+  });
 
   const globaChat = (
     <ChatWindow

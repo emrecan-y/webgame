@@ -2,15 +2,18 @@ import { create } from "zustand/react";
 
 type ChatStore = {
   chats: Record<string, boolean>;
+  isChatDisabled: boolean;
   setShowChat: (chatName: string, isVisible: boolean) => void;
   getShowState: (chatName: string) => boolean;
   removeChat: (chatName: string) => void;
+  setIsChatDisabled: (value: boolean) => void;
   isAnyChatActive: () => boolean;
   hideAllChats: () => void;
 };
 
 export const useChatStore = create<ChatStore>((set, get) => ({
   chats: {},
+  isChatDisabled: false,
 
   setShowChat: (chatName, isVisible) => {
     get().hideAllChats();
@@ -39,6 +42,12 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
     set(() => ({
       chats: newChats,
+    }));
+  },
+
+  setIsChatDisabled(value: boolean) {
+    set(() => ({
+      isChatDisabled: value,
     }));
   },
 

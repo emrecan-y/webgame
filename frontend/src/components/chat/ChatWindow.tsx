@@ -32,7 +32,8 @@ export function ChatWindow(props: ChatWindowProps) {
   const { censor } = useContext(ProfanityFilterContext);
   const stompClient = useStompClient();
 
-  const { setShowChat, getShowState, removeChat } = useChatStore();
+  const { setShowChat, getShowState, removeChat, isChatDisabled } =
+    useChatStore();
 
   const minChatMessageLength = 1;
   const maxChatMessageLength = 180;
@@ -82,6 +83,13 @@ export function ChatWindow(props: ChatWindowProps) {
     return false;
   }, [messageInput]);
 
+  const isSendButtonActive = isChatMessageValid && !isChatDisabled;
+  const sendButtonTitle = isChatDisabled
+    ? "Please wait, your chat has been deactivated."
+    : !isChatMessageValid
+      ? "Plase enter a valid message."
+      : "Send message.";
+
   function chatButtonHandler() {
     setShowChat(props.buttonText, !getShowState(props.buttonText));
     setHasUnreadMessages(false);
@@ -89,7 +97,7 @@ export function ChatWindow(props: ChatWindowProps) {
 
   function sendMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (stompClient && isChatMessageValid) {
+    if (stompClient && isChatMessageValid && !isChatDisabled) {
       stompClient.publish({
         destination: props.sendDestination,
         body: censor(messageInput),
@@ -143,9 +151,10 @@ export function ChatWindow(props: ChatWindowProps) {
                 onChange={(e) => setMessageInput(e.currentTarget.value)}
               />
               <MotionButton
-                className={`m-1 ml-0 w-7 cursor-pointer rounded p-0.5 text-game-main-light ${isChatMessageValid ? "bg-game-accent-medium" : "bg-game-main-medium hover:cursor-default"}`}
+                className={`m-1 ml-0 w-7 cursor-pointer rounded p-0.5 text-game-main-light ${isSendButtonActive ? "bg-game-accent-medium" : "bg-game-main-medium hover:cursor-default"}`}
+                title={sendButtonTitle}
                 type="submit"
-                disableAnimation={!isChatMessageValid}
+                disableAnimation={!isSendButtonActive}
               >
                 ↵
               </MotionButton>
