@@ -1,17 +1,24 @@
 package com.example.webgame.exception;
 
+import java.util.Optional;
+
 public class ChatMessageSpamException extends RuntimeException {
 
 	private static final long serialVersionUID = 3027105552942371733L;
 
-	private int remainingCoolDownInSeconds;
+	private Optional<Integer> remainingCoolDownInSeconds;
 
-	public ChatMessageSpamException(String message, int remainingCoolDownInSeconds) {
+	public ChatMessageSpamException(String message) {
 		super(message);
-		this.remainingCoolDownInSeconds = remainingCoolDownInSeconds;
+		this.remainingCoolDownInSeconds = Optional.empty();
 	}
 
-	public int getRemainingCoolDownInSeconds() {
+	public ChatMessageSpamException(String message, Integer remainingCoolDownInSeconds) {
+		super(message);
+		this.remainingCoolDownInSeconds = Optional.ofNullable(remainingCoolDownInSeconds);
+	}
+
+	public Optional<Integer> getRemainingCoolDownInSeconds() {
 		return remainingCoolDownInSeconds;
 	}
 }

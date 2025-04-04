@@ -28,8 +28,10 @@ public class GlobalExceptionHandler {
 	@MessageExceptionHandler(ChatMessageSpamException.class)
 	@SendToUser("/queue/info-pop-up")
 	public InfoPopUp handleChatMessageSpamException(ChatMessageSpamException ex, StompHeaderAccessor headerAccessor) {
-		this.template.convertAndSend("/queue/disable-chat-user" + headerAccessor.getSessionId(),
-				ex.getRemainingCoolDownInSeconds());
+		if (ex.getRemainingCoolDownInSeconds().isPresent()) {
+			this.template.convertAndSend("/queue/disable-chat-user" + headerAccessor.getSessionId(),
+					ex.getRemainingCoolDownInSeconds().get());
+		}
 		return new InfoPopUp(UUID.randomUUID(), ex.getMessage(), true);
 	}
 

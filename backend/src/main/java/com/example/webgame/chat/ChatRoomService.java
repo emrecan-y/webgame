@@ -15,15 +15,20 @@ import com.example.webgame.session.UserSession;
 public class ChatRoomService {
 	private static final int MIN_CHAT_LENGTH = 1;
 	private static final int MAX_CHAT_LENGTH = 180;
+
 	private final LobbyService lobbySevice;
 	private final SessionService sessionService;
 
+	private final ChatRoomSpamManager chatSpammerManager;
+
 	private final ChatHistory globalChat;
 
-	public ChatRoomService(LobbyService lobbyService, SessionService sessionService) {
+	public ChatRoomService(LobbyService lobbyService, SessionService sessionService,
+			ChatRoomSpamManager chatSpammerManager) {
 		this.globalChat = new ChatHistory();
 		this.lobbySevice = lobbyService;
 		this.sessionService = sessionService;
+		this.chatSpammerManager = chatSpammerManager;
 	}
 
 	public ChatHistory getGlobalChatIfRegistered(String sessionId) {
@@ -43,6 +48,7 @@ public class ChatRoomService {
 		Optional<UserSession> sessionOpt = this.sessionService.getBySessionId(sessionId);
 		if (sessionOpt.isPresent()) {
 			ChatMessage chatMessage = new ChatMessage(sessionOpt.get().getNickName(), message);
+			this.chatSpammerManager.checkSpam(chatMessage, this.globalChat);
 			globalChat.addNewMessage(chatMessage);
 			return Optional.of(globalChat);
 		}
@@ -75,11 +81,16 @@ public class ChatRoomService {
 			UserSession userSession = sessionOpt.get();
 			if (lobby.getId() == userSession.getCurrentLobbyId()) {
 				ChatMessage chatMessage = new ChatMessage(userSession.getNickName(), message);
+				this.chatSpammerManager.checkSpam(chatMessage, lobby.getChatHistory());
 				lobby.getChatHistory().addNewMessage(chatMessage);
 				return Optional.of(lobby.getChatHistory());
 			}
 		}
 		return Optional.empty();
+	}
+
+	public Map<Integer, ChatHistory> deleteOldLobbyMessages(int timeDeltaInMinutes) {
+		return this.lobbySevice.deleteOldLobbyMessages(timeDeltaInMinutes);
 	}
 
 	private String validateChatMessage(String message) {
@@ -94,10 +105,6 @@ public class ChatRoomService {
 			throw new ChatException(String.format("Chat message is too long, maximum %d characters.", MAX_CHAT_LENGTH));
 		}
 		return strippedMessage;
-	}
-
-	public Map<Integer, ChatHistory> deleteOldLobbyMessages(int timeDeltaInMinutes) {
-		return this.lobbySevice.deleteOldLobbyMessages(timeDeltaInMinutes);
 	}
 
 }
