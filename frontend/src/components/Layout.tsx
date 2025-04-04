@@ -28,7 +28,7 @@ export function Layout() {
 
   return (
     <>
-      <div className="flex min-h-screen items-center justify-center bg-transparent text-game-main-light">
+      <div className="flex min-h-dvh items-center justify-center bg-transparent text-game-main-light">
         <Outlet />
       </div>
       <Chat />

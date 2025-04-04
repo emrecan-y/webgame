@@ -47,7 +47,7 @@ function LobbyList() {
 
   return (
     <div
-      className="relative flex h-screen w-full flex-col items-center overflow-y-auto px-2 py-6 text-sm sm:text-base"
+      className="relative flex h-dvh w-full flex-col items-center overflow-y-auto px-2 py-6 text-sm sm:text-base"
       ref={lobbyListRef}
     >
       <div className="fixed bottom-0.5 z-10 flex w-full flex-col drop-shadow-[0px_0px_25px_#000000] sm:bottom-4 sm:items-center sm:bg-transparent">

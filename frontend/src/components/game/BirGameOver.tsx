@@ -34,7 +34,7 @@ function BirGameOver({ users, restartGame }: BirGameOverProps) {
   return (
     <>
       <motion.div
-        className="fixed left-0 top-0 z-10 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
+        className="fixed left-0 top-0 z-10 h-dvh w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0, transition: { type: "spring", delay: 0.5 } }}

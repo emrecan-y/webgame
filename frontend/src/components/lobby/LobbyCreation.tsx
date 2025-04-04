@@ -38,7 +38,7 @@ function LobbyCreation(props: LobbyCreationProps) {
   return (
     <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
       <motion.div
-        className="fixed left-0 top-0 z-20 h-screen w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
+        className="fixed left-0 top-0 z-20 h-dvh w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
         onClick={() => props.setShowCreationWindow(false)}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

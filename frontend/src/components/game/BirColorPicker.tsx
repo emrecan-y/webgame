@@ -28,32 +28,32 @@ function BirColorPicker({
   return (
     <>
       <div
-        className="absolute z-10 h-screen w-screen hover:cursor-pointer"
+        className="absolute z-10 h-dvh w-screen hover:cursor-pointer"
         onClick={() => setMouseEvent(undefined)}
       ></div>
       <div
         className="absolute z-20 flex h-fit w-fit flex-col items-center rounded-xl"
         ref={ref}
       >
-        <p className="drop-shadow-bir-small-text animate-bounce text-xl">
+        <p className="animate-bounce text-xl drop-shadow-bir-small-text">
           Select a color!
         </p>
-        <div className="border-bir-black bg-bir-white outline-bir-white mt-4 flex h-40 w-40 flex-wrap rounded-full border-4 outline outline-8">
+        <div className="mt-4 flex h-40 w-40 flex-wrap rounded-full border-4 border-bir-black bg-bir-white outline outline-8 outline-bir-white">
           <div
             onClick={() => pickColor("RED")}
-            className="bg-bir-red h-1/2 w-1/2 rounded-tl-[100%] transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:scale-105 hover:cursor-pointer"
+            className="h-1/2 w-1/2 rounded-tl-[100%] bg-bir-red transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:scale-105 hover:cursor-pointer"
           ></div>
           <div
             onClick={() => pickColor("BLUE")}
-            className="bg-bir-blue h-1/2 w-1/2 rounded-tr-[100%] transition-transform hover:-translate-y-0.5 hover:translate-x-0.5 hover:scale-105 hover:cursor-pointer"
+            className="h-1/2 w-1/2 rounded-tr-[100%] bg-bir-blue transition-transform hover:-translate-y-0.5 hover:translate-x-0.5 hover:scale-105 hover:cursor-pointer"
           ></div>
           <div
             onClick={() => pickColor("GREEN")}
-            className="bg-bir-green h-1/2 w-1/2 rounded-bl-[100%] transition-transform hover:-translate-x-0.5 hover:translate-y-0.5 hover:scale-105 hover:cursor-pointer"
+            className="h-1/2 w-1/2 rounded-bl-[100%] bg-bir-green transition-transform hover:-translate-x-0.5 hover:translate-y-0.5 hover:scale-105 hover:cursor-pointer"
           ></div>
           <div
             onClick={() => pickColor("YELLOW")}
-            className="bg-bir-yellow h-1/2 w-1/2 rounded-br-[100%] transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:scale-105 hover:cursor-pointer"
+            className="h-1/2 w-1/2 rounded-br-[100%] bg-bir-yellow transition-transform hover:translate-x-0.5 hover:translate-y-0.5 hover:scale-105 hover:cursor-pointer"
           ></div>
         </div>
       </div>

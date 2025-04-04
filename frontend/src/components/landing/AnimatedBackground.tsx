@@ -96,7 +96,7 @@ export function AnimatedBackground() {
 
   return (
     <div
-      className="absolute left-0 top-0 -z-10 max-h-full min-h-screen w-full overflow-hidden overflow-y-clip bg-transparent"
+      className="absolute left-0 top-0 -z-10 max-h-full min-h-dvh w-full overflow-hidden overflow-y-clip bg-transparent"
       ref={containerRef}
     ></div>
   );

@@ -136,7 +136,7 @@ function GameWindow() {
           )}
         </AnimatePresence>
 
-        <div className="relative flex h-full min-h-screen w-full flex-col items-center justify-center">
+        <div className="relative flex h-full min-h-dvh w-full flex-col items-center justify-center">
           <div className="absolute top-4">
             <BirPlayersInfo
               users={gameState.users}

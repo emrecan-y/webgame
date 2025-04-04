@@ -48,7 +48,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
-      <div className="absolute left-0 top-0 -z-50 h-full min-h-screen w-full bg-game-main-dark"></div>
+      <div className="absolute left-0 top-0 -z-50 h-full min-h-dvh w-full bg-game-main-dark"></div>
     </UserContextProvider>
   );
 }

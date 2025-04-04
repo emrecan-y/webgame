@@ -13,13 +13,13 @@ function ConnectionError() {
   }, [webSocketError]);
 
   return (
-    <div className="flex w-screen h-screen justify-center items-center">
-      <div className="text-center rounded bg-game-accent-medium text-game-main-light p-3 animate-bounce">
+    <div className="flex h-dvh w-screen items-center justify-center">
+      <div className="animate-bounce rounded bg-game-accent-medium p-3 text-center text-game-main-light">
         <h1>The connection to the server is faulty.</h1>
 
-        <div className="flex justify-center items-center gap-1 mt-1">
+        <div className="mt-1 flex items-center justify-center gap-1">
           <h1> Please wait</h1>
-          <span className="w-8 h-8 border-4 border-game-accent-light border-b-transparent rounded-full inline-block animate-spin"></span>
+          <span className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-game-accent-light border-b-transparent"></span>
         </div>
       </div>
     </div>
