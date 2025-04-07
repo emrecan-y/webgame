@@ -115,10 +115,10 @@ function PrivacyPolicy({ setShowPrivacyPolicy }: PrivacyPolicyProps) {
           <p className="mt-0.5">
             If you have any questions or issues, you can reach me at{" "}
             <a
-              href="mailto:bir@emrecanyilmaz.com"
+              href="mailto:contact@emrecanyilmaz.com"
               className="underline hover:text-game-main-light"
             >
-              bir@emrecanyilmaz.com
+              contact@emrecanyilmaz.com
             </a>
             .
           </p>
