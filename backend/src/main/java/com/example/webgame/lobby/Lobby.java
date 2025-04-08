@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import com.example.webgame.chat.ChatHistory;
 import com.example.webgame.game.bir.BirGameSession;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Lobby {
 	private static int idCount = 1;
@@ -15,7 +16,9 @@ public class Lobby {
 	@JsonIgnore
 	private String password;
 	private String[] users;
+	@JsonIgnore
 	private ChatHistory chatHistory;
+	@JsonIgnore
 	private BirGameSession gameSession;
 
 	public Lobby(String password, int size) {
@@ -61,8 +64,14 @@ public class Lobby {
 		return this.chatHistory;
 	}
 
+	@JsonProperty("isPrivate")
 	public boolean isPrivate() {
 		return privateLobby;
+	}
+
+	@JsonProperty("isGameRunning")
+	public boolean isGameRunning() {
+		return this.gameSession != null;
 	}
 
 	public void deleteGameSession() {
@@ -96,6 +105,7 @@ public class Lobby {
 		return false;
 	}
 
+	@JsonIgnore
 	public boolean isEmpty() {
 		for (int i = 0; i < users.length; i++) {
 			if (users[i] != null) {

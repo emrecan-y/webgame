@@ -21,7 +21,6 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   const stompClient = useStompClient();
   const navigate = useNavigate();
 
-  const isPrivate = lobby.private;
   const isUserInLobby = userLobbyId === lobby.id;
 
   const request: GeneralPlayerRequest = {
@@ -64,8 +63,8 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
     >
       <div className="my-1 flex h-8 items-center justify-between">
         <p className="pl-1 text-gray-950">Lobby {lobby.id}</p>
-        <form onSubmit={eventListenerAddPlayerToLobby}>
-          {isPrivate && !isUserInLobby && (
+        <form className="flex gap-1" onSubmit={eventListenerAddPlayerToLobby}>
+          {lobby.isPrivate && !isUserInLobby && (
             <input
               className="mr-2 h-8 w-32 rounded p-2 text-game-main-dark placeholder:text-gray-700"
               type="password"
@@ -88,7 +87,7 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
               className="rounded bg-game-accent-medium px-2 py-1"
               onClick={startGame}
             >
-              Start Game
+              {lobby.isGameRunning ? "Rejoin" : "Start Game"}
             </MotionButton>
           )}
         </form>
