@@ -21,7 +21,8 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
   const stompClient = useStompClient();
   const navigate = useNavigate();
 
-  const isUserInLobby = userLobbyId === lobby.id;
+  const isUserInLobby =
+    userLobbyId === lobby.id || lobby.users.includes(userNickName);
 
   const request: GeneralPlayerRequest = {
     lobbyId: lobby.id,
