@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { WebSocketErrorContext } from "./context/WebSocketErrorContext";
 import { UserContext } from "./context/UserContext";
 import Chat from "./chat/Chat";
-import { InfoPopUpContainer } from "./landing/InfoPopUp";
+import InfoPopUpContainer from "./info/InfoPopUpContainer";
 import { useSubscription } from "react-stomp-hooks";
 
 export function Layout() {

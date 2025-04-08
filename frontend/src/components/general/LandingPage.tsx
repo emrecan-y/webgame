@@ -7,7 +7,7 @@ import { motion } from "motion/react";
 import MotionButton from "../ui/MotionButton";
 import { ProfanityFilterContext } from "../context/ProfanityFilterContext";
 import PrivacyPolicy from "./PrivacyPolicy";
-import ErrorPopUp from "../error/ErrorPopUp";
+import InfoPage from "../info/InfoPage";
 
 function LandingPage() {
   const [isConnected, setIsConnected] = useState(false);
@@ -156,7 +156,7 @@ function LandingPage() {
       </motion.div>
     );
   } else {
-    return <ErrorPopUp mainText="Connecting to the server." />;
+    return <InfoPage mainText="Connecting to the server." />;
   }
 }
 

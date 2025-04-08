@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSubscription } from "react-stomp-hooks";
 import { InfoPopUp } from "../../models/infoPopUp";
 
-export function InfoPopUpContainer() {
+function InfoPopUpContainer() {
   const [infoPopUps, setInfoPopUps] = useState<InfoPopUp[]>([]);
 
   const durationInSeconds = 4;
@@ -55,3 +55,5 @@ export function InfoPopUpContainer() {
     </div>
   );
 }
+
+export default InfoPopUpContainer;

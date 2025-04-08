@@ -1,8 +1,8 @@
-type ErrorPopUpProps = {
+type InfoPageProps = {
   mainText: string;
 };
 
-function ErrorPopUp({ mainText }: ErrorPopUpProps) {
+function InfoPage({ mainText }: InfoPageProps) {
   return (
     <div className="animate-bounce rounded bg-game-accent-light p-2">
       <div className="rounded bg-game-accent-medium p-2 text-center text-game-main-light">
@@ -17,4 +17,4 @@ function ErrorPopUp({ mainText }: ErrorPopUpProps) {
   );
 }
 
-export default ErrorPopUp;
+export default InfoPage;

@@ -1,11 +1,11 @@
-import LandingPage from "./landing/LandingPage";
+import LandingPage from "./general/LandingPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./Layout";
 import LobbyList from "./lobby/LobbyList";
-import ConnectionError from "./error/ConnectionError";
+import ConnectionError from "./general/ConnectionError";
 import { UserContextProvider } from "./context/UserContext";
 import GameWindow from "./game/GameWindow";
-import { AnimatedBackground } from "./landing/AnimatedBackground";
+import { AnimatedBackground } from "./general/AnimatedBackground";
 
 function App() {
   return (
