@@ -16,6 +16,7 @@ import com.example.webgame.dto.BirGameStateDto;
 import com.example.webgame.exception.LobbyException;
 import com.example.webgame.game.bir.BirGameSession;
 import com.example.webgame.game.bir.BirUserState;
+import com.example.webgame.record.LobbyPlayerModifyResult;
 import com.example.webgame.record.PlayerRequest;
 import com.example.webgame.session.SessionService;
 import com.example.webgame.session.UserSession;
@@ -62,29 +63,26 @@ public class LobbyService {
 		return lobbyId != null && this.lobbyMap.containsKey(lobbyId);
 	}
 
-	public Optional<Lobby> createLobby(String sessionId, String password, int size) {
-		this.sessionService.isSessionIdRegistered(sessionId);
+	public LobbyPlayerModifyResult createLobby(String sessionId, String password, int size) {
 
-		if(size < MIN_LOBBY_SIZE){
+		if (size < MIN_LOBBY_SIZE) {
 			throw new LobbyException("Lobby creation failed, size too small.");
-		}else if(size > MAX_LOBBY_SIZE){
+		} else if (size > MAX_LOBBY_SIZE) {
 			throw new LobbyException("Lobby creation failed, size too big.");
 		}
 
-		Optional<UserSession> userSession = this.sessionService.getBySessionId(sessionId);
-		if (userSession.isPresent()) {
-			Lobby newLobby = new Lobby(password, size);
-			newLobby.addUser(userSession.get().getNickName());
-			lobbyMap.put(newLobby.getId(), newLobby);
-			changePlayerLobby(userSession.get().getNickName(), newLobby.getId());
-			return Optional.of(newLobby);
-		} else {
-			return Optional.empty();
-		}
+		UserSession userSession = this.sessionService.getBySessionIdOrThrow(sessionId);
+		Lobby newLobby = new Lobby(password, size);
+		newLobby.addUser(userSession.getNickName());
+		lobbyMap.put(newLobby.getId(), newLobby);
+		Integer oldLobbyId = handleLobbyChangeAndReturnOldLobbyId(userSession, newLobby.getId());
+
+		return new LobbyPlayerModifyResult(this.getLobbyList(), oldLobbyId, userSession.getCurrentLobbyId());
 	}
 
-	public boolean addPlayerToLobby(String sessionId, Integer lobbyId, String nickName, String password) {
-		this.sessionService.isSessionIdRegistered(sessionId);
+	public LobbyPlayerModifyResult addPlayerToLobby(String sessionId, Integer lobbyId, String nickName,
+			String password) {
+		UserSession userSession = this.sessionService.getBySessionIdOrThrow(sessionId);
 
 		if (lobbyId != null) {
 			Lobby lobby = this.lobbyMap.get(lobbyId);
@@ -95,8 +93,8 @@ public class LobbyService {
 			} else if (lobby.containsUser(nickName)) {
 				throw new LobbyException(nickName + " already inside lobby.");
 			} else if (lobby.addUser(nickName)) {
-				changePlayerLobby(nickName, lobbyId);
-				return true;
+				Integer oldLobbyId = handleLobbyChangeAndReturnOldLobbyId(userSession, lobbyId);
+				return new LobbyPlayerModifyResult(this.getLobbyList(), oldLobbyId, userSession.getCurrentLobbyId());
 			} else {
 				throw new LobbyException("The lobby is full!");
 			}
@@ -105,21 +103,61 @@ public class LobbyService {
 		}
 	}
 
-	private void changePlayerLobby(String nickName, Integer newLobbyId) {
-		Optional<UserSession> userSessionOpt = this.sessionService.getByNickName(nickName);
-		if (userSessionOpt.isPresent()) {
-			UserSession userSession = userSessionOpt.get();
-			if (userSession.getCurrentLobbyId() != null) {
-				Lobby oldLobby = this.lobbyMap.get(userSession.getCurrentLobbyId());
-				if (oldLobby != null) {
-					oldLobby.removeUser(nickName);
-					if (oldLobby.isEmpty()) {
-						this.lobbyMap.remove(oldLobby.getId());
-					}
+	public LobbyPlayerModifyResult removePlayerFromLobbyAndStopGame(String sessionId) {
+		UserSession userSession = this.sessionService.getBySessionIdOrThrow(sessionId);
+
+		List<Lobby> updatedLobbyList = this.removePlayerFromLobby(userSession);
+		Integer lobbyIdToStop = null;
+		if (updatedLobbyList != null) {
+			lobbyIdToStop = this.stopGameSessionIfPresentAndReturnLobbyId(userSession);
+			userSession.setCurrentLobbyId(null);
+		}
+		return new LobbyPlayerModifyResult(this.getLobbyList(), lobbyIdToStop, userSession.getCurrentLobbyId());
+
+	}
+
+	private List<Lobby> removePlayerFromLobby(UserSession userSession) {
+		Optional<Lobby> lobbyOpt = this.findLobbyById(userSession.getCurrentLobbyId());
+		if (lobbyOpt.isPresent()) {
+			Lobby lobby = lobbyOpt.get();
+			lobby.removeUser(userSession.getNickName());
+			if (lobby.isEmpty()) {
+				this.removeByLobbyId(lobby.getId());
+			}
+			return this.getLobbyList();
+		}
+		return null;
+	}
+
+	private Integer handleLobbyChangeAndReturnOldLobbyId(UserSession userSession, Integer newLobbyId) {
+		Integer oldLobbyId = stopGameSessionIfPresentAndReturnLobbyId(userSession);
+		changePlayerLobby(userSession, newLobbyId);
+		return oldLobbyId;
+	}
+
+	private void changePlayerLobby(UserSession userSession, Integer newLobbyId) {
+		if (userSession.getCurrentLobbyId() != null) {
+			Lobby oldLobby = this.lobbyMap.get(userSession.getCurrentLobbyId());
+			if (oldLobby != null) {
+				oldLobby.removeUser(userSession.getNickName());
+				if (oldLobby.isEmpty()) {
+					this.lobbyMap.remove(oldLobby.getId());
 				}
 			}
-			userSession.setCurrentLobbyId(newLobbyId);
 		}
+		userSession.setCurrentLobbyId(newLobbyId);
+	}
+
+	private Integer stopGameSessionIfPresentAndReturnLobbyId(UserSession userSession) {
+		Optional<Lobby> lobbyOpt = this.findLobbyById(userSession.getCurrentLobbyId());
+		if (lobbyOpt.isPresent()) {
+			Lobby lobby = lobbyOpt.get();
+			if (lobby.getGameSession() != null) {
+				lobby.deleteGameSession();
+				return lobby.getId();
+			}
+		}
+		return null;
 	}
 
 	public boolean startGame(String sessionId, Integer lobbyId, String nickName, String password) {
@@ -166,7 +204,7 @@ public class LobbyService {
 			Lobby lobby = lobbyOpt.get();
 			if (lobby.containsUser(request.nickName()) && (!lobby.isPrivate()
 					|| lobby.isPrivate() && lobby.getPassword().equals(request.lobbyPassword()))) {
-				return Optional.of(lobby.getGameSession());
+				return Optional.ofNullable(lobby.getGameSession());
 			}
 		}
 		return Optional.empty();
@@ -192,4 +230,5 @@ public class LobbyService {
 		return this.lobbyMap.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getChatHistory()));
 	}
+
 }

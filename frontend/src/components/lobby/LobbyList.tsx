@@ -18,12 +18,7 @@ function LobbyList() {
 
   // listen to backend for current lobbyId
   useSubscription("/user/queue/lobby/lobby-id", (message) => {
-    if (message.body !== "") {
-      const newLobbyId = parseInt(message.body);
-      if (newLobbyId !== -1) {
-        userContext.setUserLobbyId!(parseInt(message.body));
-      }
-    }
+    userContext.setUserLobbyId(parseInt(message.body));
   });
 
   // listen to backend for current lobbyList from request

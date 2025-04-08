@@ -1,7 +1,6 @@
 package com.example.webgame.lobby;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Controller;
 
 import com.example.webgame.record.GeneralPlayerRequest;
 import com.example.webgame.record.LobbyCreateRequest;
+import com.example.webgame.record.LobbyPlayerModifyResult;
 
 @Controller
 public class LobbyController {
@@ -31,24 +31,41 @@ public class LobbyController {
 
 	@MessageMapping("/create-lobby")
 	public void createLobby(@Header("simpSessionId") String sessionId, LobbyCreateRequest request) {
-		Optional<Lobby> lobby = this.lobbyService.createLobby(sessionId, request.lobbyPassword(), request.lobbySize());
-		if (lobby.isPresent()) {
-			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyListIfSessionValid(sessionId));
+		LobbyPlayerModifyResult result = this.lobbyService.createLobby(sessionId, request.lobbyPassword(),
+				request.lobbySize());
 
-			// Inform user that the their lobby has changed
-			this.template.convertAndSend("/queue/lobby/lobby-id" + "-user" + sessionId, lobby.get().getId());
-		}
+		sendLobbyPlayerModifyResult(result, sessionId);
+
 	}
 
 	@MessageMapping("/lobby/add-player")
 	public void addPlayerToLobby(@Header("simpSessionId") String sessionId, GeneralPlayerRequest request) {
-		if (this.lobbyService.addPlayerToLobby(sessionId, request.lobbyId(), request.nickName(),
-				request.lobbyPassword())) {
-			this.template.convertAndSend("/topic/lobby-list", this.lobbyService.getLobbyListIfSessionValid(sessionId));
+		LobbyPlayerModifyResult result = this.lobbyService.addPlayerToLobby(sessionId, request.lobbyId(),
+				request.nickName(), request.lobbyPassword());
 
-			// Inform user that the their lobby has changed
-			this.template.convertAndSend("/queue/lobby/lobby-id" + "-user" + sessionId, request.lobbyId());
+		sendLobbyPlayerModifyResult(result, sessionId);
+
+	}
+
+	@MessageMapping("/lobby/remove-player")
+	public void removePlayerFromLobby(@Header("simpSessionId") String sessionId) {
+		LobbyPlayerModifyResult result = this.lobbyService.removePlayerFromLobbyAndStopGame(sessionId);
+
+		sendLobbyPlayerModifyResult(result, sessionId);
+	}
+
+	private void sendLobbyPlayerModifyResult(LobbyPlayerModifyResult result, String sessionId) {
+		if (result != null && result.updatedLobbies() != null) {
+			this.template.convertAndSend("/topic/lobby-list", result.updatedLobbies());
+			if (result.oldPlayerLobbyId() != null) {
+				template.convertAndSend("/topic/game/" + result.oldPlayerLobbyId() + "/stop", "");
+			}
+			this.playerLobbyHasChanged(sessionId, result.newPlayerLobbyId() == null ? -1 : result.newPlayerLobbyId());
 		}
+	}
+
+	private void playerLobbyHasChanged(String sessionId, int newLobbyId) {
+		this.template.convertAndSend("/queue/lobby/lobby-id" + "-user" + sessionId, newLobbyId);
 	}
 
 }

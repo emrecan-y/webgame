@@ -53,6 +53,11 @@ public class SessionService {
 		return this.sessionMap.getBySessionId(sessionId);
 	}
 
+	public UserSession getBySessionIdOrThrow(String sessionId) {
+		return this.sessionMap.getBySessionId(sessionId)
+				.orElseThrow(() -> new SessionIdNotRegisteredException("SessionId isn't registered. Please login"));
+	}
+
 	public Optional<UserSession> getByNickName(String nickName) {
 		return this.sessionMap.getByNickName(nickName);
 	}

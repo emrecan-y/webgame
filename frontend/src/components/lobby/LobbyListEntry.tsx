@@ -48,6 +48,14 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
     }
   }
 
+  function leaveLobby() {
+    if (stompClient) {
+      stompClient.publish({
+        destination: "/app/lobby/remove-player",
+      });
+    }
+  }
+
   function startGame() {
     if (stompClient) {
       stompClient.publish({
@@ -73,6 +81,16 @@ function LobbyListEntry({ lobby }: LobbyListEntryProps) {
               placeholder="Password"
               onChange={(e) => setPassword(e.currentTarget.value)}
             />
+          )}
+          {isUserInLobby && (
+            <MotionButton
+              className="rounded bg-game-accent-medium px-2 py-1"
+              onClick={() => {
+                leaveLobby();
+              }}
+            >
+              Leave
+            </MotionButton>
           )}
           {!isUserInLobby && !lobbyIsFull && (
             <MotionButton
