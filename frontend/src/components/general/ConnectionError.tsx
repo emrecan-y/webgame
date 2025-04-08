@@ -13,7 +13,7 @@ function ConnectionError() {
     }
   }, [webSocketError]);
 
-  return <InfoPage mainText="The connection to the server is faulty." />;
+  return <InfoPage isError message="The connection to the server is faulty." />;
 }
 
 export default ConnectionError;

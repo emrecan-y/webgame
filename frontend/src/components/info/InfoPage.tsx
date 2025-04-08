@@ -1,18 +1,37 @@
+import { motion } from "motion/react";
+
 type InfoPageProps = {
-  mainText: string;
+  isError?: boolean;
+  message: string;
 };
 
-function InfoPage({ mainText }: InfoPageProps) {
+function InfoPage({ isError, message }: InfoPageProps) {
   return (
-    <div className="animate-bounce rounded bg-game-accent-light p-2">
-      <div className="rounded bg-game-accent-medium p-2 text-center text-game-main-light">
-        <h1>{mainText}</h1>
-
-        <div className="mt-1 flex items-center justify-center gap-1">
-          <h1>Please wait</h1>
-          <span className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-game-accent-light border-b-transparent"></span>
+    <div className="select-non max-w-full animate-bounce-subtle px-2">
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        exit={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: "auto" }}
+        transition={{ type: "spring" }}
+        layout
+      >
+        <div
+          className={`relative rounded p-1.5 ${isError ? "bg-bir-red-light" : "bg-game-accent-light"}`}
+        >
+          <div
+            className={`rounded p-1 text-game-main-light ${isError ? "bg-bir-red" : "bg-game-accent-medium"}`}
+          >
+            <p className="text-">{isError ? "Error!" : "Info"} </p>
+            <p className="bg-game-main-dark">{message}</p>
+          </div>
+          <div
+            className={`mt-2 flex items-center justify-center gap-1 rounded p-1 text-game-main-light ${isError ? "bg-bir-red" : "bg-game-accent-medium"}`}
+          >
+            <h1>Please wait</h1>
+            <span className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-game-main-light border-b-transparent"></span>
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

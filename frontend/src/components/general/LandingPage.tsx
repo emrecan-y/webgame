@@ -156,7 +156,7 @@ function LandingPage() {
       </motion.div>
     );
   } else {
-    return <InfoPage mainText="Connecting to the server." />;
+    return <InfoPage message="Connecting to the server." />;
   }
 }
 
