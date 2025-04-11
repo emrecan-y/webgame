@@ -61,7 +61,7 @@ function LobbyCreation(props: LobbyCreationProps) {
           opacity: 0,
           scale: 0,
         }}
-        transition={{ type: "spring" }}
+        transition={{ type: "easeInOut" }}
       >
         <p className="mb-1 text-game-main-dark">Create New Lobby</p>
 

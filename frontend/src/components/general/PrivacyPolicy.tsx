@@ -31,7 +31,7 @@ function PrivacyPolicy({ setShowPrivacyPolicy }: PrivacyPolicyProps) {
           opacity: 0,
           scale: 0,
         }}
-        transition={{ type: "spring", damping: 12 }}
+        transition={{ type: "easeInOut" }}
       >
         <div className="flex justify-between text-base sm:text-lg">
           <h1 className="py-2 font-bold">Privacy Policy & Information</h1>

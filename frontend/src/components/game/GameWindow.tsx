@@ -188,7 +188,7 @@ function GameWindow() {
           opacity: 1,
           scale: 1,
         }}
-        transition={{ type: "spring", delay: 0.5 }}
+        transition={{ type: "easeInOut", delay: 0.5 }}
       >
         <h1>The game is loading.</h1>
 

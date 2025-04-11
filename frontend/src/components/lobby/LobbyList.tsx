@@ -49,7 +49,7 @@ function LobbyList() {
         <MotionButton
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: "spring", stiffness: 100, damping: 10 }}
+          transition={{ type: "easeInOut" }}
           className="m-0.5 h-11 w-fit rounded bg-game-accent-medium px-2 py-1 sm:m-auto sm:w-full sm:max-w-96"
           onClick={() => setShowCreationWindow(true)}
         >
@@ -65,7 +65,7 @@ function LobbyList() {
               initial={{ opacity: 0, height: 0 }}
               exit={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
-              transition={{ type: "spring" }}
+              transition={{ type: "easeInOut" }}
             >
               <LobbyListEntry lobby={e} />
             </motion.div>

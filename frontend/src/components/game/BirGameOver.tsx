@@ -37,8 +37,8 @@ function BirGameOver({ users, restartGame }: BirGameOverProps) {
         className="fixed left-0 top-0 z-10 h-dvh w-screen cursor-pointer bg-game-main-dark bg-opacity-40 backdrop-blur-[4px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        exit={{ opacity: 0, transition: { type: "spring", delay: 0.5 } }}
-        transition={{ type: "spring", delay: 1.5 }}
+        exit={{ opacity: 0, transition: { type: "linear", delay: 0.5 } }}
+        transition={{ type: "linear", delay: 1.3 }}
       />
       <motion.div
         className="fixed z-20 h-max w-72 rounded bg-game-accent-light p-2"
@@ -53,9 +53,9 @@ function BirGameOver({ users, restartGame }: BirGameOverProps) {
         exit={{
           opacity: 0,
           scale: 0,
-          transition: { type: "spring", delay: 0.5 },
+          transition: { type: "linear", delay: 0.5 },
         }}
-        transition={{ type: "spring", delay: 1.5 }}
+        transition={{ type: "linear", delay: 1.5 }}
       >
         <p className="mt-2 text-center text-game-main-dark">
           {"🎉 "}

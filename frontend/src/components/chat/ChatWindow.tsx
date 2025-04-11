@@ -172,7 +172,7 @@ export function ChatWindow(props: ChatWindowProps) {
         onClick={chatButtonHandler}
         initial={{ translateY: "100%" }}
         animate={{ translateY: "0%" }}
-        transition={{ type: "spring" }}
+        transition={{ type: "easeInOut" }}
       >
         {props.buttonText}
         {!getShowState(props.buttonText) && hasUnreadMessages && (
