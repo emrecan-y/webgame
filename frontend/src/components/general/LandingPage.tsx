@@ -156,7 +156,7 @@ function LandingPage() {
       </motion.div>
     );
   } else {
-    return <InfoPage message="Connecting to the server." />;
+    return <InfoPage message="Connecting to the server." autoRenewConnection />;
   }
 }
 
