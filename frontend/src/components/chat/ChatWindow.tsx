@@ -66,9 +66,17 @@ export function ChatWindow(props: ChatWindowProps) {
   }, [stompClient]);
 
   useEffect(() => {
-    if (chatHistoryRef.current) {
-      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
-    }
+    const scrollToBottom = () => {
+      if (chatHistoryRef.current) {
+        chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+      }
+    };
+    scrollToBottom();
+    window.addEventListener("resize", scrollToBottom);
+
+    return () => {
+      window.removeEventListener("resize", scrollToBottom);
+    };
   }, [chatHistory, getShowState(props.buttonText)]);
 
   const isChatMessageValid = useMemo(() => {
@@ -111,7 +119,7 @@ export function ChatWindow(props: ChatWindowProps) {
       <AnimatePresence>
         {getShowState(props.buttonText) && (
           <motion.div
-            className="fixed flex flex-col items-end rounded rounded-br-none bg-game-accent-light"
+            className="fixed flex h-[28rem] max-h-[calc(100dvh_-_3.5rem)] flex-col items-end rounded rounded-br-none bg-game-accent-light pt-1"
             initial={{ opacity: 0, translateY: "0%" }}
             animate={{ opacity: 1, translateY: "-100%" }}
             exit={{ opacity: 0, translateY: "0%" }}
@@ -126,7 +134,7 @@ export function ChatWindow(props: ChatWindowProps) {
 
             <div
               ref={chatHistoryRef}
-              className="flex h-72 w-full flex-col overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark sm:h-96"
+              className="flex h-full w-full flex-col overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark"
             >
               {Array.isArray(chatHistory) &&
                 chatHistory.map((e, index) => (
