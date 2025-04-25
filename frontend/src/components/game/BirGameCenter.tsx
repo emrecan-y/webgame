@@ -75,7 +75,7 @@ function BirGameCenter({ gameState, request }: BirGameCenterProps) {
   return (
     <div className="relative flex scale-75 flex-col items-center justify-center">
       <div className="absolute -top-8 h-8 text-xl">
-        <p className="animate-bounce">{infoText}dwdw</p>
+        <p className="animate-bounce">{infoText}</p>
       </div>
 
       <div className="flex gap-2">
