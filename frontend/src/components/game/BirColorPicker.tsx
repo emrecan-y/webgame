@@ -17,22 +17,35 @@ function BirColorPicker({
   pickColor,
 }: BirColorPickerProps) {
   const ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (ref.current !== null) {
-      ref.current.style.left =
-        mouseEvent.clientX - ref.current.clientWidth / 2 + "px";
-      ref.current.style.top =
-        mouseEvent.clientY - ref.current.clientHeight + "px";
+      const elementWidth = ref.current.clientWidth + 10;
+      const elementHeight = ref.current.clientHeight;
+
+      let newLeft = mouseEvent.clientX - elementWidth / 2;
+      let newTop = mouseEvent.clientY - elementHeight;
+
+      if (newLeft < 0) {
+        newLeft = 0;
+      }
+      if (newLeft + elementWidth > window.innerWidth) {
+        newLeft = window.innerWidth - elementWidth;
+      }
+
+      ref.current.style.left = `${newLeft}px`;
+      ref.current.style.top = `${newTop}px`;
     }
   }, []);
+
   return (
     <>
       <div
-        className="absolute z-10 h-dvh w-screen hover:cursor-pointer"
+        className="fixed z-10 h-dvh w-screen hover:cursor-pointer"
         onClick={() => setMouseEvent(undefined)}
       ></div>
       <div
-        className="absolute z-20 flex h-fit w-fit flex-col items-center rounded-xl"
+        className="fixed z-20 flex h-fit w-fit flex-col items-center rounded-xl"
         ref={ref}
       >
         <p className="animate-bounce text-xl drop-shadow-bir-small-text">
