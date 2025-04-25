@@ -1,7 +1,7 @@
 import { BirUser } from "../../../models/birGameState";
 import shadow from "../../../assets/avatar-shadow.svg";
 import BirCardFan from "./BirCardFan";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 
 type BirPlayersInfoElementProps = {
@@ -14,6 +14,7 @@ function BirPlayersInfoElement({
   currentUserName,
 }: BirPlayersInfoElementProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user.hasAttemptedToDeclareBir) {
@@ -28,8 +29,28 @@ function BirPlayersInfoElement({
     }
   }, [user.hasAttemptedToDeclareBir]);
 
+  useEffect(() => {
+    if (ref.current && currentUserName === user.name) {
+      const scrollContainer = ref.current.closest(
+        ".overflow-x-scroll",
+      ) as HTMLElement | null;
+
+      if (scrollContainer) {
+        const elCenter = ref.current.offsetLeft + ref.current.offsetWidth / 2;
+        const scrollPos = elCenter - scrollContainer.offsetWidth / 2;
+        console.log(ref.current.offsetLeft);
+
+        scrollContainer.scrollTo({
+          left: scrollPos,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, [currentUserName, user.name]);
+
   return (
     <div
+      ref={ref}
       key={`player-info-${user.name}`}
       className={`rounded p-1 text-game-main-dark transition-transform ${currentUserName === user.name && "animate-bounce-subtle"}`}
     >

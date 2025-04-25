@@ -137,7 +137,7 @@ function GameWindow() {
         </AnimatePresence>
 
         <div className="relative flex h-full min-h-dvh w-full flex-col items-center justify-center">
-          <div className="absolute top-4">
+          <div className="fixed top-4 w-full">
             <BirPlayersInfo
               users={gameState.users}
               currentUserName={gameState.currentUser}
@@ -145,9 +145,8 @@ function GameWindow() {
             />
           </div>
 
-          <div className="">
-            <BirGameCenter request={request} gameState={gameState} />
-          </div>
+          <BirGameCenter request={request} gameState={gameState} />
+
           <div className="fixed bottom-10 flex w-full justify-center">
             <div className="flex overflow-x-auto overflow-y-hidden">
               <div className="flex w-fit scale-75 flex-row flex-nowrap gap-2">
