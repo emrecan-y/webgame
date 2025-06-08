@@ -39,7 +39,7 @@ function PrivacyPolicy({ setShowPrivacyPolicy }: PrivacyPolicyProps) {
             ✖
           </MotionButton>
         </div>
-        <div className="max-h-[36rem] overflow-scroll pb-4">
+        <div className="max-h-[36rem] overflow-y-scroll pb-4">
           <h2 className="mt-4 font-semibold">1. About this Project</h2>
           <p className="mt-0.5">
             This online game is a personal project created to demonstrate my
