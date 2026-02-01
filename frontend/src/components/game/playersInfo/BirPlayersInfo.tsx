@@ -53,7 +53,7 @@ function BirPlayersInfo({
   }, [childRef, parentRef]);
 
   return (
-    <div ref={parentRef} className="w-full overflow-x-scroll scroll-smooth">
+    <div ref={parentRef} className="w-full overflow-x-scroll scroll-smooth scrollbar-none">
       <div className={`${isOverflowing && "w-max px-32"}`}>
         <div
           ref={childRef}

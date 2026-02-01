@@ -129,16 +129,16 @@ export function ChatWindow(props: ChatWindowProps) {
               className="mr-1 text-game-main-dark"
               onClick={chatButtonHandler}
             >
-              ✖
+              🗙
             </MotionButton>
 
             <div
               ref={chatHistoryRef}
-              className="flex h-full w-full flex-col overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark"
+              className="scrollbar-custom flex h-full w-full min-w-72 flex-col overflow-y-scroll break-words bg-game-accent-light px-1 text-game-main-dark"
             >
               {Array.isArray(chatHistory) &&
                 chatHistory.map((e, index) => (
-                  <p key={props.buttonText + index} className="w-72">
+                  <p key={props.buttonText + index} className="w-full">
                     <span className="font-semibold text-violet-950">
                       {e.senderName + ": "}
                     </span>
@@ -146,13 +146,16 @@ export function ChatWindow(props: ChatWindowProps) {
                   </p>
                 ))}
             </div>
-            <form className="relative flex flex-row" onSubmit={sendMessage}>
+            <form
+              className="relative flex w-full flex-row"
+              onSubmit={sendMessage}
+            >
               <p className="absolute -top-5 w-full bg-game-accent-light pl-1 text-bir-red">
                 {infoText}
               </p>
               <input
                 autoFocus
-                className="m-1 w-64 bg-black px-1 text-game-main-light focus:outline-none focus:ring-0"
+                className="m-1 w-full min-w-64 bg-black px-1 text-game-main-light focus:outline-none focus:ring-0"
                 type="text"
                 value={messageInput}
                 placeholder="Messages delete after 15 minutes."

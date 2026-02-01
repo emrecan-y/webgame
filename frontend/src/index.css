@@ -9,3 +9,31 @@
   font-display: swap;
   src: url("./assets/Cabin-Bold.ttf") format("tff");
 }
+
+@layer utilities {
+  @supports (-moz-appearance: none) {
+    .scrollbar-custom {
+      scrollbar-width: auto;
+      scrollbar-color: #e5e7eb #ffffff00;
+    }
+  }
+
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #e5e7eb;
+    border-radius: 4px;
+  }
+
+
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+}

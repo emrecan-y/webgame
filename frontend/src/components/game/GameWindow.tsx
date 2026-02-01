@@ -147,9 +147,9 @@ function GameWindow() {
 
           <BirGameCenter request={request} gameState={gameState} />
 
-          <div className="fixed bottom-10 flex w-full justify-center">
-            <div className="flex overflow-x-auto overflow-y-hidden">
-              <div className="flex w-fit scale-75 flex-row flex-nowrap gap-2">
+          <div className="fixed bottom-12 flex w-full justify-center">
+            <div className="scrollbar-custom flex overflow-x-auto overflow-y-hidden">
+              <div className="-my-3.5 flex w-fit scale-75 flex-row flex-nowrap gap-2">
                 <AnimatePresence>
                   {gameState.userCards.map((element) => (
                     <MotionButton
